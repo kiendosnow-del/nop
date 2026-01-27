@@ -4,67 +4,40 @@
 <meta charset="UTF-8">
 <title>❄️ SNOW | Cày Thuê Blox Fruits</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
 body{
- margin:0;
- font-family:Arial;
+ margin:0;font-family:Arial;
  background:linear-gradient(180deg,#0f2027,#203a43,#2c5364);
  color:#fff;
 }
 header{
  background:linear-gradient(135deg,#1e90ff,#00c6ff);
- padding:14px;
- text-align:center;
+ padding:14px;text-align:center;
 }
 .container{max-width:520px;margin:auto;padding:14px}
 .card{
- background:#ffffff;
- color:#000;
- border-radius:16px;
- padding:14px;
- margin-bottom:12px;
+ background:#fff;color:#000;
+ border-radius:16px;padding:14px;margin-bottom:12px;
  box-shadow:0 8px 20px rgba(0,0,0,.25);
 }
 input,select,textarea,button{
- width:100%;
- padding:10px;
- margin:6px 0;
- border-radius:10px;
- border:1px solid #ccc;
+ width:100%;padding:10px;margin:6px 0;
+ border-radius:10px;border:1px solid #ccc;
 }
-button{
- background:#1e90ff;
- color:#fff;
- border:none;
- font-weight:bold;
- cursor:pointer;
-}
+button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 button:hover{opacity:.9}
-.price{font-size:18px;font-weight:bold;color:#1e90ff}
 .hide{display:none}
-
-#userBox button{
- background:#ff4d4d;
- margin-top:8px;
-}
-
-#supportBubble{
- position:fixed;
- right:16px;
- bottom:16px;
- width:54px;
- height:54px;
- border-radius:50%;
- background:#1e90ff;
- color:#fff;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:26px;
- cursor:pointer;
+.price{font-size:18px;font-weight:bold;color:#1e90ff}
+#menu button{margin-bottom:6px}
+#support{
+ position:fixed;right:16px;bottom:16px;
+ width:54px;height:54px;border-radius:50%;
+ background:#1e90ff;color:#fff;
+ display:flex;align-items:center;justify-content:center;
+ font-size:26px;cursor:pointer;
  box-shadow:0 4px 12px rgba(0,0,0,.4);
 }
+#userBox button{background:#ff4d4d;margin-top:6px}
 </style>
 </head>
 
@@ -77,7 +50,7 @@ button:hover{opacity:.9}
 <header>
 <h2>❄️ SNOW CÀY THUÊ</h2>
 <div id="userBox" class="hide">
-👤 <b id="uname"></b> | 🎮 <b id="robloxName"></b><br>
+👤 <b id="uname"></b> | 🎮 <b id="rname"></b><br>
 💰 Ví: <b id="wallet">0đ</b>
 <button onclick="logout()">Đăng xuất</button>
 </div>
@@ -94,17 +67,22 @@ button:hover{opacity:.9}
 <button onclick="register()">Đăng ký</button>
 </div>
 
+<!-- MENU -->
+<div class="card hide" id="menu">
+<button onclick="tab('order')">🛒 Mua gói</button>
+<button onclick="tab('wallet')">💰 Ví tiền</button>
+<button onclick="tab('history')">📜 Lịch sử nạp</button>
+</div>
+
 <!-- ORDER -->
 <div class="card hide" id="orderBox">
 <select id="goi">
 <option value="0">-- Chọn gói cày thuê --</option>
-
 <optgroup label="🔰 LEVEL">
 <option value="20000">700 → 1500 (20k)</option>
 <option value="20000">1500 → 2800 (20k)</option>
 <option value="50000">0 → MAX (50k)</option>
 </optgroup>
-
 <optgroup label="🧰 ITEM">
 <option value="20000">Mỏ Neo (20k)</option>
 <option value="15000">Tushita (15k)</option>
@@ -112,54 +90,41 @@ button:hover{opacity:.9}
 <option value="35000">Tam Kiếm Full (35k)</option>
 <option value="30000">CDK (30k)</option>
 </optgroup>
-
 <optgroup label="⚙️ UP V4">
 <option value="30000">Full Gear (30k)</option>
 <option value="5000">1 Gear (5k)</option>
 </optgroup>
-
 <optgroup label="🥋 MELEE">
 <option value="20000">Godhuman (20k)</option>
 <option value="15000">Melee V2 (15k)</option>
 </optgroup>
-
 <optgroup label="💰 BELI / FRAG">
 <option value="1000">500K Beli (1k)</option>
 <option value="1000">1K Fragment (1k)</option>
 </optgroup>
-
 <optgroup label="📈 MASTERY">
 <option value="45000">600 Mas (45k)</option>
 <option value="50000">600 Mas Gun (50k)</option>
 </optgroup>
 </select>
-
 <div class="price">Giá: <span id="price">0đ</span></div>
-<textarea id="note" placeholder="Ghi chú thêm"></textarea>
+<textarea id="note" placeholder="Ghi chú"></textarea>
 <button onclick="buy()">🛒 MUA</button>
 </div>
 
-<!-- TOPUP CARD -->
-<div class="card hide" id="topupCard">
+<!-- WALLET -->
+<div id="walletBox" class="hide">
+<div class="card">
 <h3>💳 Nạp Thẻ</h3>
-<select id="cardType">
-<option>Viettel</option>
-<option>Mobifone</option>
-<option>Vinaphone</option>
-</select>
 <input id="cardAmount" placeholder="Mệnh giá">
-<input id="cardCode" placeholder="Mã thẻ">
-<input id="cardSeri" placeholder="Seri">
-<button onclick="topupCard()">Gửi thẻ</button>
+<button onclick="topup('CARD')">Gửi thẻ</button>
 </div>
-
-<!-- TOPUP BANK -->
-<div class="card hide" id="topupBank">
+<div class="card">
 <h3>🏦 Nạp Bank</h3>
 <p><b>STK:</b> 1373727384 – Techcombank – SNOW</p>
 <input id="bankAmount" placeholder="Số tiền">
-<textarea id="bankNote" placeholder="Nội dung chuyển khoản"></textarea>
-<button onclick="topupBank()">Đã chuyển</button>
+<button onclick="topup('BANK')">Đã chuyển</button>
+</div>
 </div>
 
 <!-- HISTORY -->
@@ -170,100 +135,83 @@ button:hover{opacity:.9}
 
 </div>
 
-<div id="supportBubble" onclick="openSupport()">💬</div>
+<div id="support" onclick="support()">💬</div>
 
 <script>
 const click=()=>document.getElementById("clickSound").play();
 
-/* STORAGE */
 let users=JSON.parse(localStorage.users||"{}");
 let topups=JSON.parse(localStorage.topups||"[]");
-let orders=JSON.parse(localStorage.orders||"[]");
 let user=localStorage.user||"";
 
-/* PRICE */
 goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
 
-/* SAVE */
 function save(){
 localStorage.users=JSON.stringify(users);
 localStorage.topups=JSON.stringify(topups);
-localStorage.orders=JSON.stringify(orders);
 }
 
-/* AUTH */
 function register(){
 click();
-if(users[lu.value]) return alert("Tài khoản đã tồn tại");
+if(users[lu.value]) return alert("Tài khoản tồn tại");
 users[lu.value]={pass:lp.value,wallet:0,roblox:lr.value};
-save();
-alert("Đăng ký thành công");
+save();alert("Đăng ký thành công");
 }
 
 function login(){
 click();
 if(!users[lu.value]||users[lu.value].pass!==lp.value)
-return alert("Sai tài khoản hoặc mật khẩu");
-user=lu.value;
-localStorage.user=user;
-init();
+return alert("Sai tài khoản");
+user=lu.value;localStorage.user=user;init();
 }
 
 function logout(){
-click();
-localStorage.removeItem("user");
-location.reload();
+click();localStorage.removeItem("user");location.reload();
 }
 
-/* INIT */
 function init(){
 loginBox.classList.add("hide");
-orderBox.classList.remove("hide");
-topupCard.classList.remove("hide");
-topupBank.classList.remove("hide");
-historyBox.classList.remove("hide");
+menu.classList.remove("hide");
 userBox.classList.remove("hide");
-
 uname.innerText=user;
-robloxName.innerText=users[user].roblox||"Chưa có";
+rname.innerText=users[user].roblox||"Chưa có";
 wallet.innerText=users[user].wallet.toLocaleString()+"đ";
-
-history.innerHTML="";
-topups.filter(t=>t.user===user).forEach(t=>{
-history.innerHTML+=`<p>💳 ${t.type} - ${t.amount}đ - ${t.status}</p>`;
-});
+tab('order');
 }
 
-/* BUY */
+function tab(t){
+click();
+orderBox.classList.add("hide");
+walletBox.classList.add("hide");
+historyBox.classList.add("hide");
+if(t==='order') orderBox.classList.remove("hide");
+if(t==='wallet') walletBox.classList.remove("hide");
+if(t==='history'){
+historyBox.classList.remove("hide");
+history.innerHTML="";
+topups.filter(x=>x.user===user).forEach(x=>{
+history.innerHTML+=`<p>💳 ${x.type} - ${x.amount}đ - ${x.status}</p>`;
+});
+}
+}
+
 function buy(){
 click();
 let p=Number(goi.value);
 if(p<=0) return alert("Chưa chọn gói");
 if(users[user].wallet<p) return alert("Không đủ tiền");
 users[user].wallet-=p;
-orders.push({user,goi:goi.options[goi.selectedIndex].text});
-save();
-init();
-alert("Đặt đơn thành công");
+save();init();alert("Đặt đơn thành công");
 }
 
-/* TOPUP */
-function topupCard(){
+function topup(type){
 click();
-topups.push({user,type:"CARD",amount:cardAmount.value,status:"Chờ duyệt"});
-save();init();
-alert("Đã gửi thẻ");
+let amount=type==="CARD"?cardAmount.value:bankAmount.value;
+topups.push({user,type,amount,status:"Chờ duyệt"});
+save();init();alert("Đã gửi yêu cầu nạp");
 }
 
-function topupBank(){
-click();
-topups.push({user,type:"BANK",amount:bankAmount.value,status:"Chờ duyệt"});
-save();init();
-alert("Đã báo chuyển khoản");
-}
-
-/* SUPPORT */
-function openSupport(){
+function support(){
 click();
 window.open("https://zalo.me/0373727384","_blank");
 }
