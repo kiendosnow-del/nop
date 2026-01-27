@@ -89,168 +89,99 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="buy()">🛒 MUA</button>
 </div>
 
-<!-- TOPUP -->
-<script>
-function topupCard(){
-  if(!user) return alert("Vui lòng đăng nhập");
+<!-- TOPUP CARD -->
+<div class="card hide" id="topupCard">
+<h3>💳 Nạp Card</h3>
+<select id="cardType">
+<option>Viettel</option>
+<option>Mobifone</option>
+<option>Vinaphone</option>
+</select>
+<input id="cardAmount" placeholder="Mệnh giá">
+<input id="cardCode" placeholder="Mã thẻ">
+<input id="cardSeri" placeholder="Seri">
+<button onclick="topupCard()">Gửi thẻ</button>
+</div>
 
-  let amount = Number(cardAmount.value);
-  if(amount <= 0 || !cardCode.value || !cardSeri.value)
-    return alert("Nhập đầy đủ thông tin thẻ");
-
-  topups.push({
-    user,
-    type: "CARD",
-    card: cardType.value,
-    amount,
-    code: cardCode.value,
-    seri: cardSeri.value,
-    status: "Chờ duyệt"
-  });
-
-  save();
-
-  fetch(WEBHOOK,{
-    method:"POST",
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      content:`💳 NẠP CARD\n👤 ${user}\n📱 ${cardType.value}\n💰 ${amount.toLocaleString()}đ\n🧾 ${cardCode.value}`
-    })
-  });
-
-  alert("⏳ Đã gửi thẻ – chờ admin duyệt");
-}
-</script>
-
-<script>
-function topupBank(){
-  if(!user) return alert("Vui lòng đăng nhập");
-
-  let amount = Number(bankAmount.value);
-  if(amount <= 0) return alert("Nhập số tiền");
-
-  topups.push({
-    user,
-    type: "BANK",
-    amount,
-    note: bankNote.value || "",
-    status: "Chờ duyệt"
-  });
-
-  save();
-
-  fetch(WEBHOOK,{
-    method:"POST",
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      content:`🏦 NẠP BANK\n👤 ${user}\n💰 ${amount.toLocaleString()}đ\n📝 ${bankNote.value||"Không"}`
-    })
-  });
-
-  alert("⏳ Đã báo chuyển khoản – chờ admin duyệt");
-}
-</script>
+<!-- TOPUP BANK -->
+<div class="card hide" id="topupBank">
+<h3>🏦 Nạp Bank</h3>
+<p><b>STK:</b> 1373727384 – Techcombank – SNOW</p>
+<input id="bankAmount" placeholder="Số tiền">
+<textarea id="bankNote" placeholder="Ghi chú"></textarea>
+<button onclick="topupBank()">Tôi đã chuyển</button>
+</div>
 
 </div>
 
 <script>
-const WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+const WEBHOOK="PUT_WEBHOOK_DISCORD";
 
 /* DATA */
-let users = JSON.parse(localStorage.snow_users || "{}");
-let orders = JSON.parse(localStorage.snow_orders || "[]");
-let topups = JSON.parse(localStorage.snow_topups || "[]");
-let user = localStorage.snow_user || "";
+let users = JSON.parse(localStorage.snow_users||"{}");
+let orders = JSON.parse(localStorage.snow_orders||"[]");
+let topups = JSON.parse(localStorage.snow_topups||"[]");
+let user = localStorage.snow_user||"";
 
 /* PRICE */
-goi.onchange = () =>
-price.innerText = Number(goi.value).toLocaleString()+"đ";
+goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
 
 /* SAVE */
 function save(){
-localStorage.snow_users = JSON.stringify(users);
-localStorage.snow_orders = JSON.stringify(orders);
-localStorage.snow_topups = JSON.stringify(topups);
+localStorage.snow_users=JSON.stringify(users);
+localStorage.snow_orders=JSON.stringify(orders);
+localStorage.snow_topups=JSON.stringify(topups);
 }
 
 /* AUTH */
 function login(){
-if(!users[lu.value] || users[lu.value].pass !== lp.value)
-return alert("Sai tài khoản hoặc mật khẩu");
-user = lu.value;
-localStorage.snow_user = user;
-init();
+if(!users[lu.value]||users[lu.value].pass!==lp.value)
+return alert("Sai tài khoản");
+user=lu.value; localStorage.snow_user=user; init();
 }
-
 function register(){
-if(users[lu.value]) return alert("Tài khoản đã tồn tại");
-users[lu.value] = {pass: lp.value, wallet: 0};
+if(users[lu.value]) return alert("Đã tồn tại");
+users[lu.value]={pass:lp.value,wallet:0};
 save(); alert("Đăng ký thành công");
 }
-
 function logout(){
-localStorage.removeItem("snow_user");
-location.reload();
+localStorage.removeItem("snow_user"); location.reload();
 }
 
 /* INIT */
-<script>
 function init(){
-  loginBox.classList.add("hide");
-  orderBox.classList.remove("hide");
-  topupCard.classList.remove("hide");
-  topupBank.classList.remove("hide");
-  userBox.classList.remove("hide");
-
-  uname.innerText = user;
-  wallet.innerText = users[user].wallet.toLocaleString()+"đ";
+loginBox.classList.add("hide");
+orderBox.classList.remove("hide");
+topupCard.classList.remove("hide");
+topupBank.classList.remove("hide");
+userBox.classList.remove("hide");
+uname.innerText=user;
+wallet.innerText=users[user].wallet.toLocaleString()+"đ";
 }
-</script>
 
 /* BUY */
 function buy(){
-let p = Number(goi.value);
+let p=Number(goi.value);
 if(p<=0) return alert("Chưa chọn gói");
-if(users[user].wallet < p) return alert("Không đủ tiền");
-
-users[user].wallet -= p;
-orders.push({
-user,
-goi: goi.options[goi.selectedIndex].text,
-price: p,
-status: "Đang làm"
-});
+if(users[user].wallet<p) return alert("Không đủ tiền");
+users[user].wallet-=p;
+orders.push({user,goi:goi.options[goi.selectedIndex].text,price:p,status:"Đang làm"});
 save(); init();
-
-fetch(WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ`
-})
-});
-
+fetch(WEBHOOK,{method:"POST",headers:{'Content-Type':'application/json'},
+body:JSON.stringify({content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p}đ`})});
 alert("✅ Đặt đơn thành công");
 }
 
 /* TOPUP */
-function topup(){
-let a = Number(amount.value);
-if(a<=0) return alert("Nhập số tiền");
-topups.push({
-user, amount:a, method:method.value, status:"Chờ duyệt"
-});
-save();
-
-fetch(WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-content:`💳 NẠP ${method.value}\n👤 ${user}\n💰 ${a.toLocaleString()}đ`
-})
-});
-
-alert("⏳ Đã gửi yêu cầu nạp");
+function topupCard(){
+topups.push({user,type:"CARD",card:cardType.value,amount:Number(cardAmount.value),
+code:cardCode.value,seri:cardSeri.value,status:"Chờ duyệt"});
+save(); alert("⏳ Đã gửi thẻ");
+}
+function topupBank(){
+topups.push({user,type:"BANK",amount:Number(bankAmount.value),
+note:bankNote.value,status:"Chờ duyệt"});
+save(); alert("⏳ Đã báo chuyển khoản");
 }
 
 if(user) init();
