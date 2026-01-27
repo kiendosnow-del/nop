@@ -3,3 +3,4 @@ if (price <= 0) {
   return;
 }
 const gia = document.getElementById("totalPrice").innerText;
+const ADMIN_PASSWORD = "snowadmin123"; // đổi tùy bạn
