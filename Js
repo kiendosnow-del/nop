@@ -114,3 +114,9 @@ match /users/{id} {
   allow read: if request.auth.uid == id;
   allow update: if false; // chỉ backend
 }
+function adminGive(target,amount){
+ if(!users[target]) return alert("Không tồn tại");
+ users[target].wallet += amount;
+ save();
+ alert("Đã tặng "+amount+"đ cho "+target);
+}
