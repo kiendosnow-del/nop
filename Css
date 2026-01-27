@@ -1,8 +1,21 @@
-.price-table .card h3{
-    color:#9fd3ff;
-    margin-bottom:12px;
+form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
 }
-.price-table .card p{
-    line-height:1.8;
-    font-size:15px;
+form input, form textarea{
+    padding:12px;
+    border-radius:8px;
+    border:none;
+    outline:none;
 }
+form button{
+    padding:14px;
+    background:#1e90ff;
+    color:#fff;
+    font-weight:bold;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+form button:hover{background:#1473cc}
