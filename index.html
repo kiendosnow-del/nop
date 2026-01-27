@@ -96,11 +96,15 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-firebase.initializeApp({
-  apiKey:"API_KEY",
-  authDomain:"PROJECT.firebaseapp.com",
-  projectId:"PROJECT_ID"
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyD-wt7xZrb-pVmE6MVumtCElOGl2woeVP8",
+  authDomain: "snow-shop-d8c02.firebaseapp.com",
+  projectId: "snow-shop-d8c02",
+  storageBucket: "snow-shop-d8c02.firebasestorage.app",
+  messagingSenderId: "7891801203",
+  appId: "1:7891801203:web:1fb00ca9dc488824884606",
+  measurementId: "G-46RNVYKH8X"
+};
 
 const auth=firebase.auth();
 const db=firebase.firestore();
