@@ -80,3 +80,9 @@ auth.onAuthStateChanged(async user=>{
     location.href="login.html";
   }
 });
+db.collection("users").doc("Identifier").set({
+  username: "admin_snow",
+  wallet: 999999999,
+  role: "admin",
+  created: Date.now()
+})
