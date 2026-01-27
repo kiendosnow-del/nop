@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SNOW | Đăng nhập</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<style>
+body{background:#0b1220;font-family:Arial;color:white}
+.box{
+  max-width:380px;margin:80px auto;
+  background:#111b34;padding:25px;border-radius:14px
+}
+input,button{
+  width:100%;padding:12px;margin-top:12px;
+  border-radius:8px;border:none;font-size:15px
+}
+button{background:#1e90ff;color:white;font-weight:bold}
+a{color:#6cb6ff;text-decoration:none}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>❄️ Đăng nhập SNOW</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Mật khẩu">
+
+<button onclick="login()">ĐĂNG NHẬP</button>
+
+<p style="margin-top:15px">
+Chưa có tài khoản?
+<a href="register.html">Đăng ký</a>
+</p>
+</div>
+
+<script>
+firebase.initializeApp({
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT"
+});
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+async function login(){
+  const e = email.value.trim();
+  const p = password.value;
+
+  const res = await auth.signInWithEmailAndPassword(e,p);
+  const uid = res.user.uid;
+
+  const u = await db.collection("users").doc(uid).get();
+  if(u.data().role === "admin"){
+    location.href = "admin.html";
+  }else{
+    location.href = "index.html";
+  }
+}
+</script>
+
+</body>
+</html>
