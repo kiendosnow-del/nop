@@ -19,24 +19,35 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <input id="pass" type="password" placeholder="Mật khẩu">
 <button onclick="login()">Đăng nhập</button>
 </div>
+
 <script>
+/* ADMIN */
 const ADMIN_USER = "admin_snow";
 const ADMIN_PASS = "Snow_oner";
-</script>
-  
 
-<script>
-let users = JSON.parse(localStorage.getItem("snow_users")) || {};
+/* USERS */
+let users = JSON.parse(localStorage.snow_users || "{}");
 
 function login(){
-  const u = user.value;
-  const p = pass.value;
-  if(!users[u] || users[u].password!==p)
+  const u = user.value.trim();
+  const p = pass.value.trim();
+
+  /* ADMIN LOGIN */
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    localStorage.snow_user = u;
+    localStorage.snow_admin = "1";
+    return location.href = "admin.html";
+  }
+
+  /* USER LOGIN */
+  if(!users[u] || users[u].pass !== p)
     return alert("Sai tài khoản hoặc mật khẩu");
 
-  localStorage.setItem("snow_user",u);
-  location.href="index.html";
+  localStorage.snow_user = u;
+  localStorage.removeItem("snow_admin");
+  location.href = "index.html";
 }
 </script>
+
 </body>
 </html>
