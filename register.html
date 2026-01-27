@@ -2,78 +2,39 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>SNOW | Đăng ký</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-
+<title>Đăng ký | SNOW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{background:#0b1220;font-family:Arial;color:white}
-.box{
-  max-width:380px;margin:80px auto;
-  background:#111b34;padding:25px;border-radius:14px
-}
-input,button{
-  width:100%;padding:12px;margin-top:12px;
-  border-radius:8px;border:none;font-size:15px
-}
-button{background:#1e90ff;color:white;font-weight:bold}
-a{color:#6cb6ff;text-decoration:none}
+body{font-family:Arial;background:#f4f8ff;padding:20px}
+.card{max-width:400px;margin:auto;background:#fff;padding:20px;border-radius:14px}
+input,button{width:100%;padding:10px;margin:8px 0;border-radius:10px}
+button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </style>
 </head>
-
 <body>
 
-<div class="box">
+<div class="card">
 <h2>❄️ Đăng ký SNOW</h2>
-
-<input id="username" placeholder="Tên hiển thị">
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Mật khẩu">
-
-<button onclick="register()">ĐĂNG KÝ</button>
-
-<p style="margin-top:15px">
-Đã có tài khoản?
-<a href="login.html">Đăng nhập</a>
-</p>
+<input id="user" placeholder="Tên tài khoản">
+<input id="pass" type="password" placeholder="Mật khẩu">
+<button onclick="register()">Đăng ký</button>
+<p><a href="login.html">Đã có tài khoản? Đăng nhập</a></p>
 </div>
 
 <script>
-firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
-});
+let users = JSON.parse(localStorage.getItem("snow_users")) || {};
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+function register(){
+  const u = user.value.trim();
+  const p = pass.value.trim();
+  if(!u||!p) return alert("Nhập đủ thông tin");
+  if(users[u]) return alert("Tài khoản đã tồn tại");
 
-async function register(){
-  const username = username.value.trim();
-  const email = email.value.trim();
-  const pass = password.value;
-
-  if(!username || !email || !pass){
-    alert("Nhập đầy đủ thông tin");
-    return;
-  }
-
-  const res = await auth.createUserWithEmailAndPassword(email, pass);
-  const uid = res.user.uid;
-
-  await db.collection("users").doc(uid).set({
-    username,
-    wallet: 0,
-    role: "user",
-    created: Date.now()
-  });
-
-  alert("✅ Đăng ký thành công");
-  location.href = "index.html";
+  users[u] = { password:p, wallet:0, orders:[] };
+  localStorage.setItem("snow_users",JSON.stringify(users));
+  alert("✅ Đăng ký thành công!");
+  location.href="login.html";
 }
 </script>
-
 </body>
 </html>
