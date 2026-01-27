@@ -2,56 +2,30 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>❄️ SNOW | Cày Thuê Blox Fruits</title>
+<title>SNOW | Cày Thuê Blox Fruits</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body{
- margin:0;font-family:Arial;
- background:linear-gradient(180deg,#0f2027,#203a43,#2c5364);
- color:#fff;
-}
-header{
- background:linear-gradient(135deg,#1e90ff,#00c6ff);
- padding:14px;text-align:center;
-}
+body{margin:0;font-family:Arial;background:#f4f8ff}
+header{background:linear-gradient(135deg,#1e90ff,#00c6ff);color:#fff;padding:14px;text-align:center}
 .container{max-width:520px;margin:auto;padding:14px}
-.card{
- background:#fff;color:#000;
- border-radius:16px;padding:14px;margin-bottom:12px;
- box-shadow:0 8px 20px rgba(0,0,0,.25);
-}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px}
 input,select,textarea,button{
- width:100%;padding:10px;margin:6px 0;
- border-radius:10px;border:1px solid #ccc;
+width:100%;padding:10px;margin:6px 0;border-radius:10px;
+border:1px solid #ddd;font-size:15px
 }
 button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
-button:hover{opacity:.9}
 .price{font-size:18px;font-weight:bold;color:#1e90ff}
 .hide{display:none}
-#support{
- position:fixed;right:16px;bottom:16px;
- width:54px;height:54px;border-radius:50%;
- background:#1e90ff;color:#fff;
- display:flex;align-items:center;justify-content:center;
- font-size:26px;cursor:pointer;
-}
-#userBox button{background:#ff4d4d}
 </style>
 </head>
 
 <body>
 
-<audio id="clickSound">
-<source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3">
-</audio>
-
 <header>
-<h2>❄️ SNOW CÀY THUÊ</h2>
+<h2>❄️ SNOW</h2>
 <div id="userBox" class="hide">
-👤 <b id="uname"></b><br>
-🎮 <b id="robloxName"></b><br>
-💰 Ví: <b id="wallet">0đ</b>
+👤 <b id="uname"></b> | 💰 <b id="wallet">0đ</b>
 <button onclick="logout()">Đăng xuất</button>
 </div>
 </header>
@@ -62,7 +36,6 @@ button:hover{opacity:.9}
 <div class="card" id="loginBox">
 <input id="lu" placeholder="Tài khoản">
 <input id="lp" type="password" placeholder="Mật khẩu">
-<input id="lr" placeholder="Nick Roblox">
 <button onclick="login()">Đăng nhập</button>
 <button onclick="register()">Đăng ký</button>
 </div>
@@ -82,13 +55,21 @@ button:hover{opacity:.9}
 <option value="20000">Mỏ Neo (20k)</option>
 <option value="15000">Tushita (15k)</option>
 <option value="30000">Yama (30k)</option>
-<option value="35000">Tam Kiếm Full (35k)</option>
+<option value="20000">Tam Kiếm (Lẻ) (20k)</option>
+<option value="35000">Tam Kiếm (Full) (35k)</option>
 <option value="30000">CDK (30k)</option>
 </optgroup>
 
 <optgroup label="⚙️ UP V4">
 <option value="30000">Full Gear (30k)</option>
+<option value="20000">Gạt Cần (20k)</option>
+<option value="20000">Mảnh Gương (20k)</option>
 <option value="5000">1 Gear (5k)</option>
+</optgroup>
+
+<optgroup label="🧬 RACE">
+<option value="20000">Cyborg (20k)</option>
+<option value="20000">Ghoul (20k)</option>
 </optgroup>
 
 <optgroup label="🥋 MELEE">
@@ -108,114 +89,132 @@ button:hover{opacity:.9}
 </select>
 
 <div class="price">Giá: <span id="price">0đ</span></div>
+<input id="rbx" placeholder="Username Roblox">
 <textarea id="note" placeholder="Ghi chú"></textarea>
-<button onclick="buy()">🛒 ĐẶT ĐƠN</button>
+<button onclick="buy()">🛒 MUA</button>
 </div>
 
 <!-- TOPUP -->
 <div class="card hide" id="topupBox">
-<h3>💳 Nạp tiền (demo)</h3>
-<input id="topupAmount" placeholder="Số tiền">
-<button onclick="topup()">Nạp ví</button>
+<h3>💳 Nạp tiền</h3>
+<select id="method">
+<option>Card</option>
+<option>ATM</option>
+<option>Bank</option>
+</select>
+<input id="amount" placeholder="Số tiền">
+<button onclick="topup()">Gửi nạp</button>
 </div>
 
 </div>
 
-<div id="support" onclick="support()">💬</div>
+<!-- AUDIO CLICK -->
+<audio id="clickSound">
+<source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA..." type="audio/mp3">
+</audio>
 
 <script>
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
-const click=()=>document.getElementById("clickSound").play();
+const WEBHOOK = "PUT_WEBHOOK_DISCORD";
+const clickSound = document.getElementById("clickSound");
 
-/* STORAGE */
-let users=JSON.parse(localStorage.snow_users||"{}");
-let user=localStorage.snow_user||"";
+document.addEventListener("click", e=>{
+if(e.target.tagName==="BUTTON"){
+clickSound.currentTime = 0;
+clickSound.play();
+}
+});
+
+/* DATA */
+let users = JSON.parse(localStorage.snow_users || "{}");
+let orders = JSON.parse(localStorage.snow_orders || "[]");
+let topups = JSON.parse(localStorage.snow_topups || "[]");
+let user = localStorage.snow_user || "";
 
 /* PRICE */
-goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
+goi.onchange = ()=> price.innerText =
+Number(goi.value).toLocaleString()+"đ";
 
+/* SAVE */
 function save(){
- localStorage.snow_users=JSON.stringify(users);
+localStorage.snow_users = JSON.stringify(users);
+localStorage.snow_orders = JSON.stringify(orders);
+localStorage.snow_topups = JSON.stringify(topups);
 }
 
 /* AUTH */
-function register(){
- click();
- if(users[lu.value]) return alert("Tài khoản tồn tại");
- users[lu.value]={pass:lp.value,wallet:0,roblox:lr.value};
- save(); alert("Đăng ký thành công");
-}
 function login(){
- click();
- if(!users[lu.value]||users[lu.value].pass!==lp.value)
- return alert("Sai tài khoản");
- user=lu.value;
- localStorage.snow_user=user;
- init();
+if(!users[lu.value] || users[lu.value].pass !== lp.value)
+return alert("Sai tài khoản hoặc mật khẩu");
+user = lu.value;
+localStorage.snow_user = user;
+init();
 }
+
+function register(){
+if(users[lu.value]) return alert("Tài khoản đã tồn tại");
+users[lu.value] = {pass: lp.value, wallet: 0};
+save(); alert("Đăng ký thành công");
+}
+
 function logout(){
- click();
- localStorage.removeItem("snow_user");
- location.reload();
+localStorage.removeItem("snow_user");
+location.reload();
 }
 
 /* INIT */
 function init(){
- loginBox.classList.add("hide");
- orderBox.classList.remove("hide");
- topupBox.classList.remove("hide");
- userBox.classList.remove("hide");
-
- uname.innerText=user;
- robloxName.innerText=users[user].roblox;
- wallet.innerText=users[user].wallet.toLocaleString()+"đ";
+loginBox.classList.add("hide");
+orderBox.classList.remove("hide");
+topupBox.classList.remove("hide");
+userBox.classList.remove("hide");
+uname.innerText = user;
+wallet.innerText = users[user].wallet.toLocaleString()+"đ";
 }
 
 /* BUY */
 function buy(){
- click();
- let p=Number(goi.value);
- if(p<=0) return alert("Chưa chọn gói");
- if(users[user].wallet<p) return alert("Không đủ tiền");
+let p = Number(goi.value);
+if(p<=0) return alert("Chưa chọn gói");
+if(users[user].wallet < p) return alert("Không đủ tiền");
 
- users[user].wallet-=p;
- save(); init();
+users[user].wallet -= p;
+orders.push({
+user,
+goi: goi.options[goi.selectedIndex].text,
+price: p,
+status: "Đang làm"
+});
+save(); init();
 
- fetch()
-  method:"POST",
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify({
-   username:"❄️ SNOW SHOP",
-   embeds:[{
-    title:"🧊 ĐƠN CÀY THUÊ MỚI",
-    color:3447003,
-    fields:[
-     {name:"👤 User",value:user},
-     {name:"🎮 Roblox",value:users[user].roblox},
-     {name:"📦 Gói",value:goi.options[goi.selectedIndex].text},
-     {name:"💰 Giá",value:p+"đ"},
-     {name:"⏰ Thời gian",value:new Date().toLocaleString("vi-VN")}
-    ]
-   }]
-  })
- });
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ`
+})
+});
 
- alert("✅ Đặt đơn thành công");
+alert("✅ Đặt đơn thành công");
 }
 
 /* TOPUP */
 function topup(){
- click();
- let a=Number(topupAmount.value);
- if(a<=0) return;
- users[user].wallet+=a;
- save(); init();
- alert("💰 Nạp ví thành công (demo)");
-}
+let a = Number(amount.value);
+if(a<=0) return alert("Nhập số tiền");
+topups.push({
+user, amount:a, method:method.value, status:"Chờ duyệt"
+});
+save();
 
-function support(){
- click();
- window.open("https://zalo.me/0373727384","_blank");
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`💳 NẠP ${method.value}\n👤 ${user}\n💰 ${a.toLocaleString()}đ`
+})
+});
+
+alert("⏳ Đã gửi yêu cầu nạp");
 }
 
 if(user) init();
