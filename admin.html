@@ -1,9 +1,18 @@
 <script>
-const ADMIN_PASSWORD = "snowadmin123";
+firebase.auth().onAuthStateChanged(async user=>{
+  if(!user){
+    alert("Chưa đăng nhập!");
+    location.href="index.html";
+    return;
+  }
 
-const pass = prompt("🔐 Nhập mật khẩu admin:");
-if(pass !== ADMIN_PASSWORD){
-  alert("❌ Sai mật khẩu!");
-  location.href = "index.html";
-}
+  const doc = await firebase.firestore()
+    .collection("users")
+    .doc(user.uid).get();
+
+  if(doc.data().role !== "admin"){
+    alert("❌ Không có quyền!");
+    location.href="index.html";
+  }
+});
 </script>
