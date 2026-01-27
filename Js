@@ -1,137 +1,165 @@
-if (price <= 0) {
-  alert("❄️ Vui lòng chọn gói dịch vụ");
-  return;
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNOW Admin</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f4f8ff;
+  margin:0;
 }
-const gia = document.getElementById("totalPrice").innerText;
-const ADMIN_PASSWORD = "snowadmin123"; // đổi tùy bạn
+header{
+  background:#1e90ff;
+  color:white;
+  padding:15px;
+  text-align:center;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:16px;
+}
+.card{
+  background:white;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+input,button{
+  padding:10px;
+  width:100%;
+  margin-top:6px;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+button{
+  background:#1e90ff;
+  color:white;
+  border:none;
+  font-weight:bold;
+}
+.list{
+  max-height:400px;
+  overflow:auto;
+}
+.user,.order{
+  border-bottom:1px solid #eee;
+  padding:8px 0;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>👑 SNOW ADMIN PANEL</h2>
+  <p>Quản lý user & đơn hàng</p>
+</header>
+
+<div class="container">
+
+<!-- USER -->
+<div class="card">
+<h3>👤 Danh sách User</h3>
+
+<input id="uidInput" placeholder="UID user">
+<input id="moneyInput" type="number" placeholder="Số tiền">
+<button onclick="capTien()">➕ Cấp / Trừ tiền</button>
+
+<div id="userList" class="list"></div>
+</div>
+
+<!-- ORDER -->
+<div class="card">
+<h3>📜 Lịch sử đơn toàn web</h3>
+<div id="orderList" class="list"></div>
+</div>
+
+</div>
+
+<script>
+// 🔥 FIREBASE CONFIG (THAY CỦA BẠN)
 const firebaseConfig = {
-  apiKey: "AIzaSyD-wt7xZrb-pVmE6MVumtCElOGl2woeVP8",
-  authDomain: "snow-shop-d8c02.firebaseapp.com",
-  projectId: "snow-shop-d8c02",
-  storageBucket: "snow-shop-d8c02.firebasestorage.app",
-  messagingSenderId: "7891801203",
-  appId: "1:7891801203:web:958c5e37bb65dbee884606",
-  measurementId: "G-M7CJZ8588Q"
+  apiKey: "API_KEY",
+  authDomain: "PROJECT.firebaseapp.com",
+  projectId: "PROJECT_ID"
 };
-function register(){
-  const email = regEmail.value;
-  const pass = regPass.value;
-  const username = regName.value;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-  auth.createUserWithEmailAndPassword(email, pass)
-  .then(res=>{
-    return db.collection("users").doc(res.user.uid).set({
-      username,
-      wallet: 0,
-      created: new Date()
-    });
-  })
-  .then(()=> alert("✅ Đăng ký thành công!"));
-}
-function login(){
-  auth.signInWithEmailAndPassword(loginEmail.value, loginPass.value)
-  .then(()=> alert("✅ Đăng nhập thành công"));
-}
-auth.onAuthStateChanged(user=>{
-  if(!user) return;
+// 🔐 CHECK ADMIN
+auth.onAuthStateChanged(async user=>{
+  if(!user){
+    alert("Chưa đăng nhập!");
+    location.href="index.html";
+    return;
+  }
 
-  db.collection("users").doc(user.uid).onSnapshot(doc=>{
-    document.getElementById("wallet").innerText =
-      doc.data().wallet.toLocaleString()+"đ";
-  });
+  const doc = await db.collection("users").doc(user.uid).get();
+  if(doc.data().role !== "admin"){
+    alert("❌ Không có quyền admin!");
+    location.href="index.html";
+  }
 });
-function guiDon(){
-  const price = Number(goi.value);
-  const note = textarea.value;
 
-  auth.onAuthStateChanged(user=>{
-    if(!user) return alert("Chưa đăng nhập!");
-
-    const userRef = db.collection("users").doc(user.uid);
-
-    db.runTransaction(async t=>{
-      const doc = await t.get(userRef);
-      if(doc.data().wallet < price)
-        throw "Không đủ tiền";
-
-      t.update(userRef,{ wallet: doc.data().wallet - price });
-
-      db.collection("orders").add({
-        uid: user.uid,
-        username: doc.data().username,
-        goi: goi.options[goi.selectedIndex].text,
-        price,
-        note,
-        status:"Chờ duyệt",
-        time: new Date()
-      });
-    })
-    .then(()=> alert("✅ Mua thành công"))
-    .catch(e=>alert(e));
-  });
-}
-db.collection("orders").onSnapshot(snap=>{
+// 👤 LOAD USER
+db.collection("users").onSnapshot(snap=>{
+  userList.innerHTML="";
   snap.forEach(doc=>{
-    const o = doc.data();
-    adminBox.innerHTML += `
-      <div>
-        👤 ${o.username}<br>
-        📦 ${o.goi}<br>
-        💰 ${o.price}đ<br>
-        📌 ${o.status}<br>
-        <button onclick="duyet('${doc.id}')">✔ Duyệt</button>
+    const u = doc.data();
+    userList.innerHTML += `
+      <div class="user">
+        <b>${u.username}</b><br>
+        UID: ${doc.id}<br>
+        💰 ${u.wallet.toLocaleString()}đ
       </div>`;
   });
 });
 
-function duyet(id){
-  db.collection("orders").doc(id).update({
-    status:"Đã duyệt"
-  });
-}
+// 💰 CẤP / TRỪ TIỀN
 function capTien(){
-  const uid = uidUser.value;
-  const amount = Number(money.value);
+  const uid = uidInput.value.trim();
+  const money = Number(moneyInput.value);
 
-  const ref = firebase.firestore().collection("users").doc(uid);
+  if(!uid || !money) return alert("Nhập đủ!");
 
-  firebase.firestore().runTransaction(async t=>{
-    const doc = await t.get(ref);
-    t.update(ref,{
-      wallet: doc.data().wallet + amount
-    });
+  const ref = db.collection("users").doc(uid);
+  db.runTransaction(async t=>{
+    const d = await t.get(ref);
+    t.update(ref,{ wallet: d.data().wallet + money });
   })
-  .then(()=>alert("✅ Đã cấp tiền"))
+  .then(()=>alert("✅ Thành công"))
   .catch(()=>alert("❌ Lỗi"));
 }
-firebase.firestore()
-.collection("orders")
+
+// 📜 LOAD ĐƠN
+db.collection("orders")
 .orderBy("time","desc")
 .onSnapshot(snap=>{
-  adminOrders.innerHTML="";
+  orderList.innerHTML="";
   snap.forEach(doc=>{
     const o = doc.data();
-    adminOrders.innerHTML += `
-      <div class="card">
+    orderList.innerHTML += `
+      <div class="order">
         👤 ${o.username}<br>
         📦 ${o.goi}<br>
         💰 ${o.price.toLocaleString()}đ<br>
-        📌 ${o.status}
+        📌 ${o.status || "Chờ xử lý"}
       </div>`;
   });
 });
-firebase.auth().onAuthStateChanged(user=>{
-  firebase.firestore()
-  .collection("orders")
-  .where("uid","==",user.uid)
-  .onSnapshot(snap=>{
-    myOrders.innerHTML="";
-    snap.forEach(doc=>{
-      const o = doc.data();
-      myOrders.innerHTML += `
-        <div>
-          📦 ${o.goi} - ${o.status}
-        </div>`;
-    });
-  });
-});
+</script>
+
+</body>
+</html>
