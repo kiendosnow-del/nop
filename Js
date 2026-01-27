@@ -2,3 +2,4 @@ if (price <= 0) {
   alert("❄️ Vui lòng chọn gói dịch vụ");
   return;
 }
+const gia = document.getElementById("totalPrice").innerText;
