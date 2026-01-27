@@ -131,16 +131,37 @@ footer{
 </footer>
 
 <script>
-function tinhTien(){
-  let v=document.getElementById("goi").value;
-  document.getElementById("tien").innerText=
-    Number(v).toLocaleString();
-}
+const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+
 function guiDon(){
-  alert("Đơn đã gửi về Discord Admin ❄️");
+  const goi = document.getElementById("goi");
+  const gia = document.getElementById("tien").innerText;
+
+  const data = {
+    username: "❄️ SNOW ORDER BOT",
+    embeds: [{
+      title: "🧊 ĐƠN MỚI SNOW",
+      color: 5814783,
+      fields: [
+        { name: "📦 Gói", value: goi.options[goi.selectedIndex].text },
+        { name: "💰 Giá", value: gia + "đ" },
+        { name: "👤 Roblox", value: document.querySelector("input").value || "Không có" },
+        { name: "📝 Ghi chú", value: document.querySelector("textarea").value || "Không có" }
+      ],
+      footer:{ text:"SNOW Roblox Service" },
+      timestamp: new Date()
+    }]
+  };
+
+  fetch(WEBHOOK_ORDER,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(data)
+  });
+
+  alert("✅ Đơn đã gửi! Admin SNOW sẽ xử lý.");
 }
 </script>
-
 </body>
 </html>
 <script>
