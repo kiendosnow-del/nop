@@ -22,19 +22,25 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </div>
 
 <script>
-let users = JSON.parse(localStorage.getItem("snow_users")) || {};
+let users = JSON.parse(localStorage.snow_users || "{}");
 
 function register(){
   const u = user.value.trim();
   const p = pass.value.trim();
-  if(!u||!p) return alert("Nhập đủ thông tin");
+
+  if(!u || !p) return alert("Nhập đầy đủ thông tin");
   if(users[u]) return alert("Tài khoản đã tồn tại");
 
-  users[u] = { password:p, wallet:0, orders:[] };
-  localStorage.setItem("snow_users",JSON.stringify(users));
+  users[u] = {
+    pass: p,
+    wallet: 0
+  };
+
+  localStorage.snow_users = JSON.stringify(users);
   alert("✅ Đăng ký thành công!");
-  location.href="login.html";
+  location.href = "login.html";
 }
 </script>
+
 </body>
 </html>
