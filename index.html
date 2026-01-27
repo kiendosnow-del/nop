@@ -21,14 +21,13 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <header>
 <h2>❄️ SNOW</h2>
 <div id="userBox" class="hide">
-👤 <b id="uname"></b> | 💰 <b id="wallet"></b>
+👤 <b id="uname"></b> | 💰 <b id="wallet">0đ</b>
 <button onclick="logout()">Đăng xuất</button>
 </div>
 </header>
 
 <div class="container">
 
-<!-- AUTH -->
 <div class="card" id="authBox">
 <input id="email" placeholder="Email">
 <input id="pass" type="password" placeholder="Mật khẩu">
@@ -37,7 +36,6 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="register()">Đăng ký</button>
 </div>
 
-<!-- USER ORDER -->
 <div class="card hide" id="orderBox">
 <select id="goi">
 <option value="0">-- Chọn gói cày thuê --</option>
@@ -52,8 +50,8 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <option value="20000">Mỏ Neo (20k)</option>
 <option value="15000">Tushita (15k)</option>
 <option value="30000">Yama (30k)</option>
-<option value="20000">Tam Kiếm (Lẻ) (20k)</option>
-<option value="35000">Tam Kiếm (Full) (35k)</option>
+<option value="20000">Tam Kiếm Lẻ (20k)</option>
+<option value="35000">Tam Kiếm Full (35k)</option>
 <option value="30000">CDK (30k)</option>
 </optgroup>
 
@@ -86,7 +84,6 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="buy()">🛒 MUA</button>
 </div>
 
-<!-- ADMIN -->
 <div class="card hide" id="adminBox">
 <h3>🛠 ADMIN PANEL</h3>
 <div id="orderList"></div>
@@ -94,136 +91,125 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 </div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-/* CONFIG */
 firebase.initializeApp({
   apiKey:"API_KEY",
   authDomain:"PROJECT.firebaseapp.com",
   projectId:"PROJECT_ID"
 });
+
 const auth=firebase.auth();
 const db=firebase.firestore();
 const WEBHOOK="DISCORD_WEBHOOK";
 
-/* PRICE */
-goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
+goi.onchange=()=>price.innerText=(+goi.value).toLocaleString()+"đ";
 
-/* AUTH STATE */
-auth.onAuthStateChanged(async u=>{
-  if(!u) return;
-  const snap=await db.collection("users").doc(u.uid).get();
-  const d=snap.data();
+auth.onAuthStateChanged(async user=>{
+  if(!user) return;
+  const ref=db.collection("users").doc(user.uid);
+  ref.onSnapshot(snap=>{
+    const d=snap.data();
+    authBox.classList.add("hide");
+    userBox.classList.remove("hide");
+    uname.innerText=d.username;
+    wallet.innerText=(d.wallet||0).toLocaleString()+"đ";
 
-  authBox.classList.add("hide");
-  userBox.classList.remove("hide");
-  uname.innerText=d.username;
-  wallet.innerText=(d.wallet||0).toLocaleString()+"đ";
-
-  if(d.role==="admin"){
-    adminBox.classList.remove("hide");
-    loadOrders();
-  }else{
-    orderBox.classList.remove("hide");
-  }
+    if(d.role==="admin"){
+      adminBox.classList.remove("hide");
+      orderBox.classList.add("hide");
+      loadOrders();
+    }else{
+      orderBox.classList.remove("hide");
+      adminBox.classList.add("hide");
+    }
+  });
 });
 
-/* REGISTER */
 function register(){
-auth.createUserWithEmailAndPassword(email.value,pass.value)
-.then(r=>{
-db.collection("users").doc(r.user.uid).set({
-  username:username.value,
-  wallet:0,
-  role:"user",
-  created:Date.now()
-});
-});
+  auth.createUserWithEmailAndPassword(email.value,pass.value)
+  .then(r=>{
+    db.collection("users").doc(r.user.uid).set({
+      username:username.value,
+      wallet:0,
+      role:"user",
+      created:Date.now()
+    });
+    alert("✅ Đăng ký thành công");
+  }).catch(e=>alert(e.message));
 }
 
-/* LOGIN */
 function login(){
-auth.signInWithEmailAndPassword(email.value,pass.value);
+  auth.signInWithEmailAndPassword(email.value,pass.value)
+  .catch(e=>alert("❌ Sai tài khoản hoặc mật khẩu"));
 }
+
 function logout(){auth.signOut();location.reload();}
 
-/* BUY */
 async function buy(){
-const p=Number(goi.value);
-if(!p) return alert("Chưa chọn gói");
+  const p=+goi.value;
+  if(!p) return alert("Chưa chọn gói");
 
-const u=auth.currentUser;
-const uRef=db.collection("users").doc(u.uid);
+  const u=auth.currentUser;
+  const uRef=db.collection("users").doc(u.uid);
 
-await db.runTransaction(async t=>{
-const us=await t.get(uRef);
-if(us.data().wallet<p) throw "Thiếu tiền";
-t.update(uRef,{wallet:us.data().wallet-p});
-t.set(db.collection("orders").doc(),{
-uid:u.uid,
-username:us.data().username,
-goi:goi.options[goi.selectedIndex].text,
-price:p,
-note:note.value,
-status:"pending",
-time:Date.now()
-});
-});
+  try{
+    await db.runTransaction(async t=>{
+      const us=await t.get(uRef);
+      if(us.data().wallet<p) throw "Thiếu tiền";
+      t.update(uRef,{wallet:us.data().wallet-p});
+      t.set(db.collection("orders").doc(),{
+        uid:u.uid,
+        username:us.data().username,
+        goi:goi.options[goi.selectedIndex].text,
+        price:p,
+        note:note.value,
+        status:"pending",
+        time:Date.now()
+      });
+    });
 
-fetch(WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-content:`📦 ĐƠN MỚI\n👤 ${uname.innerText}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ`
-})
-});
+    fetch(WEBHOOK,{method:"POST",headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({content:`📦 ĐƠN MỚI\n👤 ${uname.innerText}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ`})});
 
-alert("✅ Đặt đơn thành công");
+    alert("✅ Đã tạo đơn");
+  }catch(e){alert(e)}
 }
 
-/* ADMIN */
 function loadOrders(){
-db.collection("orders").orderBy("time","desc")
-.onSnapshot(s=>{
-orderList.innerHTML="";
-s.forEach(d=>{
-const o=d.data();
-orderList.innerHTML+=`
-<div class="order">
-👤 ${o.username}<br>
-📦 ${o.goi}<br>
-💰 ${o.price.toLocaleString()}đ<br>
-📌 <b>${o.status}</b><br>
-${o.status==="pending"?`
-<button onclick="done('${d.id}')">✅ Duyệt</button>
-<button onclick="refund('${d.id}','${o.uid}',${o.price})">↩ Hoàn</button>`:""}
-</div>`;
-});
-});
+  db.collection("orders").orderBy("time","desc")
+  .onSnapshot(s=>{
+    orderList.innerHTML="";
+    s.forEach(d=>{
+      const o=d.data();
+      orderList.innerHTML+=`
+      <div class="order">
+      👤 ${o.username}<br>
+      📦 ${o.goi}<br>
+      💰 ${o.price.toLocaleString()}đ<br>
+      📌 <b>${o.status}</b><br>
+      ${o.status==="pending"?`
+      <button onclick="done('${d.id}')">Duyệt</button>
+      <button onclick="refund('${d.id}','${o.uid}',${o.price})">Hoàn</button>`:""}
+      </div>`;
+    });
+  });
 }
 
 function done(id){
-db.collection("orders").doc(id).update({status:"done"});
+  db.collection("orders").doc(id).update({status:"done"});
 }
 function refund(id,uid,price){
-db.runTransaction(async t=>{
-const u=db.collection("users").doc(uid);
-const us=await t.get(u);
-t.update(u,{wallet:us.data().wallet+price});
-t.update(db.collection("orders").doc(id),{status:"refund"});
-});
+  db.runTransaction(async t=>{
+    const u=db.collection("users").doc(uid);
+    const us=await t.get(u);
+    t.update(u,{wallet:us.data().wallet+price});
+    t.update(db.collection("orders").doc(id),{status:"refund"});
+  });
 }
-
-/* TẠO ADMIN (CHẠY 1 LẦN RỒI XOÁ) */
-db.collection("users").doc("ADMIN_UID").set({
-username:"admin_snow",
-wallet:999999999,
-role:"admin"
-});
 </script>
 </body>
 </html>
