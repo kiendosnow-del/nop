@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
+<head>...</head>
+<body>
 <div class="card">
 💰 Ví SNOW: <b id="wallet">0đ</b>
 </div>
@@ -64,24 +66,24 @@ footer{
 
 <div class="card">
 <label>Chọn gói cày thuê</label>
-<select id="goi" onchange="tinhTien()">
-<option value="0">-- Chọn gói --</option>
+<select id="goi">
+  <option value="0">-- Chọn gói --</option>
 
-<optgroup label="LEVEL">
-<option value="20000">700 → 1500</option>
-<option value="20000">1500 → 2800</option>
-<option value="50000">0 → MAX</option>
-</optgroup>
+  <optgroup label="LEVEL">
+    <option value="20000">700 → 1500</option>
+    <option value="20000">1500 → 2800</option>
+    <option value="50000">0 → MAX</option>
+  </optgroup>
 
-<optgroup label="ITEM">
-<option value="20000">Mỏ Neo</option>
-<option value="15000">Tushita</option>
-<option value="30000">Yama</option>
-<option value="20000">Tam Kiếm (Lẻ)</option>
-<option value="35000">Tam Kiếm (Full)</option>
-<option value="30000">CDK</option>
-</optgroup>
-
+  <optgroup label="ITEM">
+    <option value="20000">Mỏ Neo</option>
+    <option value="15000">Tushita</option>
+    <option value="30000">Yama</option>
+    <option value="20000">Tam Kiếm (Lẻ)</option>
+    <option value="35000">Tam Kiếm (Full)</option>
+    <option value="30000">CDK</option>
+  </optgroup>
+</select>
 <optgroup label="RACE">
 <option value="20000">Cyborg</option>
 <option value="20000">Ghoul</option>
@@ -167,10 +169,10 @@ function guiDon(){
 </script>
 
 <script>
-const packageSelect = document.getElementById("package");
+const goi = document.getElementById("goi");
 const totalPrice = document.getElementById("totalPrice");
 
-packageSelect.addEventListener("change", function () {
+goi.addEventListener("change", function () {
   const price = Number(this.value);
   totalPrice.innerText = price.toLocaleString("vi-VN") + "đ";
 });
