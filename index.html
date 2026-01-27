@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SNOW | Cày Thuê</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{margin:0;font-family:Arial;background:#f4f8ff}
+header{background:linear-gradient(135deg,#1e90ff,#00c6ff);color:#fff;padding:16px;text-align:center}
+.container{max-width:520px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:14px}
+select,input,textarea,button{width:100%;padding:10px;margin:6px 0;border-radius:10px}
+button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
+.price{font-size:20px;font-weight:bold;color:#1e90ff}
+</style>
+</head>
+<body>
 
+<header>
+<h1>❄️ SNOW</h1>
+<p>Xin chào <b id="uname"></b> | Ví: <b id="wallet">0đ</b></p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<select id="goi">
+<option value="0">-- Chọn gói --</option>
+<optgroup label="LEVEL">
+<option value="20000">700 → 1500</option>
+<option value="20000">1500 → 2800</option>
+<option value="50000">0 → MAX</option>
+</optgroup>
+<optgroup label="ITEM">
+<option value="20000">Mỏ Neo</option>
+<option value="15000">Tushita</option>
+<option value="30000">Yama</option>
+<option value="35000">Tam Kiếm Full</option>
+<option value="30000">CDK</option>
+</optgroup>
+</select>
+<div class="price">Thành tiền: <span id="total">0đ</span></div>
+</div>
+
+<div class="card">
+<input id="rbx" placeholder="Username Roblox">
+<textarea id="note" placeholder="Ghi chú"></textarea>
+<button onclick="buy()">🛒 MUA NGAY</button>
+</div>
+
+</div>
+
+<script>
+const WEBHOOK="PUT_WEBHOOK_CỦA_BẠN_VÀO_ĐÂY";
+
+let users=JSON.parse(localStorage.getItem("snow_users"))||{};
+let user=localStorage.getItem("snow_user");
+if(!user) location.href="login.html";
+
+uname.innerText=user;
+wallet.innerText=users[user].wallet.toLocaleString()+"đ";
+
+goi.onchange=()=> total.innerText=Number(goi.value).toLocaleString()+"đ";
+
+function buy(){
+  const price=Number(goi.value);
+  if(price<=0) return alert("Chưa chọn gói");
+  if(users[user].wallet<price) return alert("Không đủ tiền");
+
+  users[user].wallet-=price;
+  users[user].orders.push({goi:goi.options[goi.selectedIndex].text,price});
+  localStorage.setItem("snow_users",JSON.stringify(users));
+  wallet.innerText=users[user].wallet.toLocaleString()+"đ";
+
+  fetch(WEBHOOK,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:"❄️ SNOW ORDER",
+      content:`👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${price.toLocaleString()}đ`
+    })
+  });
+
+  alert("✅ Đặt đơn thành công!");
+}
+</script>
+</body>
+</html>
