@@ -86,3 +86,63 @@ db.collection("users").doc("Identifier").set({
   role: "admin",
   created: Date.now()
 })
+function init(){
+loginBox.classList.add("hide");
+orderBox.classList.remove("hide");
+topupCard.classList.remove("hide");
+topupBank.classList.remove("hide");
+userBox.classList.remove("hide");
+
+uname.innerText = user;
+wallet.innerText = users[user].wallet.toLocaleString()+"đ";
+}
+function topupCard(){
+if(!cardCode.value || !cardSeri.value)
+return alert("Nhập đầy đủ thông tin thẻ");
+
+topups.push({
+user,
+type:"CARD",
+telco:cardType.value,
+amount:Number(cardAmount.value),
+code:cardCode.value,
+seri:cardSeri.value,
+status:"Chờ duyệt"
+});
+save();
+
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:
+`💳 NẠP CARD\n👤 ${user}\n📱 ${cardType.value}\n💰 ${cardAmount.value}đ\n🧾 ${cardCode.value}`
+})
+});
+
+alert("⏳ Đã gửi thẻ – chờ admin duyệt");
+}
+function topupBank(){
+let a = Number(bankAmount.value);
+if(a<=0) return alert("Nhập số tiền");
+
+topups.push({
+user,
+type:"BANK",
+amount:a,
+note:bankNote.value,
+status:"Chờ duyệt"
+});
+save();
+
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:
+`🏦 NẠP BANK\n👤 ${user}\n💰 ${a.toLocaleString()}đ\n📝 ${bankNote.value || "Không"}`
+})
+});
+
+alert("⏳ Đã báo chuyển khoản – chờ duyệt");
+}
