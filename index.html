@@ -121,14 +121,15 @@ a{color:var(--main);cursor:pointer}
 
 <script>
 /* 🔥 DÁN FIREBASE CONFIG Ở ĐÂY */
-firebase.initializeApp({
-  apiKey: "AIzaSy.....",
-  authDomain: "ten-project.firebaseapp.com",
-  projectId: "ten-project",
-  storageBucket: "ten-project.appspot.com",
-  messagingSenderId: "xxxx",
-  appId: "1:xxx:web:xxx"
-});
+firebaseConfig = {
+    apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
+    authDomain: "nott-9d55e.firebaseapp.com",
+    projectId: "nott-9d55e",
+    storageBucket: "nott-9d55e.firebasestorage.app",
+    messagingSenderId: "1013326079626",
+    appId: "1:1013326079626:web:2b24a7753d09f97187af73",
+    measurementId: "G-93C68KND1B"
+  };
 const auth = firebase.auth();
 const db = firebase.firestore();
 let currentUser = null;
