@@ -1,20 +1,35 @@
-function register(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+async function register(){
+  try{
+    const emailValue = document.getElementById("email").value;
+    const passValue  = document.getElementById("password").value;
 
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(res=>{
-      db.collection("users").doc(res.user.uid).set({
-        email: email,
-        role: "user",
-        createdAt: Date.now()
-      });
+    const res = await auth.createUserWithEmailAndPassword(
+      emailValue,
+      passValue
+    );
 
-      db.collection("wallets").doc(res.user.uid).set({
-        balance: 0
-      });
-    })
-    .catch(err=>{
-      alert(err.message);
+    await db.collection("users").doc(res.user.uid).set({
+      email: emailValue,
+      wallet: 0,
+      role: "user",
+      created: Date.now()
     });
+
+  }catch(e){
+    authMsg.innerText = e.message;
+  }
+}
+async function login(){
+  try{
+    const emailValue = document.getElementById("email").value;
+    const passValue  = document.getElementById("password").value;
+
+    await auth.signInWithEmailAndPassword(
+      emailValue,
+      passValue
+    );
+
+  }catch(e){
+    authMsg.innerText = e.message;
+  }
 }
