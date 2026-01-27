@@ -97,18 +97,19 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyD-wt7xZrb-pVmE6MVumtCElOGl2woeVP8",
-  authDomain: "snow-shop-d8c02.firebaseapp.com",
-  projectId: "snow-shop-d8c02",
-  storageBucket: "snow-shop-d8c02.firebasestorage.app",
-  messagingSenderId: "7891801203",
-  appId: "1:7891801203:web:1fb00ca9dc488824884606",
-  measurementId: "G-46RNVYKH8X"
+  apiKey: "API_KEY_CỦA_BẠN",
+  authDomain: "xxx.firebaseapp.com",
+  projectId: "xxx",
+  storageBucket: "xxx.appspot.com",
+  messagingSenderId: "xxx",
+  appId: "xxx"
 };
 
-const auth=firebase.auth();
-const db=firebase.firestore();
-const WEBHOOK="DISCORD_WEBHOOK";
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+const WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
 goi.onchange=()=>price.innerText=(+goi.value).toLocaleString()+"đ";
 
