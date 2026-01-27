@@ -63,3 +63,54 @@ fetch(WEBHOOK,{
     content:`📦 ĐƠN MỚI\n👤 ${username}\n📦 ${goi}\n💰 ${price.toLocaleString()}đ`
   })
 });
+const API = "https://api-snow.workers.dev";
+
+type.onchange = () => {
+  cardBox.classList.toggle("hide", type.value !== "card");
+  bankBox.classList.toggle("hide", type.value !== "bank");
+};
+
+auth.onAuthStateChanged(u=>{
+  if(!u) return;
+  const code = "SNOW"+u.uid.slice(0,6);
+  napCode.innerText = code;
+  qr.src =
+`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=STK|BANK|TEN|${code}`;
+});
+
+function topup(){
+  const u = auth.currentUser;
+  if(type.value === "card"){
+    fetch(API+"/card",{
+      method:"POST",
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        uid:u.uid,
+        telco:telco.value,
+        amount:amount.value,
+        serial:serial.value,
+        code:code.value,
+        request_id:u.uid
+      })
+    }).then(()=>alert("⏳ Đang xử lý thẻ"));
+  }else{
+    alert("💡 Chuyển khoản đúng nội dung, hệ thống sẽ tự cộng tiền");
+  }
+}
+db.collection("transactions")
+.where("uid","==",auth.currentUser.uid)
+.orderBy("time","desc")
+.onSnapshot(s=>{
+  history.innerHTML="";
+  s.forEach(d=>{
+    const t=d.data();
+    history.innerHTML+=`
+      <div class="order">
+        ${t.type} | ${t.amount.toLocaleString()}đ
+      </div>`;
+  });
+});
+match /users/{id} {
+  allow read: if request.auth.uid == id;
+  allow update: if false; // chỉ backend
+}
