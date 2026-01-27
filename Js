@@ -13,3 +13,79 @@ const firebaseConfig = {
   appId: "1:7891801203:web:958c5e37bb65dbee884606",
   measurementId: "G-M7CJZ8588Q"
 };
+function register(){
+  const email = regEmail.value;
+  const pass = regPass.value;
+  const username = regName.value;
+
+  auth.createUserWithEmailAndPassword(email, pass)
+  .then(res=>{
+    return db.collection("users").doc(res.user.uid).set({
+      username,
+      wallet: 0,
+      created: new Date()
+    });
+  })
+  .then(()=> alert("✅ Đăng ký thành công!"));
+}
+function login(){
+  auth.signInWithEmailAndPassword(loginEmail.value, loginPass.value)
+  .then(()=> alert("✅ Đăng nhập thành công"));
+}
+auth.onAuthStateChanged(user=>{
+  if(!user) return;
+
+  db.collection("users").doc(user.uid).onSnapshot(doc=>{
+    document.getElementById("wallet").innerText =
+      doc.data().wallet.toLocaleString()+"đ";
+  });
+});
+function guiDon(){
+  const price = Number(goi.value);
+  const note = textarea.value;
+
+  auth.onAuthStateChanged(user=>{
+    if(!user) return alert("Chưa đăng nhập!");
+
+    const userRef = db.collection("users").doc(user.uid);
+
+    db.runTransaction(async t=>{
+      const doc = await t.get(userRef);
+      if(doc.data().wallet < price)
+        throw "Không đủ tiền";
+
+      t.update(userRef,{ wallet: doc.data().wallet - price });
+
+      db.collection("orders").add({
+        uid: user.uid,
+        username: doc.data().username,
+        goi: goi.options[goi.selectedIndex].text,
+        price,
+        note,
+        status:"Chờ duyệt",
+        time: new Date()
+      });
+    })
+    .then(()=> alert("✅ Mua thành công"))
+    .catch(e=>alert(e));
+  });
+}
+db.collection("orders").onSnapshot(snap=>{
+  snap.forEach(doc=>{
+    const o = doc.data();
+    adminBox.innerHTML += `
+      <div>
+        👤 ${o.username}<br>
+        📦 ${o.goi}<br>
+        💰 ${o.price}đ<br>
+        📌 ${o.status}<br>
+        <button onclick="duyet('${doc.id}')">✔ Duyệt</button>
+      </div>`;
+  });
+});
+
+function duyet(id){
+  db.collection("orders").doc(id).update({
+    status:"Đã duyệt"
+  });
+}
