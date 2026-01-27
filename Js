@@ -146,3 +146,22 @@ content:
 
 alert("⏳ Đã báo chuyển khoản – chờ duyệt");
 }
+function login(){
+  const u = lu.value;
+  const p = lp.value;
+
+  // 🔐 ADMIN LOGIN
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    localStorage.setItem("snow_admin","true");
+    location.href = "admin.html"; // chuyển sang panel admin
+    return;
+  }
+
+  // 👤 USER LOGIN
+  if(!users[u] || users[u].pass !== p)
+    return alert("Sai tài khoản hoặc mật khẩu");
+
+  user = u;
+  localStorage.snow_user = user;
+  init();
+}
