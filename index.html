@@ -140,3 +140,14 @@ function guiDon(){
 
 </body>
 </html>
+<script>
+let wallet = localStorage.getItem("snow_wallet") || 0;
+function showWallet(){
+  document.getElementById("wallet").innerText =
+    Number(wallet).toLocaleString()+"đ";
+}
+showWallet();
+</script>
+<div class="card">
+💰 Ví SNOW: <b id="wallet">0đ</b>
+</div>
