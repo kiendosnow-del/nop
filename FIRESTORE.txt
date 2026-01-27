@@ -1,3 +1,23 @@
 users/{uid}
 orders/{orderId}
 topups/{topupId}
+users/{uid}
+  - username
+  - wallet
+  - role
+
+topups/{id}
+  - uid
+  - username
+  - type: card | momo | bank
+  - amount
+  - status: pending | success | fail
+  - content
+  - time
+
+transactions/{id}
+  - uid
+  - type: topup | order | refund
+  - amount
+  - desc
+  - time
