@@ -89,3 +89,18 @@ function duyet(id){
     status:"Đã duyệt"
   });
 }
+function capTien(){
+  const uid = uidUser.value;
+  const amount = Number(money.value);
+
+  const ref = firebase.firestore().collection("users").doc(uid);
+
+  firebase.firestore().runTransaction(async t=>{
+    const doc = await t.get(ref);
+    t.update(ref,{
+      wallet: doc.data().wallet + amount
+    });
+  })
+  .then(()=>alert("✅ Đã cấp tiền"))
+  .catch(()=>alert("❌ Lỗi"));
+}
