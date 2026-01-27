@@ -1,18 +1,28 @@
-<script>
-// 📜 LOAD ĐƠN + NÚT DUYỆT / HOÀN
+auth.onAuthStateChanged(async user=>{
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+
+  const snap = await db.collection("users").doc(user.uid).get();
+  if(!snap.exists || snap.data().role !== "admin"){
+    alert("❌ Không có quyền admin");
+    await auth.signOut();
+    location.href="login.html";
+  }
+});
 db.collection("orders")
 .orderBy("time","desc")
 .onSnapshot(snap=>{
   orderList.innerHTML="";
   snap.forEach(doc=>{
     const o = doc.data();
-
     orderList.innerHTML += `
       <div class="order">
         👤 <b>${o.username}</b><br>
         📦 ${o.goi}<br>
         💰 ${o.price.toLocaleString()}đ<br>
-        📌 Trạng thái: <b>${o.status}</b><br>
+        📌 <b>${o.status}</b><br>
 
         ${o.status==="pending" ? `
           <button onclick="duyetDon('${doc.id}')">✅ Duyệt</button>
@@ -23,145 +33,33 @@ db.collection("orders")
     `;
   });
 });
-</script>
-
-<script>
-function duyetDon(orderId){
-  db.collection("orders").doc(orderId).update({
+function duyetDon(id){
+  db.collection("orders").doc(id).update({
     status:"done"
-  }).then(()=>{
-    alert("✅ Đã duyệt đơn");
-  });
+  }).then(()=>alert("✅ Đã duyệt đơn"));
 }
-
 function hoanTien(orderId, uid, price){
-  const userRef = db.collection("users").doc(uid);
-  const orderRef = db.collection("orders").doc(orderId);
+  const uRef = db.collection("users").doc(uid);
+  const oRef = db.collection("orders").doc(orderId);
 
   db.runTransaction(async t=>{
-    const u = await t.get(userRef);
-    t.update(userRef,{
-      wallet: u.data().wallet + price
+    const uSnap = await t.get(uRef);
+    t.update(uRef,{
+      wallet: (uSnap.data().wallet || 0) + price
     });
-    t.update(orderRef,{
-      status:"refund"
-    });
-  }).then(()=>{
-    alert("↩ Đã hoàn tiền");
-  });
+    t.update(oRef,{ status:"refund" });
+  }).then(()=>alert("↩ Đã hoàn tiền"));
 }
-</script>
-auth.onAuthStateChanged(async user=>{
-  if(!user){
-    location.href="login.html";
-    return;
-  }
-
-  const doc = await db.collection("users").doc(user.uid).get();
-  if(!doc.exists || doc.data().role !== "admin"){
-    alert("❌ Không có quyền admin");
-    auth.signOut();
-    location.href="login.html";
-  }
-});
-db.collection("users").doc("UID_CUA_BAN").update({
-  role:"admin",
-  wallet:999999999
-})
-auth.onAuthStateChanged(async user=>{
-  if(!user){
-    location.href="login.html";
-    return;
-  }
-
-  const doc = await db.collection("users").doc(user.uid).get();
-  if(!doc.exists || doc.data().role !== "admin"){
-    auth.signOut();
-    location.href="login.html";
-  }
-});
-db.collection("users").doc("Identifier").set({
+db.collection("users").doc("UID_ADMIN").set({
   username: "admin_snow",
   wallet: 999999999,
   role: "admin",
   created: Date.now()
-})
-function init(){
-loginBox.classList.add("hide");
-orderBox.classList.remove("hide");
-topupCard.classList.remove("hide");
-topupBank.classList.remove("hide");
-userBox.classList.remove("hide");
-
-uname.innerText = user;
-wallet.innerText = users[user].wallet.toLocaleString()+"đ";
-}
-function topupCard(){
-if(!cardCode.value || !cardSeri.value)
-return alert("Nhập đầy đủ thông tin thẻ");
-
-topups.push({
-user,
-type:"CARD",
-telco:cardType.value,
-amount:Number(cardAmount.value),
-code:cardCode.value,
-seri:cardSeri.value,
-status:"Chờ duyệt"
 });
-save();
-
 fetch(WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-content:
-`💳 NẠP CARD\n👤 ${user}\n📱 ${cardType.value}\n💰 ${cardAmount.value}đ\n🧾 ${cardCode.value}`
-})
+  method:"POST",
+  headers:{ "Content-Type":"application/json" },
+  body:JSON.stringify({
+    content:`📦 ĐƠN MỚI\n👤 ${username}\n📦 ${goi}\n💰 ${price.toLocaleString()}đ`
+  })
 });
-
-alert("⏳ Đã gửi thẻ – chờ admin duyệt");
-}
-function topupBank(){
-let a = Number(bankAmount.value);
-if(a<=0) return alert("Nhập số tiền");
-
-topups.push({
-user,
-type:"BANK",
-amount:a,
-note:bankNote.value,
-status:"Chờ duyệt"
-});
-save();
-
-fetch(WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-content:
-`🏦 NẠP BANK\n👤 ${user}\n💰 ${a.toLocaleString()}đ\n📝 ${bankNote.value || "Không"}`
-})
-});
-
-alert("⏳ Đã báo chuyển khoản – chờ duyệt");
-}
-function login(){
-  const u = lu.value;
-  const p = lp.value;
-
-  // 🔐 ADMIN LOGIN
-  if(u === ADMIN_USER && p === ADMIN_PASS){
-    localStorage.setItem("snow_admin","true");
-    location.href = "admin.html"; // chuyển sang panel admin
-    return;
-  }
-
-  // 👤 USER LOGIN
-  if(!users[u] || users[u].pass !== p)
-    return alert("Sai tài khoản hoặc mật khẩu");
-
-  user = u;
-  localStorage.snow_user = user;
-  init();
-}
