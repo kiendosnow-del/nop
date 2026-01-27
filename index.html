@@ -3,261 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNOW | Roblox Service</title>
-
+<title>SNOW | Cày Thuê Blox Fruits</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#1e90ff;
+  --bg:#f4f8ff;
+}
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#0b1220;
-    color:#fff;
+  margin:0;font-family:Arial;background:var(--bg);
 }
-
-/* HEADER */
 header{
-    background:#0f1b34;
-    padding:15px 25px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-bottom:2px solid #1e90ff;
+  background:linear-gradient(135deg,#1e90ff,#00c6ff);
+  color:white;padding:16px;text-align:center;
 }
-.logo{
-    font-size:24px;
-    font-weight:bold;
-    color:#1e90ff;
-}
-nav a{
-    color:#fff;
-    text-decoration:none;
-    margin-left:18px;
-    font-size:15px;
-}
-nav a:hover{color:#1e90ff}
-
-/* HERO */
-.hero{
-    padding:80px 20px;
-    text-align:center;
-    background:linear-gradient(135deg,#1e90ff,#003c8f);
-}
-.hero h1{
-    font-size:40px;
-    margin-bottom:10px;
-}
-.hero p{
-    font-size:18px;
-    opacity:.95;
-}
-.hero .btn{
-    display:inline-block;
-    margin-top:25px;
-    padding:14px 32px;
-    background:#0b1220;
-    color:#fff;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:bold;
-}
-.hero .btn:hover{background:#162447}
-
-/* SECTION */
-section{
-    padding:55px 20px;
-    max-width:1100px;
-    margin:auto;
-}
-section h2{
-    text-align:center;
-    margin-bottom:35px;
-    color:#1e90ff;
-}
-
-/* SERVICES */
-.services{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:22px;
+header h1{margin:0;font-size:26px;}
+.container{
+  padding:16px;max-width:520px;margin:auto;
 }
 .card{
-    background:#0f1b34;
-    border-radius:12px;
-    padding:24px;
-    text-align:center;
-    border:1px solid #1e90ff33;
+  background:white;border-radius:14px;
+  padding:14px;margin-bottom:14px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
 }
-.card h3{
-    margin-bottom:10px;
-    color:#6cb6ff;
+label{font-weight:bold;font-size:14px;}
+input,select,textarea,button{
+  width:100%;padding:10px;margin-top:6px;
+  margin-bottom:12px;border-radius:10px;
+  border:1px solid #ccc;font-size:14px;
 }
-.card p{
-    font-size:14px;
-    opacity:.9;
+button{
+  background:var(--blue);color:white;
+  border:none;font-weight:bold;font-size:16px;
 }
-
-/* WHY */
-.why{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:22px;
+.price{
+  font-size:20px;font-weight:bold;color:var(--blue);
 }
-.why div{
-    background:#0f1b34;
-    padding:22px;
-    border-radius:12px;
-    border-left:4px solid #1e90ff;
+.qr{
+  text-align:center;
 }
-
-/* DISCORD */
-.discord{
-    text-align:center;
-    background:#0f1b34;
-    border-radius:16px;
-    padding:40px 20px;
+.qr img{
+  max-width:220px;border-radius:12px;
 }
-.discord a{
-    display:inline-block;
-    margin-top:20px;
-    padding:14px 34px;
-    background:#1e90ff;
-    color:#fff;
-    font-weight:bold;
-    text-decoration:none;
-    border-radius:30px;
+footer{
+  text-align:center;font-size:13px;
+  color:#555;margin:20px;
 }
-.discord a:hover{background:#1473cc}
-
-/* FOOTER */
-<script>
-function sendOrder(e){
-    e.preventDefault();
-    const msg = 
-`🧊 ĐƠN MỚI SNOW
-👤 Roblox: ${name.value}
-🛒 Dịch vụ: ${service.value}
-📞 Liên hệ: ${contact.value}
-📝 Ghi chú: ${note.value}`;
-
-    window.open(
-        "https://discord.com/channels/@me?text=" + encodeURIComponent(msg)
-    );
-}
-</script>
+</style>
+</head>
 <body>
 
 <header>
-    <div class="logo">SNOW</div>
-    <nav>
-        <a href="#dichvu">Dịch vụ</a>
-        <a href="#why">Lý do chọn</a>
-        <a href="#discord">Discord</a>
-    </nav>
+  <h1>❄️ SNOW</h1>
+  <p>Dịch Vụ Cày Thuê Blox Fruits Uy Tín</p>
 </header>
 
-<section class="hero">
-    <h1>SNOW ROBLOX SERVICE</h1>
-    <p>Dịch vụ Roblox an toàn – uy tín – hỗ trợ tận tâm</p>
-    <a href="#dichvu" class="btn">KHÁM PHÁ DỊCH VỤ</a>
-</section>
+<div class="container">
 
-<section id="dichvu">
-    <h2>BẢNG GIÁ CÀY THUÊ</h2>
+<div class="card">
+<label>Chọn gói cày thuê</label>
+<select id="goi" onchange="tinhTien()">
+<option value="0">-- Chọn gói --</option>
 
-    <div class="services price-table">
+<optgroup label="LEVEL">
+<option value="20000">700 → 1500</option>
+<option value="20000">1500 → 2800</option>
+<option value="50000">0 → MAX</option>
+</optgroup>
 
-        <div class="card">
-            <h3>LEVEL</h3>
-            <p>
-                700 : 20k<br>
-                700 – 1500 : 20k<br>
-                1500 – 2800 : 20k<br>
-                0 – MAX : 50k
-            </p>
-        </div>
+<optgroup label="ITEM">
+<option value="20000">Mỏ Neo</option>
+<option value="15000">Tushita</option>
+<option value="30000">Yama</option>
+<option value="20000">Tam Kiếm (Lẻ)</option>
+<option value="35000">Tam Kiếm (Full)</option>
+<option value="30000">CDK</option>
+</optgroup>
 
-        <div class="card">
-            <h3>ITEM</h3>
-            <p>
-                Mỏ Neo : 20k<br>
-                Tushita / Yama : 15k / 30k<br>
-                Tam Kiếm : Lẻ 20k / Full 35k<br>
-                CDK : 30k
-            </p>
-        </div>
+<optgroup label="RACE">
+<option value="20000">Cyborg</option>
+<option value="20000">Ghoul</option>
+</optgroup>
 
-        <div class="card">
-            <h3>UP V4</h3>
-            <p>
-                Full Gear : 30k (Bao F)<br>
-                Gạt Cần : 20k<br>
-                Mảnh Gương : 20k<br>
-                1 Gear : 5k
-            </p>
-        </div>
+<optgroup label="MELEE">
+<option value="20000">Godhuman</option>
+<option value="15000">Melee V2</option>
+</optgroup>
 
-        <div class="card">
-            <h3>RACE</h3>
-            <p>
-                Cyborg : 20k<br>
-                Ghoul : 20k
-            </p>
-        </div>
+<optgroup label="BELI / FRAG">
+<option value="1000">500k Beli</option>
+<option value="1000">1k Frag</option>
+</optgroup>
 
-        <div class="card">
-            <h3>MELEE</h3>
-            <p>
-                Godhuman : 20k<br>
-                Melee V2 : 15k / 1
-            </p>
-        </div>
+<optgroup label="MASTERY">
+<option value="45000">600 Mas</option>
+<option value="50000">600 Mas Gun</option>
+</optgroup>
+</select>
 
-        <div class="card">
-            <h3>BELI / FRAG</h3>
-            <p>
-                500K Beli : 1k<br>
-                1K Frag : 1k
-            </p>
-        </div>
+<div class="price">Thành tiền: <span id="tien">0</span>đ</div>
+</div>
 
-        <div class="card">
-            <h3>MASTERY</h3>
-            <p>
-                600 Mas : 45k<br>
-                600 Mas Gun : 50k
-            </p>
-        </div>
+<div class="card">
+<label>Username Roblox</label>
+<input placeholder="Ví dụ: SnowBlox123">
 
-    </div>
+<label>Ghi chú thêm</label>
+<textarea rows="3" placeholder="Yêu cầu đặc biệt..."></textarea>
 
-    <div class="card" style="margin-top:30px;text-align:left">
-        <p>
-            ❄️ Không login acc khi đang cày<br>
-            ❄️ Thiếu gì inbox mình báo giá<br>
-            ❄️ Thank you!!!
-        </p>
-    </div>
-</section>
+<button onclick="guiDon()">🛒 MUA NGAY</button>
+</div>
 
-<section id="why">
-    <h2>VÌ SAO CHỌN SNOW?</h2>
-    <div class="why">
-        <div>❄️ Không hack – không tool – an toàn tài khoản</div>
-        <div>⚡ Làm nhanh – đúng hẹn – rõ tiến độ</div>
-        <div>🔐 Bảo mật tuyệt đối thông tin</div>
-        <div>💙 Hỗ trợ thân thiện 24/7</div>
-    </div>
-</section>
+<div class="card qr">
+<h3>💳 Thanh Toán</h3>
+<p>Quét QR Momo / Bank</p>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SNOW-MOMO">
+<p><b>SNOW - ACB</b><br>Nội dung: SNOW + Username</p>
+</div>
 
-<section id="discord" class="discord">
-    <h2>DISCORD SNOW LIVE</h2>
-    <p>Chat – đặt đơn – hỗ trợ trực tiếp</p>
+</div>
 
-    <iframe 
-        src="https://discord.gg/Fkvk6HbBz"
-        width="100%"
-        height="420"
-        allowtransparency="true"
-        frameborder="0"
-        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
-    </iframe>
-</section>
+<footer>
+💬 Discord hỗ trợ:  
+<a href="https://discord.gg/z8fEcuaB">discord.gg/z8fEcuaB</a>
+</footer>
+
+<script>
+function tinhTien(){
+  let v=document.getElementById("goi").value;
+  document.getElementById("tien").innerText=
+    Number(v).toLocaleString();
+}
+function guiDon(){
+  alert("Đơn đã gửi về Discord Admin ❄️");
+}
+</script>
+
+</body>
+</html>
