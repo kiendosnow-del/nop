@@ -17,10 +17,17 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </head>
 
 <body>
+
+<!-- 🔊 ÂM THANH CLICK -->
+<audio id="clickSound">
+  <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
+</audio>
+
 <header>
 <h2>❄️ SNOW</h2>
 <div id="userBox" class="hide">
-👤 <b id="uname"></b> | 💰 <b id="wallet">0đ</b>
+👤 <b id="uname"></b> |
+💰 <b id="wallet">0đ</b>
 <button onclick="logout()">Đăng xuất</button>
 </div>
 </header>
@@ -62,24 +69,9 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <option value="5000">1 Gear (5k)</option>
 </optgroup>
 
-<optgroup label="🧬 RACE">
-<option value="20000">Cyborg (20k)</option>
-<option value="20000">Ghoul (20k)</option>
-</optgroup>
-
 <optgroup label="🥋 MELEE">
 <option value="20000">Godhuman (20k)</option>
 <option value="15000">Melee V2 (15k)</option>
-</optgroup>
-
-<optgroup label="💰 BELI / FRAG">
-<option value="1000">500K Beli (1k)</option>
-<option value="1000">1K Fragment (1k)</option>
-</optgroup>
-
-<optgroup label="📈 MASTERY">
-<option value="45000">600 Mas (45k)</option>
-<option value="50000">600 Mas Gun (50k)</option>
 </optgroup>
 </select>
 
@@ -115,7 +107,11 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </div>
 
 <script>
-const WEBHOOK="PUT_WEBHOOK_DISCORD";
+/* 🔊 CLICK SOUND */
+document.addEventListener("click",()=>{
+  const s=document.getElementById("clickSound");
+  s.currentTime=0; s.play();
+},{once:false});
 
 /* DATA */
 let users = JSON.parse(localStorage.snow_users||"{}");
@@ -136,16 +132,17 @@ localStorage.snow_topups=JSON.stringify(topups);
 /* AUTH */
 function login(){
 if(!users[lu.value]||users[lu.value].pass!==lp.value)
-return alert("Sai tài khoản");
+return alert("Sai tài khoản hoặc mật khẩu");
 user=lu.value; localStorage.snow_user=user; init();
 }
 function register(){
-if(users[lu.value]) return alert("Đã tồn tại");
+if(users[lu.value]) return alert("Tài khoản đã tồn tại");
 users[lu.value]={pass:lp.value,wallet:0};
 save(); alert("Đăng ký thành công");
 }
 function logout(){
-localStorage.removeItem("snow_user"); location.reload();
+localStorage.removeItem("snow_user");
+location.reload();
 }
 
 /* INIT */
@@ -164,23 +161,37 @@ function buy(){
 let p=Number(goi.value);
 if(p<=0) return alert("Chưa chọn gói");
 if(users[user].wallet<p) return alert("Không đủ tiền");
+
 users[user].wallet-=p;
-orders.push({user,goi:goi.options[goi.selectedIndex].text,price:p,status:"Đang làm"});
+orders.push({
+user,
+goi:goi.options[goi.selectedIndex].text,
+price:p,
+status:"Đang làm"
+});
 save(); init();
-fetch(WEBHOOK,{method:"POST",headers:{'Content-Type':'application/json'},
-body:JSON.stringify({content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p}đ`})});
 alert("✅ Đặt đơn thành công");
 }
 
 /* TOPUP */
 function topupCard(){
-topups.push({user,type:"CARD",card:cardType.value,amount:Number(cardAmount.value),
-code:cardCode.value,seri:cardSeri.value,status:"Chờ duyệt"});
-save(); alert("⏳ Đã gửi thẻ");
+topups.push({
+user,type:"CARD",
+card:cardType.value,
+amount:Number(cardAmount.value),
+code:cardCode.value,
+seri:cardSeri.value,
+status:"Chờ duyệt"
+});
+save(); alert("⏳ Đã gửi thẻ – chờ admin duyệt");
 }
 function topupBank(){
-topups.push({user,type:"BANK",amount:Number(bankAmount.value),
-note:bankNote.value,status:"Chờ duyệt"});
+topups.push({
+user,type:"BANK",
+amount:Number(bankAmount.value),
+note:bankNote.value,
+status:"Chờ duyệt"
+});
 save(); alert("⏳ Đã báo chuyển khoản");
 }
 
