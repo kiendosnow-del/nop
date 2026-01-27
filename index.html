@@ -140,21 +140,21 @@ footer{
 const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
 function guiDon(){
-  const goi = document.getElementById("goi");
-  const gia = document.getElementById("tien").innerText;
+function guiDon(){
+  const goiSelect = document.getElementById("goi");
+  const gia = document.getElementById("totalPrice").innerText;
 
   const data = {
     username: "❄️ SNOW ORDER BOT",
     embeds: [{
       title: "🧊 ĐƠN MỚI SNOW",
-      color: 5814783,
+      color: 3447003,
       fields: [
-        { name: "📦 Gói", value: goi.options[goi.selectedIndex].text },
-        { name: "💰 Giá", value: gia + "đ" },
+        { name: "📦 Gói", value: goiSelect.options[goiSelect.selectedIndex].text },
+        { name: "💰 Giá", value: gia },
         { name: "👤 Roblox", value: document.querySelector("input").value || "Không có" },
         { name: "📝 Ghi chú", value: document.querySelector("textarea").value || "Không có" }
       ],
-      footer:{ text:"SNOW Roblox Service" },
       timestamp: new Date()
     }]
   };
