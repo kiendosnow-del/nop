@@ -120,6 +120,151 @@ a{color:var(--main);cursor:pointer}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
+/* 🔥 FIREBASE CONFIG – CHỈ 1 LẦN */
+const firebaseConfig = {
+  apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
+  authDomain: "nott-9d55e.firebaseapp.com",
+  projectId: "nott-9d55e",
+  storageBucket: "nott-9d55e.appspot.com",
+  messagingSenderId: "1013326079626",
+  appId: "1:1013326079626:web:2b24a7753d09f97187af73"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null;
+let isAdmin = false;
+
+/* UI */
+function showRegister(){
+  loginBox.classList.add("hidden");
+  registerBox.classList.remove("hidden");
+}
+function showLogin(){
+  registerBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+}
+
+/* REGISTER */
+function register(){
+  auth.createUserWithEmailAndPassword(regEmail.value, regPass.value)
+    .then(res=>{
+      return Promise.all([
+        db.doc("users/"+res.user.uid).set({
+          email: res.user.email,
+          role: "user",
+          created_at: Date.now()
+        }),
+        db.doc("wallets/"+res.user.uid).set({ balance: 0 })
+      ]);
+    })
+    .catch(e=>alert(e.message));
+}
+
+/* LOGIN */
+function login(){
+  auth.signInWithEmailAndPassword(loginEmail.value, loginPass.value)
+    .catch(e=>alert(e.message));
+}
+
+function logout(){
+  auth.signOut();
+}
+
+/* AUTH STATE */
+auth.onAuthStateChanged(async user=>{
+  if(!user){
+    loginBox.classList.remove("hidden");
+    registerBox.classList.add("hidden");
+    appBox.classList.add("hidden");
+    adminBox.classList.add("hidden");
+    return;
+  }
+
+  currentUser = user;
+  userEmail.innerText = user.email;
+
+  loginBox.classList.add("hidden");
+  registerBox.classList.add("hidden");
+  appBox.classList.remove("hidden");
+
+  // Wallet realtime
+  db.doc("wallets/"+user.uid).onSnapshot(s=>{
+    wallet.innerText = s.exists ? s.data().balance : 0;
+  });
+
+  // Orders realtime
+  db.collection("orders").where("user","==",user.uid)
+    .onSnapshot(s=>{
+      orderList.innerHTML="";
+      s.forEach(d=>{
+        const o=d.data();
+        orderList.innerHTML+=`<tr>
+          <td>${o.service}</td>
+          <td>${o.price}</td>
+          <td>${o.status}</td>
+        </tr>`;
+      });
+    });
+
+  // Role check
+  const u = await db.doc("users/"+user.uid).get();
+  if(u.exists && u.data().role==="admin"){
+    isAdmin = true;
+    adminBox.classList.remove("hidden");
+  } else {
+    isAdmin = false;
+    adminBox.classList.add("hidden");
+  }
+});
+
+/* ORDER */
+function createOrder(){
+  const price = Number(service.value);
+  db.runTransaction(async tx=>{
+    const wRef = db.doc("wallets/"+currentUser.uid);
+    const w = await tx.get(wRef);
+    if(!w.exists || w.data().balance < price) throw "NO_MONEY";
+
+    tx.update(wRef,{ balance: w.data().balance - price });
+    tx.set(db.collection("orders").doc(),{
+      user: currentUser.uid,
+      service: service.options[service.selectedIndex].text,
+      price,
+      status:"🔵 Đang cày",
+      time: Date.now()
+    });
+  }).catch(()=>openBank());
+}
+
+/* BANK */
+function openBank(){
+  memo.innerText="BF_"+Math.random().toString(36).substr(2,8).toUpperCase();
+  bankModal.style.display="flex";
+}
+function closeBank(){ bankModal.style.display="none"; }
+function copyMemo(){ navigator.clipboard.writeText(memo.innerText); }
+
+/* ADMIN */
+function adminAdjust(){
+  if(!isAdmin) return alert("NO PERMISSION");
+  db.runTransaction(async tx=>{
+    const r=db.doc("wallets/"+a_uid.value);
+    const s=await tx.get(r);
+    if(!s.exists) throw "NO WALLET";
+    tx.update(r,{balance:s.data().balance+Number(a_money.value)});
+  }).then(()=>alert("OK"));
+}
+
+/* ANTI INSPECT */
+document.onkeydown=e=>{
+  if(e.keyCode==123 || (e.ctrlKey&&e.shiftKey&&['I','C','J'].includes(e.key)))
+    return false;
+};
+</script>
   const firebaseConfig = {
     apiKey: "DÁN_API_KEY_CỦA_BẠN_VÀO_ĐÂY",
     authDomain: "xxx.firebaseapp.com",
