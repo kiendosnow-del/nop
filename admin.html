@@ -3,173 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <title>SNOW | Admin Panel</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{margin:0;font-family:Arial;background:#f4f8ff}
-header{background:#111;color:#fff;padding:14px;text-align:center}
-.container{max-width:900px;margin:auto;padding:14px}
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:14px}
-table{width:100%;border-collapse:collapse}
-th,td{padding:8px;border-bottom:1px solid #ddd;text-align:center}
-button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer}
-.ok{background:#2ecc71;color:#fff}
-.no{background:#e74c3c;color:#fff}
-.logout{background:#555;color:#fff}
+body{font-family:Arial;background:#f4f8ff;padding:20px}
+.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:14px}
+button{padding:6px 12px;border:none;border-radius:8px;background:#1e90ff;color:#fff}
 </style>
 </head>
-
 <body>
 
-<header>
-<h2>❄️ SNOW ADMIN PANEL</h2>
-</header>
-
-<div class="container">
-
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-<h3>🔐 Đăng nhập Admin</h3>
-<input id="u" placeholder="Tài khoản">
-<input id="p" type="password" placeholder="Mật khẩu">
-<button onclick="login()">Đăng nhập</button>
-</div>
-
-<!-- PANEL -->
-<div id="panel" style="display:none">
+<h2>🛠 ADMIN PANEL</h2>
+<button onclick="logout()">Đăng xuất</button>
 
 <div class="card">
-<button class="logout" onclick="logout()">Đăng xuất</button>
+<h3>💳 NẠP TIỀN CHỜ DUYỆT</h3>
+<div id="topupList"></div>
 </div>
 
-<!-- NẠP TIỀN -->
 <div class="card">
-<h3>💳 DUYỆT NẠP TIỀN</h3>
-<table>
-<thead>
-<tr>
-<th>User</th><th>Loại</th><th>Số tiền</th><th>Trạng thái</th><th>Hành động</th>
-</tr>
-</thead>
-<tbody id="topupList"></tbody>
-</table>
-</div>
-
-<!-- ĐƠN -->
-<div class="card">
-<h3>📦 QUẢN LÝ ĐƠN</h3>
-<table>
-<thead>
-<tr>
-<th>User</th><th>Gói</th><th>Giá</th><th>Trạng thái</th><th>Xử lý</th>
-</tr>
-</thead>
-<tbody id="orderList"></tbody>
-</table>
-</div>
-
-</div>
+<h3>🧊 ĐƠN CÀY THUÊ</h3>
+<div id="orderList"></div>
 </div>
 
 <script>
-/* ===== DATA ===== */
-let users = JSON.parse(localStorage.snow_users || "{}");
-let orders = JSON.parse(localStorage.snow_orders || "[]");
-let topups = JSON.parse(localStorage.snow_topups || "[]");
+if(!localStorage.snow_admin) location.href="index.html";
 
-const ADMIN_USER = "admin_snow";
-const ADMIN_PASS = "Snow_oner";
+let users = JSON.parse(localStorage.snow_users||"{}");
+let topups = JSON.parse(localStorage.snow_topups||"[]");
+let orders = JSON.parse(localStorage.snow_orders||"[]");
 
-/* ===== LOGIN ===== */
-function login(){
-if(u.value!==ADMIN_USER||p.value!==ADMIN_PASS)
-return alert("Sai admin!");
-loginBox.style.display="none";
-panel.style.display="block";
-render();
-}
-
-function logout(){
-location.reload();
-}
-
-/* ===== SAVE ===== */
 function save(){
-localStorage.snow_users = JSON.stringify(users);
-localStorage.snow_orders = JSON.stringify(orders);
-localStorage.snow_topups = JSON.stringify(topups);
+localStorage.snow_users=JSON.stringify(users);
+localStorage.snow_topups=JSON.stringify(topups);
+localStorage.snow_orders=JSON.stringify(orders);
 }
 
-/* ===== RENDER ===== */
-function render(){
-renderTopups();
-renderOrders();
-}
-
-/* ===== TOPUP ===== */
-function renderTopups(){
+/* LOAD TOPUP */
+function loadTopup(){
 topupList.innerHTML="";
 topups.forEach((t,i)=>{
-let tr=document.createElement("tr");
-tr.innerHTML=`
-<td>${t.user}</td>
-<td>${t.type}</td>
-<td>${Number(t.amount).toLocaleString()}đ</td>
-<td>${t.status}</td>
-<td>
-${t.status==="Chờ duyệt"
-?`<button class="ok" onclick="acceptTopup(${i})">✔</button>
-<button class="no" onclick="rejectTopup(${i})">✖</button>`
-:""}
-</td>`;
-topupList.appendChild(tr);
+if(t.status!=="Chờ duyệt") return;
+topupList.innerHTML+=`
+<p>👤 ${t.user} | 💰 ${t.amount}đ (${t.method})
+<button onclick="duyet(${i})">Duyệt</button>
+<button onclick="huy(${i})">Hủy</button>
+</p>`;
 });
 }
 
-function acceptTopup(i){
-let t=topups[i];
-users[t.user].wallet += Number(t.amount);
+/* DUYỆT NẠP */
+function duyet(i){
+let t = topups[i];
+users[t.user].wallet += t.amount; // ✅ tự động cộng tiền
 t.status="Đã duyệt";
-save(); render();
+save(); loadTopup();
 alert("✅ Đã cộng tiền");
 }
 
-function rejectTopup(i){
-topups[i].status="Từ chối";
-save(); render();
+/* HỦY */
+function huy(i){
+topups[i].status="Đã hủy";
+save(); loadTopup();
 }
 
-/* ===== ORDERS ===== */
-function renderOrders(){
+/* LOAD ORDER */
+function loadOrder(){
 orderList.innerHTML="";
 orders.forEach((o,i)=>{
-let tr=document.createElement("tr");
-tr.innerHTML=`
-<td>${o.user}</td>
-<td>${o.goi}</td>
-<td>${o.price.toLocaleString()}đ</td>
-<td>${o.status}</td>
-<td>
-${o.status==="Chờ làm"
-?`<button class="ok" onclick="doneOrder(${i})">Xong</button>
-<button class="no" onclick="refund(${i})">Hoàn tiền</button>`
-:""}
-</td>`;
-orderList.appendChild(tr);
+orderList.innerHTML+=`
+<p>👤 ${o.user} | 📦 ${o.goi} | 🧊 ${o.status}
+<button onclick="done(${i})">Hoàn thành</button>
+</p>`;
 });
 }
 
-function doneOrder(i){
-orders[i].status="Hoàn thành";
-save(); render();
+function done(i){
+orders[i].status="Xong";
+save(); loadOrder();
 }
 
-function refund(i){
-let o=orders[i];
-users[o.user].wallet += o.price;
-o.status="Hoàn tiền";
-save(); render();
-alert("↩ Đã hoàn tiền");
+function logout(){
+localStorage.removeItem("snow_admin");
+location.href="index.html";
 }
+
+loadTopup();
+loadOrder();
 </script>
 </body>
 </html>
