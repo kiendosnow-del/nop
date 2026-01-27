@@ -152,10 +152,25 @@ goi.addEventListener("change",()=>{
 });
 
 /* ===== GỬI ĐƠN ===== */
-const WEBHOOK_ORDER = "WEBHOOK_CỦA_BẠN";
+<script>
+const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
 function guiDon(){
-  fetch(WEBHOOK_ORDER,{
+  if(!currentUser) return alert("⚠️ Vui lòng đăng nhập!");
+
+  const price = Number(goi.value);
+  if(price <= 0) return alert("⚠️ Chưa chọn gói!");
+
+  if(users[currentUser].wallet < price)
+    return alert("❌ Ví không đủ tiền!");
+
+  // trừ tiền
+  users[currentUser].wallet -= price;
+  saveUsers();
+  showWallet();
+
+  // gửi discord
+  fetch(https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({
@@ -163,16 +178,16 @@ function guiDon(){
       embeds:[{
         title:"🧊 ĐƠN MỚI",
         fields:[
-          {name:"Gói",value:goi.options[goi.selectedIndex].text},
-          {name:"Giá",value:totalPrice.innerText},
-          {name:"User",value:user.value || "Không có"},
-          {name:"Login",value:login.value || "Không có"},
-          {name:"Note",value:note.value || "Không"}
+          {name:"👤 User",value:currentUser},
+          {name:"📦 Gói",value:goi.options[goi.selectedIndex].text},
+          {name:"💰 Giá",value:price.toLocaleString()+"đ"},
+          {name:"📝 Ghi chú",value:note.value || "Không"}
         ]
       }]
     })
   });
-  alert("✅ Đã gửi đơn!");
+
+  alert("✅ Mua thành công – Đã trừ tiền ví!");
 }
 </script>
 
