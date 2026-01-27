@@ -2,47 +2,42 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>SNOW | Cày Thuê Blox Fruits</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>❄️ SNOW | Cày Thuê Blox Fruits</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 body{margin:0;font-family:Arial;background:#f4f8ff}
 header{background:linear-gradient(135deg,#1e90ff,#00c6ff);color:#fff;padding:14px;text-align:center}
-.container{max-width:520px;margin:auto;padding:14px}
+.container{max-width:560px;margin:auto;padding:14px}
 .card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px}
 input,select,textarea,button{width:100%;padding:10px;margin:6px 0;border-radius:10px}
 button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
-.price{font-size:18px;font-weight:bold;color:#1e90ff}
+.order{border:1px solid #ddd;border-radius:10px;padding:8px;margin:6px 0}
 .hide{display:none}
+.price{font-weight:bold;color:#1e90ff}
 </style>
 </head>
 
 <body>
-
-<!-- 🔊 ÂM THANH CLICK -->
-<audio id="clickSound">
-  <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
-</audio>
-
 <header>
 <h2>❄️ SNOW</h2>
 <div id="userBox" class="hide">
-👤 <b id="uname"></b> |
-💰 <b id="wallet">0đ</b>
+👤 <b id="uname"></b> | 💰 <b id="wallet"></b>
 <button onclick="logout()">Đăng xuất</button>
 </div>
 </header>
 
 <div class="container">
 
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-<input id="lu" placeholder="Tài khoản">
-<input id="lp" type="password" placeholder="Mật khẩu">
+<!-- AUTH -->
+<div class="card" id="authBox">
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Mật khẩu">
+<input id="username" placeholder="Tên hiển thị (đăng ký)">
 <button onclick="login()">Đăng nhập</button>
 <button onclick="register()">Đăng ký</button>
 </div>
 
-<!-- ORDER -->
+<!-- USER ORDER -->
 <div class="card hide" id="orderBox">
 <select id="goi">
 <option value="0">-- Chọn gói cày thuê --</option>
@@ -69,9 +64,19 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <option value="5000">1 Gear (5k)</option>
 </optgroup>
 
+<optgroup label="🧬 RACE">
+<option value="20000">Cyborg (20k)</option>
+<option value="20000">Ghoul (20k)</option>
+</optgroup>
+
 <optgroup label="🥋 MELEE">
 <option value="20000">Godhuman (20k)</option>
 <option value="15000">Melee V2 (15k)</option>
+</optgroup>
+
+<optgroup label="📈 MASTERY">
+<option value="45000">600 Mas (45k)</option>
+<option value="50000">600 Mas Gun (50k)</option>
 </optgroup>
 </select>
 
@@ -81,121 +86,144 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="buy()">🛒 MUA</button>
 </div>
 
-<!-- TOPUP CARD -->
-<div class="card hide" id="topupCard">
-<h3>💳 Nạp Card</h3>
-<select id="cardType">
-<option>Viettel</option>
-<option>Mobifone</option>
-<option>Vinaphone</option>
-</select>
-<input id="cardAmount" placeholder="Mệnh giá">
-<input id="cardCode" placeholder="Mã thẻ">
-<input id="cardSeri" placeholder="Seri">
-<button onclick="topupCard()">Gửi thẻ</button>
-</div>
-
-<!-- TOPUP BANK -->
-<div class="card hide" id="topupBank">
-<h3>🏦 Nạp Bank</h3>
-<p><b>STK:</b> 1373727384 – Techcombank – SNOW</p>
-<input id="bankAmount" placeholder="Số tiền">
-<textarea id="bankNote" placeholder="Ghi chú"></textarea>
-<button onclick="topupBank()">Tôi đã chuyển</button>
+<!-- ADMIN -->
+<div class="card hide" id="adminBox">
+<h3>🛠 ADMIN PANEL</h3>
+<div id="orderList"></div>
 </div>
 
 </div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-/* 🔊 CLICK SOUND */
-document.addEventListener("click",()=>{
-  const s=document.getElementById("clickSound");
-  s.currentTime=0; s.play();
-},{once:false});
-
-/* DATA */
-let users = JSON.parse(localStorage.snow_users||"{}");
-let orders = JSON.parse(localStorage.snow_orders||"[]");
-let topups = JSON.parse(localStorage.snow_topups||"[]");
-let user = localStorage.snow_user||"";
+/* CONFIG */
+firebase.initializeApp({
+  apiKey:"API_KEY",
+  authDomain:"PROJECT.firebaseapp.com",
+  projectId:"PROJECT_ID"
+});
+const auth=firebase.auth();
+const db=firebase.firestore();
+const WEBHOOK="DISCORD_WEBHOOK";
 
 /* PRICE */
 goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
 
-/* SAVE */
-function save(){
-localStorage.snow_users=JSON.stringify(users);
-localStorage.snow_orders=JSON.stringify(orders);
-localStorage.snow_topups=JSON.stringify(topups);
-}
+/* AUTH STATE */
+auth.onAuthStateChanged(async u=>{
+  if(!u) return;
+  const snap=await db.collection("users").doc(u.uid).get();
+  const d=snap.data();
 
-/* AUTH */
-function login(){
-if(!users[lu.value]||users[lu.value].pass!==lp.value)
-return alert("Sai tài khoản hoặc mật khẩu");
-user=lu.value; localStorage.snow_user=user; init();
-}
+  authBox.classList.add("hide");
+  userBox.classList.remove("hide");
+  uname.innerText=d.username;
+  wallet.innerText=(d.wallet||0).toLocaleString()+"đ";
+
+  if(d.role==="admin"){
+    adminBox.classList.remove("hide");
+    loadOrders();
+  }else{
+    orderBox.classList.remove("hide");
+  }
+});
+
+/* REGISTER */
 function register(){
-if(users[lu.value]) return alert("Tài khoản đã tồn tại");
-users[lu.value]={pass:lp.value,wallet:0};
-save(); alert("Đăng ký thành công");
-}
-function logout(){
-localStorage.removeItem("snow_user");
-location.reload();
+auth.createUserWithEmailAndPassword(email.value,pass.value)
+.then(r=>{
+db.collection("users").doc(r.user.uid).set({
+  username:username.value,
+  wallet:0,
+  role:"user",
+  created:Date.now()
+});
+});
 }
 
-/* INIT */
-function init(){
-loginBox.classList.add("hide");
-orderBox.classList.remove("hide");
-topupCard.classList.remove("hide");
-topupBank.classList.remove("hide");
-userBox.classList.remove("hide");
-uname.innerText=user;
-wallet.innerText=users[user].wallet.toLocaleString()+"đ";
+/* LOGIN */
+function login(){
+auth.signInWithEmailAndPassword(email.value,pass.value);
 }
+function logout(){auth.signOut();location.reload();}
 
 /* BUY */
-function buy(){
-let p=Number(goi.value);
-if(p<=0) return alert("Chưa chọn gói");
-if(users[user].wallet<p) return alert("Không đủ tiền");
+async function buy(){
+const p=Number(goi.value);
+if(!p) return alert("Chưa chọn gói");
 
-users[user].wallet-=p;
-orders.push({
-user,
+const u=auth.currentUser;
+const uRef=db.collection("users").doc(u.uid);
+
+await db.runTransaction(async t=>{
+const us=await t.get(uRef);
+if(us.data().wallet<p) throw "Thiếu tiền";
+t.update(uRef,{wallet:us.data().wallet-p});
+t.set(db.collection("orders").doc(),{
+uid:u.uid,
+username:us.data().username,
 goi:goi.options[goi.selectedIndex].text,
 price:p,
-status:"Đang làm"
+note:note.value,
+status:"pending",
+time:Date.now()
 });
-save(); init();
+});
+
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`📦 ĐƠN MỚI\n👤 ${uname.innerText}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ`
+})
+});
+
 alert("✅ Đặt đơn thành công");
 }
 
-/* TOPUP */
-function topupCard(){
-topups.push({
-user,type:"CARD",
-card:cardType.value,
-amount:Number(cardAmount.value),
-code:cardCode.value,
-seri:cardSeri.value,
-status:"Chờ duyệt"
+/* ADMIN */
+function loadOrders(){
+db.collection("orders").orderBy("time","desc")
+.onSnapshot(s=>{
+orderList.innerHTML="";
+s.forEach(d=>{
+const o=d.data();
+orderList.innerHTML+=`
+<div class="order">
+👤 ${o.username}<br>
+📦 ${o.goi}<br>
+💰 ${o.price.toLocaleString()}đ<br>
+📌 <b>${o.status}</b><br>
+${o.status==="pending"?`
+<button onclick="done('${d.id}')">✅ Duyệt</button>
+<button onclick="refund('${d.id}','${o.uid}',${o.price})">↩ Hoàn</button>`:""}
+</div>`;
 });
-save(); alert("⏳ Đã gửi thẻ – chờ admin duyệt");
-}
-function topupBank(){
-topups.push({
-user,type:"BANK",
-amount:Number(bankAmount.value),
-note:bankNote.value,
-status:"Chờ duyệt"
 });
-save(); alert("⏳ Đã báo chuyển khoản");
 }
 
-if(user) init();
+function done(id){
+db.collection("orders").doc(id).update({status:"done"});
+}
+function refund(id,uid,price){
+db.runTransaction(async t=>{
+const u=db.collection("users").doc(uid);
+const us=await t.get(u);
+t.update(u,{wallet:us.data().wallet+price});
+t.update(db.collection("orders").doc(id),{status:"refund"});
+});
+}
+
+/* TẠO ADMIN (CHẠY 1 LẦN RỒI XOÁ) */
+db.collection("users").doc("ADMIN_UID").set({
+username:"admin_snow",
+wallet:999999999,
+role:"admin"
+});
 </script>
 </body>
 </html>
