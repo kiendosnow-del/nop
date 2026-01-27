@@ -128,17 +128,21 @@ section h2{
 .discord a:hover{background:#1473cc}
 
 /* FOOTER */
-footer{
-    background:#060b18;
-    padding:25px;
-    text-align:center;
-    font-size:14px;
-    opacity:.85;
-}
-footer a{color:#1e90ff;text-decoration:none}
-</style>
-</head>
+<script>
+function sendOrder(e){
+    e.preventDefault();
+    const msg = 
+`🧊 ĐƠN MỚI SNOW
+👤 Roblox: ${name.value}
+🛒 Dịch vụ: ${service.value}
+📞 Liên hệ: ${contact.value}
+📝 Ghi chú: ${note.value}`;
 
+    window.open(
+        "https://discord.com/channels/@me?text=" + encodeURIComponent(msg)
+    );
+}
+</script>
 <body>
 
 <header>
