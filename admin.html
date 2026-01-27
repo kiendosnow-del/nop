@@ -2,92 +2,110 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>SNOW | Admin Panel</title>
+<title>ADMIN | SNOW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{font-family:Arial;background:#f4f8ff;padding:20px}
-.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:14px}
-button{padding:6px 12px;border:none;border-radius:8px;background:#1e90ff;color:#fff}
+body{margin:0;font-family:Arial;background:#eef3ff}
+header{background:#1e90ff;color:#fff;padding:12px;text-align:center}
+.container{max-width:720px;margin:auto;padding:14px}
+.card{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px}
+.order{border-bottom:1px solid #eee;padding:8px 0}
+button{padding:6px 10px;border:none;border-radius:6px;font-weight:bold;cursor:pointer}
+.done{background:#2ecc71;color:#fff}
+.refund{background:#e74c3c;color:#fff}
+select{padding:6px;border-radius:6px}
 </style>
 </head>
+
 <body>
 
-<h2>🛠 ADMIN PANEL</h2>
+<header>
+<h2>❄️ ADMIN PANEL – SNOW</h2>
 <button onclick="logout()">Đăng xuất</button>
+</header>
+
+<div class="container">
 
 <div class="card">
-<h3>💳 NẠP TIỀN CHỜ DUYỆT</h3>
-<div id="topupList"></div>
+<b>Lọc đơn:</b>
+<select id="filter" onchange="render()">
+<option value="all">Tất cả</option>
+<option value="Đang làm">Đang làm</option>
+<option value="Hoàn tiền">Hoàn tiền</option>
+<option value="Hoàn thành">Hoàn thành</option>
+</select>
 </div>
 
-<div class="card">
-<h3>🧊 ĐƠN CÀY THUÊ</h3>
-<div id="orderList"></div>
+<div class="card" id="orderList"></div>
+
 </div>
 
 <script>
-if(!localStorage.snow_admin) location.href="index.html";
+// 🔐 BẢO VỆ ADMIN
+if(localStorage.getItem("snow_admin")!=="true"){
+  alert("❌ Không có quyền admin");
+  location.href="index.html";
+}
 
-let users = JSON.parse(localStorage.snow_users||"{}");
-let topups = JSON.parse(localStorage.snow_topups||"[]");
-let orders = JSON.parse(localStorage.snow_orders||"[]");
+// DATA
+let users  = JSON.parse(localStorage.snow_users  || "{}");
+let orders = JSON.parse(localStorage.snow_orders || "[]");
 
 function save(){
-localStorage.snow_users=JSON.stringify(users);
-localStorage.snow_topups=JSON.stringify(topups);
-localStorage.snow_orders=JSON.stringify(orders);
+  localStorage.snow_users  = JSON.stringify(users);
+  localStorage.snow_orders = JSON.stringify(orders);
 }
 
-/* LOAD TOPUP */
-function loadTopup(){
-topupList.innerHTML="";
-topups.forEach((t,i)=>{
-if(t.status!=="Chờ duyệt") return;
-topupList.innerHTML+=`
-<p>👤 ${t.user} | 💰 ${t.amount}đ (${t.method})
-<button onclick="duyet(${i})">Duyệt</button>
-<button onclick="huy(${i})">Hủy</button>
-</p>`;
-});
+// RENDER
+function render(){
+  const f = filter.value;
+  orderList.innerHTML = "";
+
+  orders.forEach((o,i)=>{
+    if(f!=="all" && o.status!==f) return;
+
+    orderList.innerHTML += `
+      <div class="order">
+        👤 <b>${o.user}</b><br>
+        📦 ${o.goi}<br>
+        💰 ${o.price.toLocaleString()}đ<br>
+        📌 <b>${o.status}</b><br><br>
+
+        ${o.status==="Đang làm" ? `
+          <button class="done" onclick="done(${i})">✔ Duyệt</button>
+          <button class="refund" onclick="refund(${i})">↩ Hoàn</button>
+        `:""}
+      </div>
+    `;
+  });
+
+  if(orderList.innerHTML==="")
+    orderList.innerHTML="<i>Không có đơn</i>";
 }
 
-/* DUYỆT NẠP */
-function duyet(i){
-let t = topups[i];
-users[t.user].wallet += t.amount; // ✅ tự động cộng tiền
-t.status="Đã duyệt";
-save(); loadTopup();
-alert("✅ Đã cộng tiền");
-}
-
-/* HỦY */
-function huy(i){
-topups[i].status="Đã hủy";
-save(); loadTopup();
-}
-
-/* LOAD ORDER */
-function loadOrder(){
-orderList.innerHTML="";
-orders.forEach((o,i)=>{
-orderList.innerHTML+=`
-<p>👤 ${o.user} | 📦 ${o.goi} | 🧊 ${o.status}
-<button onclick="done(${i})">Hoàn thành</button>
-</p>`;
-});
-}
-
+// DUYỆT ĐƠN
 function done(i){
-orders[i].status="Xong";
-save(); loadOrder();
+  orders[i].status="Hoàn thành";
+  save(); render();
+  alert("✅ Đã duyệt đơn");
 }
 
+// HOÀN TIỀN
+function refund(i){
+  const o = orders[i];
+  users[o.user].wallet += o.price;
+  orders[i].status="Hoàn tiền";
+  save(); render();
+  alert("↩ Đã hoàn tiền");
+}
+
+// LOGOUT
 function logout(){
-localStorage.removeItem("snow_admin");
-location.href="index.html";
+  localStorage.removeItem("snow_admin");
+  location.href="index.html";
 }
 
-loadTopup();
-loadOrder();
+render();
 </script>
 </body>
 </html>
