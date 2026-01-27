@@ -18,23 +18,235 @@ body{margin:0;font-family:Arial;background:var(--bg);color:#fff}
 input,select,button{width:100%;padding:12px;border-radius:10px;border:none;margin-top:8px}
 button{font-weight:bold;cursor:pointer}
 .primary{background:var(--main);color:#000}
-.danger{background:var(--red)}
+.danger{background:var(--red);color:#fff}
 .support{display:block;text-align:center;padding:12px;border-radius:10px;margin-top:8px;color:#fff;text-decoration:none}
 .discord{background:#5865F2}
 .zalo{background:#0068ff}
-small{opacity:.7}
 table{width:100%;border-collapse:collapse}
 td,th{padding:8px;border-bottom:1px solid #222}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center}
 .modal-box{background:#111;padding:20px;border-radius:14px;width:95%;max-width:420px;text-align:center}
 code{background:#222;padding:6px 10px;border-radius:6px;display:inline-block}
+a{color:var(--main);cursor:pointer}
 </style>
 </head>
 
 <body oncontextmenu="return false">
-
 <div class="container">
 
+<!-- LOGIN -->
+<div id="loginBox" class="card">
+<h2>🔐 Đăng nhập</h2>
+<input id="loginEmail" placeholder="Email">
+<input id="loginPass" type="password" placeholder="Mật khẩu">
+<button class="primary" onclick="login()">Đăng nhập</button>
+<p>Chưa có tài khoản? <a onclick="showRegister()">Đăng ký</a></p>
+</div>
+
+<!-- REGISTER -->
+<div id="registerBox" class="card hidden">
+<h2>📝 Đăng ký</h2>
+<input id="regEmail" placeholder="Email">
+<input id="regPass" type="password" placeholder="Mật khẩu">
+<button class="primary" onclick="register()">Tạo tài khoản</button>
+<p>Đã có tài khoản? <a onclick="showLogin()">Đăng nhập</a></p>
+</div>
+
+<!-- USER APP -->
+<div id="appBox" class="hidden">
+
+<div class="card">
+<h3>🏪 SHOP BLOX FRUITS</h3>
+<p>👤 <span id="userEmail"></span></p>
+<p>💰 Ví: <b id="wallet">0</b> đ</p>
+
+<select id="service">
+<option value="50000">0 → Max Level (50k)</option>
+<option value="20000">Godhuman (20k)</option>
+<option value="30000">CDK (30k)</option>
+<option value="25000">Soul Guitar (25k)</option>
+</select>
+
+<button class="primary" onclick="createOrder()">Thuê dịch vụ</button>
+<button class="danger" onclick="logout()">Đăng xuất</button>
+</div>
+
+<div class="card">
+<h3>📜 Đơn của bạn</h3>
+<table>
+<thead><tr><th>Dịch vụ</th><th>Giá</th><th>Trạng thái</th></tr></thead>
+<tbody id="orderList"></tbody>
+</table>
+</div>
+
+<div class="card">
+<h3>🆘 Hỗ trợ</h3>
+<a class="support discord" href="https://discord.gg/G2gaVehJ" target="_blank">Discord</a>
+<a class="support zalo" href="https://zalo.me/0373727384" target="_blank">Zalo 0373727384</a>
+</div>
+
+</div>
+
+<!-- ADMIN -->
+<div id="adminBox" class="card hidden">
+<h3>🧑‍💻 ADMIN PANEL</h3>
+<input id="a_uid" placeholder="User UID">
+<input id="a_money" type="number" placeholder="Số tiền (+/-)">
+<button class="primary" onclick="adminAdjust()">Cập nhật ví</button>
+</div>
+
+</div>
+
+<!-- BANK MODAL -->
+<div class="modal" id="bankModal">
+<div class="modal-box">
+<h3>💳 Thanh toán ngân hàng</h3>
+<p><b>Techcombank</b></p>
+<p>DO TRUNG KIEN</p>
+<p>STK: 1373727384</p>
+
+<img src="QR_BANK_IMAGE.png" style="width:100%;border-radius:12px">
+
+<p>Nội dung chuyển khoản:</p>
+<code id="memo"></code><br><br>
+<button onclick="copyMemo()">📋 Copy</button>
+<button class="primary" onclick="closeBank()">Đã chuyển</button>
+</div>
+</div>
+
+<!-- FIREBASE SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+/* 🔥 DÁN FIREBASE CONFIG Ở ĐÂY */
+firebase.initializeApp({
+  apiKey: "PASTE_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
+});
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+let currentUser = null;
+let isAdmin = false;
+
+/* UI SWITCH */
+function showRegister(){loginBox.classList.add("hidden");registerBox.classList.remove("hidden")}
+function showLogin(){registerBox.classList.add("hidden");loginBox.classList.remove("hidden")}
+
+/* AUTH */
+function register(){
+ auth.createUserWithEmailAndPassword(regEmail.value, regPass.value)
+ .then(res=>{
+  db.doc("users/"+res.user.uid).set({
+    email: res.user.email,
+    role: "user",
+    created_at: Date.now()
+  });
+  db.doc("wallets/"+res.user.uid).set({balance:0});
+ })
+ .catch(e=>alert(e.message));
+}
+
+function login(){
+ auth.signInWithEmailAndPassword(loginEmail.value, loginPass.value)
+ .catch(e=>alert(e.message));
+}
+
+function logout(){auth.signOut()}
+
+/* STATE */
+auth.onAuthStateChanged(async user=>{
+ if(!user){
+  loginBox.classList.remove("hidden");
+  registerBox.classList.add("hidden");
+  appBox.classList.add("hidden");
+  adminBox.classList.add("hidden");
+  return;
+ }
+
+ currentUser = user;
+ userEmail.innerText = user.email;
+
+ loginBox.classList.add("hidden");
+ registerBox.classList.add("hidden");
+ appBox.classList.remove("hidden");
+
+ // WALLET realtime
+ db.doc("wallets/"+user.uid).onSnapshot(s=>{
+  wallet.innerText = s.exists ? s.data().balance : 0;
+ });
+
+ // ORDERS realtime
+ db.collection("orders").where("user","==",user.uid)
+ .onSnapshot(s=>{
+  orderList.innerHTML="";
+  s.forEach(d=>{
+   const o=d.data();
+   orderList.innerHTML+=`<tr><td>${o.service}</td><td>${o.price}</td><td>${o.status}</td></tr>`;
+  });
+ });
+
+ // ROLE CHECK
+ const u = await db.doc("users/"+user.uid).get();
+ if(u.exists && u.data().role==="admin"){
+  isAdmin = true;
+  adminBox.classList.remove("hidden");
+ } else {
+  isAdmin = false;
+  adminBox.classList.add("hidden");
+ }
+});
+
+/* ORDER + WALLET TRANSACTION */
+function createOrder(){
+ const price = Number(service.value);
+ db.runTransaction(async tx=>{
+  const wRef = db.doc("wallets/"+currentUser.uid);
+  const wSnap = await tx.get(wRef);
+  if(!wSnap.exists || wSnap.data().balance < price) throw "NO_MONEY";
+
+  tx.update(wRef,{balance: wSnap.data().balance - price});
+  tx.set(db.collection("orders").doc(),{
+    user: currentUser.uid,
+    service: service.options[service.selectedIndex].text,
+    price: price,
+    status: "🔵 Đang cày",
+    time: Date.now()
+  });
+ }).catch(()=>{
+  openBank();
+ });
+}
+
+/* BANK */
+function openBank(){
+ memo.innerText = "BF_"+Math.random().toString(36).substr(2,8).toUpperCase();
+ bankModal.style.display="flex";
+}
+function closeBank(){bankModal.style.display="none"}
+function copyMemo(){navigator.clipboard.writeText(memo.innerText)}
+
+/* ADMIN */
+function adminAdjust(){
+ if(!isAdmin) return alert("NO PERMISSION");
+ db.runTransaction(async tx=>{
+  const r = db.doc("wallets/"+a_uid.value);
+  const s = await tx.get(r);
+  if(!s.exists) throw "NO WALLET";
+  tx.update(r,{balance: s.data().balance + Number(a_money.value)});
+ }).then(()=>alert("OK"));
+}
+
+/* BASIC ANTI INSPECT */
+document.onkeydown=e=>{
+ if(e.keyCode==123 || (e.ctrlKey&&e.shiftKey&&['I','C','J'].includes(e.key))) return false;
+}
+</script>
+</body>
+</html>
 <!-- LOGIN -->
 <div id="loginBox" class="card">
 <h2>🔐 Đăng nhập</h2>
