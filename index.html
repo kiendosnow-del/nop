@@ -84,5 +84,48 @@ function buy(){
   alert("✅ Đặt đơn thành công!");
 }
 </script>
+
+<script>
+const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+
+function guiDon(){
+  if(!currentUser) return alert("⚠️ Vui lòng đăng nhập!");
+
+  const price = Number(goi.value);
+  if(price <= 0) return alert("⚠️ Chưa chọn gói!");
+
+  if(users[currentUser].wallet < price)
+    return alert("❌ Ví không đủ tiền!");
+
+  // 🔻 Trừ tiền
+  users[currentUser].wallet -= price;
+  saveUsers();
+  showWallet();
+
+  // 🚀 Gửi Discord
+  fetch(WEBHOOK_ORDER,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      username:"❄️ SNOW ORDER",
+      embeds:[{
+        title:"🧊 ĐƠN MỚI",
+        color:3447003,
+        fields:[
+          { name:"👤 Tài khoản Web", value: currentUser, inline:true },
+          { name:"🎮 Username Roblox", value: document.getElementById("user").value || "Không", inline:true },
+          { name:"📦 Gói", value: goi.options[goi.selectedIndex].text },
+          { name:"💰 Giá", value: price.toLocaleString("vi-VN")+"đ", inline:true },
+          { name:"📝 Ghi chú", value: document.getElementById("note").value || "Không" }
+        ],
+        footer:{ text:"SNOW • Auto Order" },
+        timestamp: new Date()
+      }]
+    })
+  });
+
+  alert("✅ Đã gửi đơn & trừ tiền ví!");
+}
+</script>
 </body>
 </html>
