@@ -163,3 +163,25 @@ db.collection("orders")
 
 </body>
 </html>
+async function mua(goi, price){
+  const user = auth.currentUser;
+  const ref = db.collection("users").doc(user.uid);
+
+  await db.runTransaction(async t=>{
+    const u = await t.get(ref);
+    if(u.data().wallet < price){
+      alert("Không đủ tiền");
+      throw "STOP";
+    }
+    t.update(ref,{ wallet: u.data().wallet - price });
+    t.set(db.collection("orders").doc(),{
+      uid:user.uid,
+      username:u.data().username,
+      goi, price,
+      status:"pending",
+      time:Date.now()
+    });
+  });
+
+  alert("✅ Đã gửi đơn");
+}
