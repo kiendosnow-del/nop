@@ -151,3 +151,22 @@ showWallet();
 <div class="card">
 💰 Ví SNOW: <b id="wallet">0đ</b>
 </div>
+<script>
+const WEBHOOK_TOPUP = "PASTE_WEBHOOK_TOPUP_HERE";
+
+function napTien(amount){
+  const data={
+    content:`💸 **YÊU CẦU NẠP SNOW**
+👤 User: ${document.querySelector("input").value}
+💰 Số tiền: ${amount}đ`
+  };
+
+  fetch(WEBHOOK_TOPUP,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(data)
+  });
+
+  alert("📸 Đã gửi yêu cầu nạp. Admin duyệt trong Discord.");
+}
+</script>
