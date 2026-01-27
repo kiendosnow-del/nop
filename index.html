@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>...</head>
-<body>
 <head>
-<div class="container">
-  <div class="card">
-    💰 Ví SNOW: <b id="wallet">0đ</b>
-  </div>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SNOW | Cày Thuê Blox Fruits</title>
+
 <style>
 :root{
   --blue:#1e90ff;
@@ -22,7 +17,6 @@ header{
   background:linear-gradient(135deg,#1e90ff,#00c6ff);
   color:white;padding:16px;text-align:center;
 }
-header h1{margin:0;font-size:26px;}
 .container{
   padding:16px;max-width:520px;margin:auto;
 }
@@ -31,7 +25,6 @@ header h1{margin:0;font-size:26px;}
   padding:14px;margin-bottom:14px;
   box-shadow:0 6px 16px rgba(0,0,0,.08);
 }
-label{font-weight:bold;font-size:14px;}
 input,select,textarea,button{
   width:100%;padding:10px;margin-top:6px;
   margin-bottom:12px;border-radius:10px;
@@ -44,18 +37,13 @@ button{
 .price{
   font-size:20px;font-weight:bold;color:var(--blue);
 }
-.qr{
-  text-align:center;
-}
-.qr img{
-  max-width:220px;border-radius:12px;
-}
 footer{
   text-align:center;font-size:13px;
   color:#555;margin:20px;
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -66,25 +54,29 @@ footer{
 <div class="container">
 
 <div class="card">
+💰 Ví SNOW: <b id="wallet">0đ</b>
+</div>
+
+<div class="card">
 <label>Chọn gói cày thuê</label>
 <select id="goi">
-  <option value="0">-- Chọn gói --</option>
+<option value="0">-- Chọn gói --</option>
 
-  <optgroup label="LEVEL">
-    <option value="20000">700 → 1500</option>
-    <option value="20000">1500 → 2800</option>
-    <option value="50000">0 → MAX</option>
-  </optgroup>
+<optgroup label="LEVEL">
+<option value="20000">700 → 1500</option>
+<option value="20000">1500 → 2800</option>
+<option value="50000">0 → MAX</option>
+</optgroup>
 
-  <optgroup label="ITEM">
-    <option value="20000">Mỏ Neo</option>
-    <option value="15000">Tushita</option>
-    <option value="30000">Yama</option>
-    <option value="20000">Tam Kiếm (Lẻ)</option>
-    <option value="35000">Tam Kiếm (Full)</option>
-    <option value="30000">CDK</option>
-  </optgroup>
-  
+<optgroup label="ITEM">
+<option value="20000">Mỏ Neo</option>
+<option value="15000">Tushita</option>
+<option value="30000">Yama</option>
+<option value="20000">Tam Kiếm (Lẻ)</option>
+<option value="35000">Tam Kiếm (Full)</option>
+<option value="30000">CDK</option>
+</optgroup>
+
 <optgroup label="RACE">
 <option value="20000">Cyborg</option>
 <option value="20000">Ghoul</option>
@@ -107,111 +99,78 @@ footer{
 </select>
 
 <div class="price">
-  Thành tiền: <b><span id="totalPrice">0đ</span></b>
+Thành tiền: <span id="totalPrice">0đ</span>
 </div>
+</div>
+
 <div class="card">
 <label>Username Roblox</label>
-<input placeholder="Ví dụ: SnowBlox123">
+<input id="user" placeholder="SnowBlox123">
 
-<label>login Roblox</label>
-<input placeholder="Ví dụ: SnowBlox123">
+<label>Login Roblox</label>
+<input id="login" placeholder="SnowBlox123">
 
-<label>Ghi chú Ghi thêm</label>
-<textarea rows="3" placeholder="Yêu cầu đặc biệt..."></textarea>
+<label>Ghi chú</label>
+<textarea id="note" rows="3"></textarea>
 
 <button onclick="guiDon()">🛒 MUA NGAY</button>
 </div>
 
-<div class="card qr">
+<div class="card">
 <h3>💳 Thanh Toán</h3>
-<p>Quét QR Momo / Bank</p>
-<p>STK nha 1373727384</p>
-<p><b>SNOW - Techcombank</b><br>Nội dung: SNOW + Username</p>
+<p>STK: 1373727384</p>
+<p><b>SNOW - Techcombank</b></p>
+<p>Nội dung: SNOW + Username</p>
 </div>
 
 </div>
 
 <footer>
-💬 Discord hỗ trợ:  
-<a href="https://discord.gg/z8fEcuaB">discord.gg/z8fEcuaB</a>
+💬 Discord: <a href="https://discord.gg/z8fEcuaB">discord.gg/z8fEcuaB</a>
 </footer>
 
 <script>
-const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+/* ===== VÍ ===== */
+let wallet = Number(localStorage.getItem("snow_wallet")) || 0;
+function showWallet(){
+  document.getElementById("wallet").innerText =
+    wallet.toLocaleString("vi-VN")+"đ";
+}
+showWallet();
+
+/* ===== TÍNH TIỀN ===== */
+const goi = document.getElementById("goi");
+const totalPrice = document.getElementById("totalPrice");
+
+goi.addEventListener("change",()=>{
+  totalPrice.innerText =
+    Number(goi.value).toLocaleString("vi-VN")+"đ";
+});
+
+/* ===== GỬI ĐƠN ===== */
+const WEBHOOK_ORDER = "WEBHOOK_CỦA_BẠN";
 
 function guiDon(){
-function guiDon(){
-  const goiSelect = document.getElementById("goi");
-  const gia = document.getElementById("totalPrice").innerText;
-
-  const data = {
-    username: "❄️ SNOW ORDER BOT",
-    embeds: [{
-      title: "🧊 ĐƠN MỚI SNOW",
-      color: 3447003,
-      fields: [
-        { name: "📦 Gói", value: goiSelect.options[goiSelect.selectedIndex].text },
-        { name: "💰 Giá", value: gia },
-        { name: "👤 Roblox", value: document.querySelector("input").value || "Không có" },
-        { name: "📝 Ghi chú", value: document.querySelector("textarea").value || "Không có" }
-      ],
-      timestamp: new Date()
-    }]
-  };
-
   fetch(WEBHOOK_ORDER,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify(data)
+    body:JSON.stringify({
+      username:"❄️ SNOW ORDER",
+      embeds:[{
+        title:"🧊 ĐƠN MỚI",
+        fields:[
+          {name:"Gói",value:goi.options[goi.selectedIndex].text},
+          {name:"Giá",value:totalPrice.innerText},
+          {name:"User",value:user.value || "Không có"},
+          {name:"Login",value:login.value || "Không có"},
+          {name:"Note",value:note.value || "Không"}
+        ]
+      }]
+    })
   });
-
-  alert("✅ Đơn đã gửi! Admin SNOW sẽ xử lý.");
+  alert("✅ Đã gửi đơn!");
 }
 </script>
 
-<script>
-let wallet = Number(localStorage.getItem("snow_wallet")) || 0;
-
-function showWallet(){
-  document.getElementById("wallet").innerText =
-    wallet.toLocaleString("vi-VN") + "đ";
-}
-showWallet();
-
-// test cộng tiền (admin duyệt nạp)
-function congTien(amount){
-  wallet += amount;
-  localStorage.setItem("snow_wallet", wallet);
-  showWallet();
-}
-</script>
 </body>
 </html>
-<script>
-let wallet = localStorage.getItem("snow_wallet") || 0;
-function showWallet(){
-  document.getElementById("wallet").innerText =
-    Number(wallet).toLocaleString()+"đ";
-}
-showWallet();
-</script>
-
-<script>
-const WEBHOOK_TOPUP = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
-
-function napTien(amount){
-  const data={
-    content:`💸 **YÊU CẦU NẠP SNOW**
-👤 User: ${document.querySelector("input").value}
-💰 Số tiền: ${amount}đ`
-  };
-
-  fetch(WEBHOOK_TOPUP,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify(data)
-  });
-
-  alert("📸 Đã gửi yêu cầu nạp. Admin duyệt trong Discord.");
-}
-</script>
