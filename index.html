@@ -139,13 +139,18 @@ localStorage.snow_topups=JSON.stringify(topups);
 function login(){
 if(!users[lu.value]||users[lu.value].pass!==lp.value)
 return alert("Sai tài khoản hoặc mật khẩu");
-user=lu.value; localStorage.snow_user=user; init();
+user=lu.value;
+localStorage.snow_user=user;
+init();
 }
+
 function register(){
 if(users[lu.value]) return alert("Tài khoản đã tồn tại");
 users[lu.value]={pass:lp.value,wallet:0};
-save(); alert("Đăng ký thành công");
+save();
+alert("Đăng ký thành công");
 }
+
 function logout(){
 localStorage.removeItem("snow_user");
 location.reload();
@@ -164,38 +169,63 @@ wallet.innerText=users[user].wallet.toLocaleString()+"đ";
 
 /* BUY */
 function buy(){
+if(!user) return alert("Vui lòng đăng nhập");
+
 let p=Number(goi.value);
 if(p<=0) return alert("Chưa chọn gói");
 if(users[user].wallet<p) return alert("Không đủ tiền");
+
 users[user].wallet-=p;
-
 let text=goi.options[goi.selectedIndex].text;
-orders.push({user,goi:text,price:p,status:"Đang làm"});
-save(); init();
 
-fetch(WEBHOOK,{method:"POST",headers:{'Content-Type':'application/json'},
-body:JSON.stringify({content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${text}\n💰 ${p}đ`})});
+orders.push({user,goi:text,price:p,status:"Đang làm"});
+save();
+init();
+
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${text}\n💰 ${p.toLocaleString()}đ`
+})
+});
 
 alert("✅ Đặt đơn thành công");
 }
 
 /* TOPUP */
 function topupCard(){
-topups.push({user,type:"CARD",card:cardType.value,
+topups.push({
+user,
+type:"CARD",
+card:cardType.value,
 amount:Number(cardAmount.value),
-code:cardCode.value,seri:cardSeri.value,status:"Chờ duyệt"});
-save(); alert("⏳ Đã gửi thẻ");
+code:cardCode.value,
+seri:cardSeri.value,
+status:"Chờ duyệt"
+});
+save();
+alert("⏳ Đã gửi thẻ");
 }
+
 function topupBank(){
-topups.push({user,type:"BANK",
+topups.push({
+user,
+type:"BANK",
 amount:Number(bankAmount.value),
-note:bankNote.value,status:"Chờ duyệt"});
-save(); alert("⏳ Đã báo chuyển khoản");
+note:bankNote.value,
+status:"Chờ duyệt"
+});
+save();
+alert("⏳ Đã báo chuyển khoản");
 }
 
+/* SUPPORT */
 function openSupport(){
-window.open("https://zalo.me/0373727384","fb: https://www.facebook.com/share/17vMiH38z5/)
+window.open("https://zalo.me/0373727384","_blank");
+}
 
+/* AUTO LOGIN */
 if(user) init();
 </script>
 
