@@ -2,173 +2,146 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Blox Fruits Cày Thuê</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
+<title>Blox Fruits Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{margin:0;font-family:sans-serif;background:#0b0f14;color:#fff}
+body{
+  margin:0;font-family:sans-serif;
+  background:#0b0f1a;color:#fff;
+}
+.box{
+  max-width:400px;margin:80px auto;
+  background:#111827;padding:20px;
+  border-radius:12px;
+}
+input,button{
+  width:100%;padding:12px;
+  margin-top:10px;border-radius:8px;
+  border:none;font-size:16px;
+}
+input{background:#1f2937;color:#fff}
+button{background:#22c55e;color:#000;font-weight:700;cursor:pointer}
 .hidden{display:none}
-.card{background:#121826;border-radius:12px;padding:16px;margin:12px}
-input,button{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:none}
-button{background:#22c55e;color:#000;font-weight:bold}
-button.red{background:#ef4444;color:#fff}
-.top{display:flex;justify-content:space-between;align-items:center}
-.small{opacity:.7;font-size:13px}
 </style>
 </head>
-
 <body>
 
-<!-- AUTH -->
-<div id="auth" class="card">
+<div class="box" id="authBox">
   <h2>🔐 Đăng nhập / Đăng ký</h2>
-  <input id="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Mật khẩu">
   <button onclick="register()">Đăng ký</button>
   <button onclick="login()">Đăng nhập</button>
-  <p id="authMsg" class="small"></p>
+  <p id="msg"></p>
 </div>
 
-<!-- APP -->
-<div id="app" class="hidden">
+<div class="box hidden" id="appBox">
+  <h2>👤 Xin chào</h2>
+  <p>Email: <span id="userEmail"></span></p>
+  <p>💰 Ví: <b><span id="wallet">0</span> đ</b></p>
+  <button onclick="logout()">Đăng xuất</button>
 
-  <div class="card top">
-    <div>
-      <b id="userEmail"></b><br>
-      💰 Ví: <span id="wallet">0</span> đ
-    </div>
-    <button class="red" onclick="logout()">Thoát</button>
+  <div id="adminBox" class="hidden">
+    <hr>
+    <h3>🛠 ADMIN PANEL</h3>
+    <p>Bạn là admin</p>
   </div>
-
-  <!-- ORDER -->
-  <div class="card">
-    <h3>📦 Thuê cày</h3>
-    <select id="service">
-      <option value="20000">Level 700 → 1500 (20k)</option>
-      <option value="30000">CDK (30k)</option>
-      <option value="20000">Godhuman (20k)</option>
-    </select>
-    <button onclick="createOrder()">Thuê ngay</button>
-  </div>
-
-  <!-- HISTORY -->
-  <div class="card">
-    <h3>📜 Đơn của bạn</h3>
-    <div id="orders"></div>
-  </div>
-
-  <!-- ADMIN -->
-  <div id="admin" class="card hidden">
-    <h3>🧑‍💻 ADMIN PANEL</h3>
-    <input id="adminUid" placeholder="UID user">
-    <input id="adminMoney" placeholder="Số tiền (+/-)">
-    <button onclick="adminAdjust()">Chỉnh ví</button>
-  </div>
-
-  <!-- SUPPORT -->
-  <div class="card small">
-    🆘 Discord: <a href="https://discord.gg/G2gaVehJ">discord.gg/G2gaVehJ</a><br>
-    📱 Zalo: 0373727384
-  </div>
-
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-<script>
+/* 🔥 DÁN FIREBASE CONFIG CỦA BẠN VÀO ĐÂY */
 const firebaseConfig = {
   apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
   authDomain: "nott-9d55e.firebaseapp.com",
   projectId: "nott-9d55e",
   storageBucket: "nott-9d55e.firebasestorage.app",
   messagingSenderId: "1013326079626",
-  appId: "1:1013326079626:web:2b24a7753d09f97187af73",
-  measurementId: "G-93C68KND1B"
+  appId: "1:1013326079626:web:1be873b3eb551b2d87af73",
+  measurementId: "G-RGJXCLEY7L"
+};
+/* ====================================== */
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ELEMENTS
+const emailEl = document.getElementById("email");
+const passEl = document.getElementById("password");
+const msg = document.getElementById("msg");
+const authBox = document.getElementById("authBox");
+const appBox = document.getElementById("appBox");
+const userEmail = document.getElementById("userEmail");
+const walletEl = document.getElementById("wallet");
+const adminBox = document.getElementById("adminBox");
+
+// AUTH
+window.register = async () => {
+  try{
+    const email = emailEl.value.trim();
+    const pass = passEl.value.trim();
+    const res = await createUserWithEmailAndPassword(auth,email,pass);
+    await setDoc(doc(db,"users",res.user.uid),{
+      email,
+      wallet:0,
+      role:"user",
+      created:Date.now()
+    });
+    msg.innerText="✅ Đăng ký thành công";
+  }catch(e){
+    msg.innerText=e.message;
+  }
 };
 
-firebase.initializeApp(firebaseConfig);
-
-const auth = firebase.auth();
-const db   = firebase.firestore();
-</script>
-/* ================================================== */
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-/* AUTH */
-async function register(){
+window.login = async () => {
   try{
-    const email=email.value, pass=password.value;
-    const res=await auth.createUserWithEmailAndPassword(email,pass);
-    await db.collection("users").doc(res.user.uid).set({
-      email, wallet:0, role:"user", created:Date.now()
-    });
-  }catch(e){authMsg.innerText=e.message}
-}
+    await signInWithEmailAndPassword(auth,emailEl.value,passEl.value);
+  }catch(e){
+    msg.innerText=e.message;
+  }
+};
 
-async function login(){
-  try{
-    await auth.signInWithEmailAndPassword(email.value,password.value);
-  }catch(e){authMsg.innerText=e.message}
-}
+window.logout = async () => {
+  await signOut(auth);
+};
 
-function logout(){auth.signOut()}
-
-/* STATE */
-auth.onAuthStateChanged(async user=>{
-  if(!user){auth.classList.remove("hidden");app.classList.add("hidden");return}
-  auth.classList.add("hidden");app.classList.remove("hidden");
+// STATE
+onAuthStateChanged(auth,async(user)=>{
+  if(!user){
+    authBox.classList.remove("hidden");
+    appBox.classList.add("hidden");
+    return;
+  }
+  authBox.classList.add("hidden");
+  appBox.classList.remove("hidden");
   userEmail.innerText=user.email;
 
-  const ref=db.collection("users").doc(user.uid);
-  ref.onSnapshot(s=>{
-    wallet.innerText=s.data().wallet||0;
-    if(s.data().role==="admin") admin.classList.remove("hidden");
+  const ref = doc(db,"users",user.uid);
+  onSnapshot(ref,(snap)=>{
+    if(!snap.exists())return;
+    const d=snap.data();
+    walletEl.innerText=d.wallet;
+    if(d.role==="admin") adminBox.classList.remove("hidden");
   });
-
-  db.collection("orders").where("uid","==",user.uid)
-    .onSnapshot(q=>{
-      orders.innerHTML="";
-      q.forEach(d=>{
-        const o=d.data();
-        orders.innerHTML+=`<div class="small">#${d.id} | ${o.price}đ | ${o.status}</div>`;
-      });
-    });
 });
-
-/* ORDER */
-async function createOrder(){
-  const price=parseInt(service.value);
-  const u=auth.currentUser;
-  const ref=db.collection("users").doc(u.uid);
-
-  await db.runTransaction(async t=>{
-    const snap=await t.get(ref);
-    if(snap.data().wallet<price) throw "Không đủ tiền";
-    t.update(ref,{wallet:snap.data().wallet-price});
-    t.set(db.collection("orders").doc(),{
-      uid:u.uid, price, status:"Đang cày", time:Date.now()
-    });
-  });
-}
-
-/* ADMIN */
-async function adminAdjust(){
-  const ref=db.collection("users").doc(adminUid.value);
-  await db.runTransaction(async t=>{
-    const s=await t.get(ref);
-    t.update(ref,{wallet:s.data().wallet+parseInt(adminMoney.value)});
-  });
-}
 </script>
+
 </body>
 </html>
