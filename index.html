@@ -2,133 +2,204 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>SNOW | Cày Thuê</title>
+<title>SNOW | Cày Thuê Blox Fruits</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{margin:0;font-family:Arial;background:#f4f8ff}
-header{background:linear-gradient(135deg,#1e90ff,#00c6ff);color:#fff;padding:16px;text-align:center}
-.container{max-width:520px;margin:auto;padding:16px}
-.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:14px}
-select,input,textarea,button{width:100%;padding:10px;margin:6px 0;border-radius:10px}
+header{background:linear-gradient(135deg,#1e90ff,#00c6ff);color:#fff;padding:14px;text-align:center}
+.container{max-width:520px;margin:auto;padding:14px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px}
+input,select,textarea,button{width:100%;padding:10px;margin:6px 0;border-radius:10px}
 button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
-.price{font-size:20px;font-weight:bold;color:#1e90ff}
+.price{font-size:18px;font-weight:bold;color:#1e90ff}
+.hide{display:none}
 </style>
 </head>
-<body>
 
+<body>
 <header>
-<h1>❄️ SNOW</h1>
-<p>Xin chào <b id="uname"></b> | Ví: <b id="wallet">0đ</b></p>
+<h2>❄️ SNOW</h2>
+<div id="userBox" class="hide">
+👤 <b id="uname"></b> | 💰 <b id="wallet">0đ</b>
+<button onclick="logout()">Đăng xuất</button>
+</div>
 </header>
 
 <div class="container">
 
-<div class="card">
+<!-- LOGIN -->
+<div class="card" id="loginBox">
+<input id="lu" placeholder="Tài khoản">
+<input id="lp" type="password" placeholder="Mật khẩu">
+<button onclick="login()">Đăng nhập</button>
+<button onclick="register()">Đăng ký</button>
+</div>
+
+<!-- ORDER -->
+<div class="card hide" id="orderBox">
 <select id="goi">
-<option value="0">-- Chọn gói --</option>
-<optgroup label="LEVEL">
-<option value="20000">700 → 1500</option>
-<option value="20000">1500 → 2800</option>
-<option value="50000">0 → MAX</option>
+<option value="0">-- Chọn gói cày thuê --</option>
+
+<optgroup label="🔰 LEVEL">
+<option value="20000">700 → 1500 (20k)</option>
+<option value="20000">1500 → 2800 (20k)</option>
+<option value="50000">0 → MAX (50k)</option>
 </optgroup>
-<optgroup label="ITEM">
-<option value="20000">Mỏ Neo</option>
-<option value="15000">Tushita</option>
-<option value="30000">Yama</option>
-<option value="35000">Tam Kiếm Full</option>
-<option value="30000">CDK</option>
+
+<optgroup label="🧰 ITEM">
+<option value="20000">Mỏ Neo (20k)</option>
+<option value="15000">Tushita (15k)</option>
+<option value="30000">Yama (30k)</option>
+<option value="20000">Tam Kiếm (Lẻ) (20k)</option>
+<option value="35000">Tam Kiếm (Full) (35k)</option>
+<option value="30000">CDK (30k)</option>
+</optgroup>
+
+<optgroup label="⚙️ UP V4">
+<option value="30000">Full Gear (30k)</option>
+<option value="20000">Gạt Cần (20k)</option>
+<option value="20000">Mảnh Gương (20k)</option>
+<option value="5000">1 Gear (5k)</option>
+</optgroup>
+
+<optgroup label="🧬 RACE">
+<option value="20000">Cyborg (20k)</option>
+<option value="20000">Ghoul (20k)</option>
+</optgroup>
+
+<optgroup label="🥋 MELEE">
+<option value="20000">Godhuman (20k)</option>
+<option value="15000">Melee V2 (15k)</option>
+</optgroup>
+
+<optgroup label="💰 BELI / FRAG">
+<option value="1000">500K Beli (1k)</option>
+<option value="1000">1K Fragment (1k)</option>
+</optgroup>
+
+<optgroup label="📈 MASTERY">
+<option value="45000">600 Mas (45k)</option>
+<option value="50000">600 Mas Gun (50k)</option>
 </optgroup>
 </select>
-<div class="price">Thành tiền: <span id="total">0đ</span></div>
-</div>
 
-<div class="card">
+<div class="price">Giá: <span id="price">0đ</span></div>
 <input id="rbx" placeholder="Username Roblox">
-
-<input id="rbx" placeholder="Login Roblox">
-  
 <textarea id="note" placeholder="Ghi chú"></textarea>
-<button onclick="buy()">🛒 MUA NGAY</button>
+<button onclick="buy()">🛒 MUA</button>
+</div>
+
+<!-- TOPUP -->
+<div class="card hide" id="topupBox">
+<h3>💳 Nạp tiền</h3>
+<select id="method">
+<option>Card</option>
+<option>ATM</option>
+<option>Bank</option>
+</select>
+<input id="amount" placeholder="Số tiền">
+<button onclick="topup()">Gửi nạp</button>
 </div>
 
 </div>
 
 <script>
-const WEBHOOK="PUT_WEBHOOK_CỦA_BẠN_VÀO_ĐÂY";
+const WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
-let users=JSON.parse(localStorage.getItem("snow_users"))||{};
-let user=localStorage.getItem("snow_user");
-if(!user) location.href="login.html";
+/* DATA */
+let users = JSON.parse(localStorage.snow_users || "{}");
+let orders = JSON.parse(localStorage.snow_orders || "[]");
+let topups = JSON.parse(localStorage.snow_topups || "[]");
+let user = localStorage.snow_user || "";
 
-uname.innerText=user;
-wallet.innerText=users[user].wallet.toLocaleString()+"đ";
+/* PRICE */
+goi.onchange = () =>
+price.innerText = Number(goi.value).toLocaleString()+"đ";
 
-goi.onchange=()=> total.innerText=Number(goi.value).toLocaleString()+"đ";
+/* SAVE */
+function save(){
+localStorage.snow_users = JSON.stringify(users);
+localStorage.snow_orders = JSON.stringify(orders);
+localStorage.snow_topups = JSON.stringify(topups);
+}
 
+/* AUTH */
+function login(){
+if(!users[lu.value] || users[lu.value].pass !== lp.value)
+return alert("Sai tài khoản hoặc mật khẩu");
+user = lu.value;
+localStorage.snow_user = user;
+init();
+}
+
+function register(){
+if(users[lu.value]) return alert("Tài khoản đã tồn tại");
+users[lu.value] = {pass: lp.value, wallet: 0};
+save(); alert("Đăng ký thành công");
+}
+
+function logout(){
+localStorage.removeItem("snow_user");
+location.reload();
+}
+
+/* INIT */
+function init(){
+loginBox.classList.add("hide");
+orderBox.classList.remove("hide");
+topupBox.classList.remove("hide");
+userBox.classList.remove("hide");
+uname.innerText = user;
+wallet.innerText = users[user].wallet.toLocaleString()+"đ";
+}
+
+/* BUY */
 function buy(){
-  const price=Number(goi.value);
-  if(price<=0) return alert("Chưa chọn gói");
-  if(users[user].wallet<price) return alert("Không đủ tiền");
+let p = Number(goi.value);
+if(p<=0) return alert("Chưa chọn gói");
+if(users[user].wallet < p) return alert("Không đủ tiền");
 
-  users[user].wallet-=price;
-  users[user].orders.push({goi:goi.options[goi.selectedIndex].text,price});
-  localStorage.setItem("snow_users",JSON.stringify(users));
-  wallet.innerText=users[user].wallet.toLocaleString()+"đ";
+users[user].wallet -= p;
+orders.push({
+user,
+goi: goi.options[goi.selectedIndex].text,
+price: p,
+status: "Đang làm"
+});
+save(); init();
 
-  fetch(WEBHOOK,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      username:"❄️ SNOW ORDER",
-      content:`👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${price.toLocaleString()}đ`
-    })
-  });
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ`
+})
+});
 
-  alert("✅ Đặt đơn thành công!");
+alert("✅ Đặt đơn thành công");
 }
-</script>
 
-<script>
-const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+/* TOPUP */
+function topup(){
+let a = Number(amount.value);
+if(a<=0) return alert("Nhập số tiền");
+topups.push({
+user, amount:a, method:method.value, status:"Chờ duyệt"
+});
+save();
 
-function guiDon(){
-  if(!currentUser) return alert("⚠️ Vui lòng đăng nhập!");
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`💳 NẠP ${method.value}\n👤 ${user}\n💰 ${a.toLocaleString()}đ`
+})
+});
 
-  const price = Number(goi.value);
-  if(price <= 0) return alert("⚠️ Chưa chọn gói!");
-
-  if(users[currentUser].wallet < price)
-    return alert("❌ Ví không đủ tiền!");
-
-  // 🔻 Trừ tiền
-  users[currentUser].wallet -= price;
-  saveUsers();
-  showWallet();
-
-  // 🚀 Gửi Discord
-  fetch(WEBHOOK_ORDER,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      username:"❄️ SNOW ORDER",
-      embeds:[{
-        title:"🧊 ĐƠN MỚI",
-        color:3447003,
-        fields:[
-          { name:"👤 Tài khoản Web", value: currentUser, inline:true },
-          { name:"🎮 Username Roblox", value: document.getElementById("user").value || "Không", inline:true },
-          { name:"📦 Gói", value: goi.options[goi.selectedIndex].text },
-          { name:"💰 Giá", value: price.toLocaleString("vi-VN")+"đ", inline:true },
-          { name:"📝 Ghi chú", value: document.getElementById("note").value || "Không" }
-        ],
-        footer:{ text:"SNOW • Auto Order" },
-        timestamp: new Date()
-      }]
-    })
-  });
-
-  alert("✅ Đã gửi đơn & trừ tiền ví!");
+alert("⏳ Đã gửi yêu cầu nạp");
 }
+
+if(user) init();
 </script>
 </body>
 </html>
