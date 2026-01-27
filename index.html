@@ -78,6 +78,10 @@ button.red{background:#ef4444;color:#fff}
 
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
@@ -93,6 +97,8 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+
+console.log("🔥 Firebase OK", firebase.app().options);
 </script>
 /* ================================================== */
 
