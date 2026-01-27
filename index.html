@@ -170,13 +170,20 @@ function guiDon(){
 </script>
 
 <script>
-const goi = document.getElementById("goi");
-const totalPrice = document.getElementById("totalPrice");
+let wallet = Number(localStorage.getItem("snow_wallet")) || 0;
 
-goi.addEventListener("change", function () {
-  const price = Number(this.value);
-  totalPrice.innerText = price.toLocaleString("vi-VN") + "đ";
-});
+function showWallet(){
+  document.getElementById("wallet").innerText =
+    wallet.toLocaleString("vi-VN") + "đ";
+}
+showWallet();
+
+// test cộng tiền (admin duyệt nạp)
+function congTien(amount){
+  wallet += amount;
+  localStorage.setItem("snow_wallet", wallet);
+  showWallet();
+}
 </script>
 </body>
 </html>
