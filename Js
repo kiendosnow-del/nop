@@ -4,3 +4,12 @@ if (price <= 0) {
 }
 const gia = document.getElementById("totalPrice").innerText;
 const ADMIN_PASSWORD = "snowadmin123"; // đổi tùy bạn
+const firebaseConfig = {
+  apiKey: "AIzaSyD-wt7xZrb-pVmE6MVumtCElOGl2woeVP8",
+  authDomain: "snow-shop-d8c02.firebaseapp.com",
+  projectId: "snow-shop-d8c02",
+  storageBucket: "snow-shop-d8c02.firebasestorage.app",
+  messagingSenderId: "7891801203",
+  appId: "1:7891801203:web:958c5e37bb65dbee884606",
+  measurementId: "G-M7CJZ8588Q"
+};
