@@ -90,35 +90,66 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </div>
 
 <!-- TOPUP -->
-<div class="card hide" id="topupCard">
-<h3>💳 Nạp CARD</h3>
+<script>
+function topupCard(){
+  if(!user) return alert("Vui lòng đăng nhập");
 
-<select id="cardType">
-<option>Viettel</option>
-<option>Mobifone</option>
-<option>Vinaphone</option>
-</select>
+  let amount = Number(cardAmount.value);
+  if(amount <= 0 || !cardCode.value || !cardSeri.value)
+    return alert("Nhập đầy đủ thông tin thẻ");
 
-<input id="cardAmount" placeholder="Mệnh giá (VD: 50k)">
-<input id="cardCode" placeholder="Mã thẻ">
-<input id="cardSeri" placeholder="Seri thẻ">
+  topups.push({
+    user,
+    type: "CARD",
+    card: cardType.value,
+    amount,
+    code: cardCode.value,
+    seri: cardSeri.value,
+    status: "Chờ duyệt"
+  });
 
-<button onclick="topupCard()">Gửi thẻ</button>
-</div>
+  save();
 
-<div class="card hide" id="topupBank">
-<h3>🏦 Nạp BANK / ATM</h3>
+  fetch(WEBHOOK,{
+    method:"POST",
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      content:`💳 NẠP CARD\n👤 ${user}\n📱 ${cardType.value}\n💰 ${amount.toLocaleString()}đ\n🧾 ${cardCode.value}`
+    })
+  });
 
-<p><b>STK:</b> 1373727384</p>
-<p><b>Ngân hàng:</b> Techcombank</p>
-<p><b>Chủ TK:</b> SNOW</p>
-<p><b>Nội dung:</b> SNOW + Tài khoản</p>
+  alert("⏳ Đã gửi thẻ – chờ admin duyệt");
+}
+</script>
 
-<input id="bankAmount" placeholder="Số tiền chuyển">
-<textarea id="bankNote" placeholder="Ghi chú (tuỳ chọn)"></textarea>
+<script>
+function topupBank(){
+  if(!user) return alert("Vui lòng đăng nhập");
 
-<button onclick="topupBank()">Tôi đã chuyển</button>
-</div>
+  let amount = Number(bankAmount.value);
+  if(amount <= 0) return alert("Nhập số tiền");
+
+  topups.push({
+    user,
+    type: "BANK",
+    amount,
+    note: bankNote.value || "",
+    status: "Chờ duyệt"
+  });
+
+  save();
+
+  fetch(WEBHOOK,{
+    method:"POST",
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      content:`🏦 NẠP BANK\n👤 ${user}\n💰 ${amount.toLocaleString()}đ\n📝 ${bankNote.value||"Không"}`
+    })
+  });
+
+  alert("⏳ Đã báo chuyển khoản – chờ admin duyệt");
+}
+</script>
 
 </div>
 
@@ -163,14 +194,18 @@ location.reload();
 }
 
 /* INIT */
+<script>
 function init(){
-loginBox.classList.add("hide");
-orderBox.classList.remove("hide");
-topupBox.classList.remove("hide");
-userBox.classList.remove("hide");
-uname.innerText = user;
-wallet.innerText = users[user].wallet.toLocaleString()+"đ";
+  loginBox.classList.add("hide");
+  orderBox.classList.remove("hide");
+  topupCard.classList.remove("hide");
+  topupBank.classList.remove("hide");
+  userBox.classList.remove("hide");
+
+  uname.innerText = user;
+  wallet.innerText = users[user].wallet.toLocaleString()+"đ";
 }
+</script>
 
 /* BUY */
 function buy(){
