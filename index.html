@@ -165,6 +165,15 @@ function guiDon(){
   alert("✅ Đơn đã gửi! Admin SNOW sẽ xử lý.");
 }
 </script>
+<script>
+const packageSelect = document.getElementById("package");
+const totalPrice = document.getElementById("totalPrice");
+
+packageSelect.addEventListener("change", function () {
+  const price = Number(this.value);
+  totalPrice.innerText = price.toLocaleString("vi-VN") + "đ";
+});
+</script>
 </body>
 </html>
 <script>
@@ -193,13 +202,4 @@ function napTien(amount){
 
   alert("📸 Đã gửi yêu cầu nạp. Admin duyệt trong Discord.");
 }
-</script>
-<script>
-const select = document.getElementById("package");
-const totalEl = document.getElementById("totalPrice");
-
-select.addEventListener("change", () => {
-  const price = Number(select.value);
-  totalEl.innerText = price.toLocaleString() + "đ";
-});
 </script>
