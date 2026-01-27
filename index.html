@@ -233,3 +233,28 @@ function refund(id,uid,price){
 </script>
 </body>
 </html>
+<div class="card hide" id="topupBox">
+<h3>💳 Nạp tiền</h3>
+
+<select id="type">
+  <option value="card">📱 Thẻ cào</option>
+  <option value="bank">🏦 Momo / Bank</option>
+</select>
+
+<div id="cardBox">
+  <input id="telco" placeholder="Nhà mạng (VIETTEL)">
+  <input id="amount" placeholder="Mệnh giá">
+  <input id="serial" placeholder="Serial">
+  <input id="code" placeholder="Mã thẻ">
+</div>
+
+<div id="bankBox" class="hide">
+  <p>📌 Nội dung CK: <b id="napCode"></b></p>
+  <img id="qr" width="220">
+</div>
+
+<button onclick="topup()">NẠP AUTO</button>
+
+<h4>📜 Lịch sử giao dịch</h4>
+<div id="history"></div>
+</div>
