@@ -68,3 +68,15 @@ db.collection("users").doc("UID_CUA_BAN").update({
   role:"admin",
   wallet:999999999
 })
+auth.onAuthStateChanged(async user=>{
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+
+  const doc = await db.collection("users").doc(user.uid).get();
+  if(!doc.exists || doc.data().role !== "admin"){
+    auth.signOut();
+    location.href="login.html";
+  }
+});
