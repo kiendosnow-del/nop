@@ -16,20 +16,6 @@ async function register(){
     });
 
   }catch(e){
-    authMsg.innerText = e.message;
-  }
-}
-async function login(){
-  try{
-    const emailValue = document.getElementById("email").value;
-    const passValue  = document.getElementById("password").value;
-
-    await auth.signInWithEmailAndPassword(
-      emailValue,
-      passValue
-    );
-
-  }catch(e){
-    authMsg.innerText = e.message;
+    document.getElementById("authMsg").innerText = e.message;
   }
 }
