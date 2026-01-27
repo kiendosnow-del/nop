@@ -62,10 +62,6 @@ footer{
 </div>
 
 <div class="card">
-💰 Ví SNOW: <b id="wallet">0đ</b>
-</div>
-
-<div class="card">
 <label>Chọn gói cày thuê</label>
 <select id="goi">
 <option value="0">-- Chọn gói --</option>
@@ -182,3 +178,41 @@ function guiDon(){
 
 </body>
 </html>
+<script>
+let currentUser = localStorage.getItem("snow_user");
+let users = JSON.parse(localStorage.getItem("snow_users")) || {};
+
+function saveUsers(){
+  localStorage.setItem("snow_users", JSON.stringify(users));
+}
+
+function register(){
+  const u = authUser.value;
+  const p = authPass.value;
+  if(!u || !p) return alert("Nhập đủ thông tin!");
+  if(users[u]) return alert("Tài khoản đã tồn tại!");
+
+  users[u] = { password:p, wallet:0 };
+  saveUsers();
+  alert("✅ Đăng ký thành công!");
+}
+
+function login(){
+  const u = authUser.value;
+  const p = authPass.value;
+  if(!users[u] || users[u].password !== p)
+    return alert("Sai tài khoản hoặc mật khẩu!");
+
+  currentUser = u;
+  localStorage.setItem("snow_user", u);
+  showWallet();
+  alert("✅ Đăng nhập thành công!");
+}
+
+function showWallet(){
+  if(!currentUser) return;
+  wallet.innerText =
+    users[currentUser].wallet.toLocaleString("vi-VN")+"đ";
+}
+showWallet();
+</script>
