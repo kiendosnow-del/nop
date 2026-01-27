@@ -2,146 +2,202 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Blox Fruits Shop</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNOW | Roblox Service</title>
+
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
 body{
-  margin:0;font-family:sans-serif;
-  background:#0b0f1a;color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#0b1220;
+    color:#fff;
 }
-.box{
-  max-width:400px;margin:80px auto;
-  background:#111827;padding:20px;
-  border-radius:12px;
+
+/* HEADER */
+header{
+    background:#0f1b34;
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid #1e90ff;
 }
-input,button{
-  width:100%;padding:12px;
-  margin-top:10px;border-radius:8px;
-  border:none;font-size:16px;
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    color:#1e90ff;
 }
-input{background:#1f2937;color:#fff}
-button{background:#22c55e;color:#000;font-weight:700;cursor:pointer}
-.hidden{display:none}
+nav a{
+    color:#fff;
+    text-decoration:none;
+    margin-left:18px;
+    font-size:15px;
+}
+nav a:hover{color:#1e90ff}
+
+/* HERO */
+.hero{
+    padding:80px 20px;
+    text-align:center;
+    background:linear-gradient(135deg,#1e90ff,#003c8f);
+}
+.hero h1{
+    font-size:40px;
+    margin-bottom:10px;
+}
+.hero p{
+    font-size:18px;
+    opacity:.95;
+}
+.hero .btn{
+    display:inline-block;
+    margin-top:25px;
+    padding:14px 32px;
+    background:#0b1220;
+    color:#fff;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
+.hero .btn:hover{background:#162447}
+
+/* SECTION */
+section{
+    padding:55px 20px;
+    max-width:1100px;
+    margin:auto;
+}
+section h2{
+    text-align:center;
+    margin-bottom:35px;
+    color:#1e90ff;
+}
+
+/* SERVICES */
+.services{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:22px;
+}
+.card{
+    background:#0f1b34;
+    border-radius:12px;
+    padding:24px;
+    text-align:center;
+    border:1px solid #1e90ff33;
+}
+.card h3{
+    margin-bottom:10px;
+    color:#6cb6ff;
+}
+.card p{
+    font-size:14px;
+    opacity:.9;
+}
+
+/* WHY */
+.why{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:22px;
+}
+.why div{
+    background:#0f1b34;
+    padding:22px;
+    border-radius:12px;
+    border-left:4px solid #1e90ff;
+}
+
+/* DISCORD */
+.discord{
+    text-align:center;
+    background:#0f1b34;
+    border-radius:16px;
+    padding:40px 20px;
+}
+.discord a{
+    display:inline-block;
+    margin-top:20px;
+    padding:14px 34px;
+    background:#1e90ff;
+    color:#fff;
+    font-weight:bold;
+    text-decoration:none;
+    border-radius:30px;
+}
+.discord a:hover{background:#1473cc}
+
+/* FOOTER */
+footer{
+    background:#060b18;
+    padding:25px;
+    text-align:center;
+    font-size:14px;
+    opacity:.85;
+}
+footer a{color:#1e90ff;text-decoration:none}
 </style>
 </head>
+
 <body>
 
-<div class="box" id="authBox">
-  <h2>🔐 Đăng nhập / Đăng ký</h2>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Mật khẩu">
-  <button onclick="register()">Đăng ký</button>
-  <button onclick="login()">Đăng nhập</button>
-  <p id="msg"></p>
-</div>
+<header>
+    <div class="logo">SNOW</div>
+    <nav>
+        <a href="#dichvu">Dịch vụ</a>
+        <a href="#why">Lý do chọn</a>
+        <a href="#discord">Discord</a>
+    </nav>
+</header>
 
-<div class="box hidden" id="appBox">
-  <h2>👤 Xin chào</h2>
-  <p>Email: <span id="userEmail"></span></p>
-  <p>💰 Ví: <b><span id="wallet">0</span> đ</b></p>
-  <button onclick="logout()">Đăng xuất</button>
+<section class="hero">
+    <h1>SNOW ROBLOX SERVICE</h1>
+    <p>Dịch vụ Roblox an toàn – uy tín – hỗ trợ tận tâm</p>
+    <a href="#dichvu" class="btn">KHÁM PHÁ DỊCH VỤ</a>
+</section>
 
-  <div id="adminBox" class="hidden">
-    <hr>
-    <h3>🛠 ADMIN PANEL</h3>
-    <p>Bạn là admin</p>
-  </div>
-</div>
+<section id="dichvu">
+    <h2>DỊCH VỤ CỦA SNOW</h2>
+    <div class="services">
+        <div class="card">
+            <h3>Cày thuê Blox Fruits</h3>
+            <p>Level – Item – Race – Melee<br>Làm tay 100%</p>
+        </div>
+        <div class="card">
+            <h3>Hỗ trợ người chơi</h3>
+            <p>Tư vấn build – hướng dẫn game – fix lỗi</p>
+        </div>
+        <div class="card">
+            <h3>Acc & Item tham khảo</h3>
+            <p>Thông tin minh bạch – rõ ràng</p>
+        </div>
+        <div class="card">
+            <h3>Dịch vụ mở rộng</h3>
+            <p>Cập nhật theo nhu cầu cộng đồng</p>
+        </div>
+    </div>
+</section>
 
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<section id="why">
+    <h2>VÌ SAO CHỌN SNOW?</h2>
+    <div class="why">
+        <div>❄️ Không hack – không tool – an toàn tài khoản</div>
+        <div>⚡ Làm nhanh – đúng hẹn – rõ tiến độ</div>
+        <div>🔐 Bảo mật tuyệt đối thông tin</div>
+        <div>💙 Hỗ trợ thân thiện 24/7</div>
+    </div>
+</section>
 
-/* 🔥 DÁN FIREBASE CONFIG CỦA BẠN VÀO ĐÂY */
-const firebaseConfig = {
-  apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
-  authDomain: "nott-9d55e.firebaseapp.com",
-  projectId: "nott-9d55e",
-  storageBucket: "nott-9d55e.firebasestorage.app",
-  messagingSenderId: "1013326079626",
-  appId: "1:1013326079626:web:1be873b3eb551b2d87af73",
-  measurementId: "G-RGJXCLEY7L"
-};
-/* ====================================== */
+<section id="discord" class="discord">
+    <h2>THAM GIA DISCORD SNOW</h2>
+    <p>Cập nhật dịch vụ – hỗ trợ nhanh – cộng đồng thân thiện</p>
+    <a href="https://discord.gg/z8fEcuaB" target="_blank">THAM GIA DISCORD</a>
+</section>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// ELEMENTS
-const emailEl = document.getElementById("email");
-const passEl = document.getElementById("password");
-const msg = document.getElementById("msg");
-const authBox = document.getElementById("authBox");
-const appBox = document.getElementById("appBox");
-const userEmail = document.getElementById("userEmail");
-const walletEl = document.getElementById("wallet");
-const adminBox = document.getElementById("adminBox");
-
-// AUTH
-window.register = async () => {
-  try{
-    const email = emailEl.value.trim();
-    const pass = passEl.value.trim();
-    const res = await createUserWithEmailAndPassword(auth,email,pass);
-    await setDoc(doc(db,"users",res.user.uid),{
-      email,
-      wallet:0,
-      role:"user",
-      created:Date.now()
-    });
-    msg.innerText="✅ Đăng ký thành công";
-  }catch(e){
-    msg.innerText=e.message;
-  }
-};
-
-window.login = async () => {
-  try{
-    await signInWithEmailAndPassword(auth,emailEl.value,passEl.value);
-  }catch(e){
-    msg.innerText=e.message;
-  }
-};
-
-window.logout = async () => {
-  await signOut(auth);
-};
-
-// STATE
-onAuthStateChanged(auth,async(user)=>{
-  if(!user){
-    authBox.classList.remove("hidden");
-    appBox.classList.add("hidden");
-    return;
-  }
-  authBox.classList.add("hidden");
-  appBox.classList.remove("hidden");
-  userEmail.innerText=user.email;
-
-  const ref = doc(db,"users",user.uid);
-  onSnapshot(ref,(snap)=>{
-    if(!snap.exists())return;
-    const d=snap.data();
-    walletEl.innerText=d.wallet;
-    if(d.role==="admin") adminBox.classList.remove("hidden");
-  });
-});
-</script>
+<footer>
+    <p>© 2026 SNOW Roblox Service</p>
+    <p>Discord: <a href="https://discord.gg/z8fEcuaB" target="_blank">discord.gg/z8fEcuaB</a></p>
+</footer>
 
 </body>
 </html>
