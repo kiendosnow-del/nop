@@ -82,23 +82,15 @@ button.red{background:#ef4444;color:#fff}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
-  authDomain: "nott-9d55e.firebaseapp.com",
-  projectId: "nott-9d55e",
-  storageBucket: "nott-9d55e.firebasestorage.app",
-  messagingSenderId: "1013326079626",
-  appId: "1:1013326079626:web:2b24a7753d09f97187af73",
-  measurementId: "G-93C68KND1B"
-};
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
+<script>
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
-const db = firebase.firestore();
-
-console.log("🔥 Firebase OK", firebase.app().options);
+const db   = firebase.firestore();
 </script>
 /* ================================================== */
 
