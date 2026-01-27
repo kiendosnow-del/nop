@@ -1,13 +1,20 @@
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{db}/documents {
+function register(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-    match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-    }
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(res=>{
+      db.collection("users").doc(res.user.uid).set({
+        email: email,
+        role: "user",
+        createdAt: Date.now()
+      });
 
-    match /orders/{id} {
-      allow read, write: if request.auth != null;
-    }
-  }
+      db.collection("wallets").doc(res.user.uid).set({
+        balance: 0
+      });
+    })
+    .catch(err=>{
+      alert(err.message);
+    });
 }
