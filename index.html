@@ -191,3 +191,12 @@ function napTien(amount){
   alert("📸 Đã gửi yêu cầu nạp. Admin duyệt trong Discord.");
 }
 </script>
+<script>
+const select = document.getElementById("package");
+const totalEl = document.getElementById("totalPrice");
+
+select.addEventListener("change", () => {
+  const price = Number(select.value);
+  totalEl.innerText = price.toLocaleString() + "đ";
+});
+</script>
