@@ -104,3 +104,34 @@ function capTien(){
   .then(()=>alert("✅ Đã cấp tiền"))
   .catch(()=>alert("❌ Lỗi"));
 }
+firebase.firestore()
+.collection("orders")
+.orderBy("time","desc")
+.onSnapshot(snap=>{
+  adminOrders.innerHTML="";
+  snap.forEach(doc=>{
+    const o = doc.data();
+    adminOrders.innerHTML += `
+      <div class="card">
+        👤 ${o.username}<br>
+        📦 ${o.goi}<br>
+        💰 ${o.price.toLocaleString()}đ<br>
+        📌 ${o.status}
+      </div>`;
+  });
+});
+firebase.auth().onAuthStateChanged(user=>{
+  firebase.firestore()
+  .collection("orders")
+  .where("uid","==",user.uid)
+  .onSnapshot(snap=>{
+    myOrders.innerHTML="";
+    snap.forEach(doc=>{
+      const o = doc.data();
+      myOrders.innerHTML += `
+        <div>
+          📦 ${o.goi} - ${o.status}
+        </div>`;
+    });
+  });
+});
