@@ -90,15 +90,34 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </div>
 
 <!-- TOPUP -->
-<div class="card hide" id="topupBox">
-<h3>💳 Nạp tiền</h3>
-<select id="method">
-<option>Card</option>
-<option>ATM</option>
-<option>Bank</option>
+<div class="card hide" id="topupCard">
+<h3>💳 Nạp CARD</h3>
+
+<select id="cardType">
+<option>Viettel</option>
+<option>Mobifone</option>
+<option>Vinaphone</option>
 </select>
-<input id="amount" placeholder="Số tiền">
-<button onclick="topup()">Gửi nạp</button>
+
+<input id="cardAmount" placeholder="Mệnh giá (VD: 50k)">
+<input id="cardCode" placeholder="Mã thẻ">
+<input id="cardSeri" placeholder="Seri thẻ">
+
+<button onclick="topupCard()">Gửi thẻ</button>
+</div>
+
+<div class="card hide" id="topupBank">
+<h3>🏦 Nạp BANK / ATM</h3>
+
+<p><b>STK:</b> 1373727384</p>
+<p><b>Ngân hàng:</b> Techcombank</p>
+<p><b>Chủ TK:</b> SNOW</p>
+<p><b>Nội dung:</b> SNOW + Tài khoản</p>
+
+<input id="bankAmount" placeholder="Số tiền chuyển">
+<textarea id="bankNote" placeholder="Ghi chú (tuỳ chọn)"></textarea>
+
+<button onclick="topupBank()">Tôi đã chuyển</button>
 </div>
 
 </div>
