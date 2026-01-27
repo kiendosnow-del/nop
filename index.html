@@ -37,15 +37,10 @@ button:hover{opacity:.9}
  font-size:26px;cursor:pointer;
  box-shadow:0 4px 12px rgba(0,0,0,.4);
 }
-#userBox button{background:#ff4d4d;margin-top:6px}
 </style>
 </head>
 
 <body>
-
-<audio id="clickSound">
-<source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3">
-</audio>
 
 <header>
 <h2>❄️ SNOW CÀY THUÊ</h2>
@@ -71,102 +66,89 @@ button:hover{opacity:.9}
 <div class="card hide" id="menu">
 <button onclick="tab('order')">🛒 Mua gói</button>
 <button onclick="tab('wallet')">💰 Ví tiền</button>
-<button onclick="tab('history')">📜 Lịch sử nạp</button>
+<button onclick="tab('history')">📜 Lịch sử</button>
 </div>
 
 <!-- ORDER -->
 <div class="card hide" id="orderBox">
 <select id="goi">
-<option value="0">-- Chọn gói cày thuê --</option>
-<optgroup label="🔰 LEVEL">
+<option value="0">-- Chọn gói --</option>
 <option value="20000">700 → 1500 (20k)</option>
-<option value="20000">1500 → 2800 (20k)</option>
 <option value="50000">0 → MAX (50k)</option>
-</optgroup>
-<optgroup label="🧰 ITEM">
-<option value="20000">Mỏ Neo (20k)</option>
-<option value="15000">Tushita (15k)</option>
-<option value="30000">Yama (30k)</option>
-<option value="35000">Tam Kiếm Full (35k)</option>
 <option value="30000">CDK (30k)</option>
-</optgroup>
-<optgroup label="⚙️ UP V4">
-<option value="30000">Full Gear (30k)</option>
-<option value="5000">1 Gear (5k)</option>
-</optgroup>
-<optgroup label="🥋 MELEE">
 <option value="20000">Godhuman (20k)</option>
-<option value="15000">Melee V2 (15k)</option>
-</optgroup>
-<optgroup label="💰 BELI / FRAG">
-<option value="1000">500K Beli (1k)</option>
-<option value="1000">1K Fragment (1k)</option>
-</optgroup>
-<optgroup label="📈 MASTERY">
-<option value="45000">600 Mas (45k)</option>
-<option value="50000">600 Mas Gun (50k)</option>
-</optgroup>
 </select>
 <div class="price">Giá: <span id="price">0đ</span></div>
-<textarea id="note" placeholder="Ghi chú"></textarea>
-<button onclick="buy()">🛒 MUA</button>
+<button onclick="buy()">MUA</button>
 </div>
 
 <!-- WALLET -->
 <div id="walletBox" class="hide">
+
 <div class="card">
-<h3>💳 Nạp Thẻ</h3>
-<input id="cardAmount" placeholder="Mệnh giá">
-<button onclick="topup('CARD')">Gửi thẻ</button>
+<h3>💳 Nạp Thẻ Cào</h3>
+<select id="cardNet">
+<option>Viettel</option>
+<option>Mobifone</option>
+<option>Vinaphone</option>
+</select>
+<select id="cardValue">
+<option value="10000">10.000</option>
+<option value="20000">20.000</option>
+<option value="50000">50.000</option>
+<option value="100000">100.000</option>
+</select>
+<input id="cardSeri" placeholder="Seri">
+<input id="cardCode" placeholder="Mã thẻ">
+<button onclick="topupCard()">Gửi thẻ</button>
+<p style="font-size:12px;color:#555">⚠️ Demo – sau gắn API Thesieure/Napthe247</p>
 </div>
+
 <div class="card">
-<h3>🏦 Nạp Bank</h3>
+<h3>🏦 Nạp Bank / QR</h3>
 <p><b>STK:</b> 1373727384 – Techcombank – SNOW</p>
 <input id="bankAmount" placeholder="Số tiền">
-<button onclick="topup('BANK')">Đã chuyển</button>
+<button onclick="topupBank()">Đã chuyển</button>
 </div>
+
 </div>
 
 <!-- HISTORY -->
 <div class="card hide" id="historyBox">
-<h3>📜 Lịch sử nạp</h3>
+<h3>📜 Lịch sử giao dịch</h3>
 <div id="history"></div>
 </div>
 
 </div>
 
-<div id="support" onclick="support()">💬</div>
+<div id="support" onclick="window.open('https://zalo.me/0373727384')">💬</div>
 
 <script>
-const click=()=>document.getElementById("clickSound").play();
-
 let users=JSON.parse(localStorage.users||"{}");
-let topups=JSON.parse(localStorage.topups||"[]");
+let logs=JSON.parse(localStorage.logs||"[]");
 let user=localStorage.user||"";
 
 goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
 
 function save(){
 localStorage.users=JSON.stringify(users);
-localStorage.topups=JSON.stringify(topups);
+localStorage.logs=JSON.stringify(logs);
 }
 
 function register(){
-click();
 if(users[lu.value]) return alert("Tài khoản tồn tại");
 users[lu.value]={pass:lp.value,wallet:0,roblox:lr.value};
 save();alert("Đăng ký thành công");
 }
 
 function login(){
-click();
 if(!users[lu.value]||users[lu.value].pass!==lp.value)
 return alert("Sai tài khoản");
 user=lu.value;localStorage.user=user;init();
 }
 
 function logout(){
-click();localStorage.removeItem("user");location.reload();
+localStorage.removeItem("user");location.reload();
 }
 
 function init(){
@@ -174,13 +156,12 @@ loginBox.classList.add("hide");
 menu.classList.remove("hide");
 userBox.classList.remove("hide");
 uname.innerText=user;
-rname.innerText=users[user].roblox||"Chưa có";
+rname.innerText=users[user].roblox;
 wallet.innerText=users[user].wallet.toLocaleString()+"đ";
 tab('order');
 }
 
 function tab(t){
-click();
 orderBox.classList.add("hide");
 walletBox.classList.add("hide");
 historyBox.classList.add("hide");
@@ -189,31 +170,32 @@ if(t==='wallet') walletBox.classList.remove("hide");
 if(t==='history'){
 historyBox.classList.remove("hide");
 history.innerHTML="";
-topups.filter(x=>x.user===user).forEach(x=>{
-history.innerHTML+=`<p>💳 ${x.type} - ${x.amount}đ - ${x.status}</p>`;
+logs.filter(x=>x.user===user).forEach(x=>{
+history.innerHTML+=`<p>• ${x.text}</p>`;
 });
 }
 }
 
 function buy(){
-click();
 let p=Number(goi.value);
-if(p<=0) return alert("Chưa chọn gói");
 if(users[user].wallet<p) return alert("Không đủ tiền");
 users[user].wallet-=p;
-save();init();alert("Đặt đơn thành công");
+logs.push({user,text:`Mua gói -${p.toLocaleString()}đ`});
+save();init();
 }
 
-function topup(type){
-click();
-let amount=type==="CARD"?cardAmount.value:bankAmount.value;
-topups.push({user,type,amount,status:"Chờ duyệt"});
-save();init();alert("Đã gửi yêu cầu nạp");
+function topupCard(){
+let v=Number(cardValue.value);
+users[user].wallet+=v;
+logs.push({user,text:`Nạp thẻ ${cardNet.value} +${v.toLocaleString()}đ`});
+save();init();alert("Nạp thẻ thành công (demo)");
 }
 
-function support(){
-click();
-window.open("https://zalo.me/0373727384","_blank");
+function topupBank(){
+let v=Number(bankAmount.value);
+users[user].wallet+=v;
+logs.push({user,text:`Nạp bank +${v.toLocaleString()}đ`});
+save();init();alert("Đã cộng tiền (demo)");
 }
 
 if(user) init();
