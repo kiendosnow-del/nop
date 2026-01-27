@@ -79,13 +79,21 @@ button.red{background:#ef4444;color:#fff}
 </div>
 
 <script>
-/* ================= FIREBASE CONFIG ================= */
-/* 🔥 DÁN FIREBASE CONFIG CỦA BẠN VÀO ĐÂY */
 const firebaseConfig = {
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PROJECT.firebaseapp.com",
-  projectId: "PROJECT_ID"
+  apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
+  authDomain: "nott-9d55e.firebaseapp.com",
+  projectId: "nott-9d55e",
+  storageBucket: "nott-9d55e.firebasestorage.app",
+  messagingSenderId: "1013326079626",
+  appId: "1:1013326079626:web:2b24a7753d09f97187af73",
+  measurementId: "G-93C68KND1B"
 };
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+</script>
 /* ================================================== */
 
 firebase.initializeApp(firebaseConfig);
