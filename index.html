@@ -3,21 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>❄️ SNOW | Cày Thuê Blox Fruits</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{margin:0;font-family:Arial;background:#f4f8ff}
 header{background:linear-gradient(135deg,#1e90ff,#00c6ff);color:#fff;padding:14px;text-align:center}
-.container{max-width:560px;margin:auto;padding:14px}
+.container{max-width:520px;margin:auto;padding:14px}
 .card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px}
 input,select,textarea,button{width:100%;padding:10px;margin:6px 0;border-radius:10px}
 button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
-.order{border:1px solid #ddd;border-radius:10px;padding:8px;margin:6px 0}
+.price{font-size:18px;font-weight:bold;color:#1e90ff}
 .hide{display:none}
-.price{font-weight:bold;color:#1e90ff}
+#supportBubble{
+ position:fixed;right:16px;bottom:16px;width:54px;height:54px;
+ border-radius:50%;background:#1e90ff;color:#fff;
+ display:flex;align-items:center;justify-content:center;
+ font-size:26px;cursor:pointer;
+ box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
 </style>
 </head>
 
 <body>
+
 <header>
 <h2>❄️ SNOW</h2>
 <div id="userBox" class="hide">
@@ -28,16 +35,15 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 <div class="container">
 
-<!-- AUTH -->
-<div class="card" id="authBox">
-<input id="email" placeholder="Email">
-<input id="pass" type="password" placeholder="Mật khẩu">
-<input id="username" placeholder="Tên hiển thị (chỉ khi đăng ký)">
+<!-- LOGIN -->
+<div class="card" id="loginBox">
+<input id="lu" placeholder="Tài khoản">
+<input id="lp" type="password" placeholder="Mật khẩu">
 <button onclick="login()">Đăng nhập</button>
 <button onclick="register()">Đăng ký</button>
 </div>
 
-<!-- USER ORDER -->
+<!-- ORDER -->
 <div class="card hide" id="orderBox">
 <select id="goi">
 <option value="0">-- Chọn gói cày thuê --</option>
@@ -52,26 +58,23 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <option value="20000">Mỏ Neo (20k)</option>
 <option value="15000">Tushita (15k)</option>
 <option value="30000">Yama (30k)</option>
-<option value="20000">Tam Kiếm Lẻ (20k)</option>
 <option value="35000">Tam Kiếm Full (35k)</option>
 <option value="30000">CDK (30k)</option>
 </optgroup>
 
 <optgroup label="⚙️ UP V4">
 <option value="30000">Full Gear (30k)</option>
-<option value="20000">Gạt Cần (20k)</option>
-<option value="20000">Mảnh Gương (20k)</option>
 <option value="5000">1 Gear (5k)</option>
-</optgroup>
-
-<optgroup label="🧬 RACE">
-<option value="20000">Cyborg (20k)</option>
-<option value="20000">Ghoul (20k)</option>
 </optgroup>
 
 <optgroup label="🥋 MELEE">
 <option value="20000">Godhuman (20k)</option>
 <option value="15000">Melee V2 (15k)</option>
+</optgroup>
+
+<optgroup label="💰 BELI / FRAG">
+<option value="1000">500K Beli (1k)</option>
+<option value="1000">1K Fragment (1k)</option>
 </optgroup>
 
 <optgroup label="📈 MASTERY">
@@ -82,179 +85,119 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 <div class="price">Giá: <span id="price">0đ</span></div>
 <input id="rbx" placeholder="Username Roblox">
-
-<input id="rbx" placeholder="Login Roblox">
-  
 <textarea id="note" placeholder="Ghi chú"></textarea>
 <button onclick="buy()">🛒 MUA</button>
 </div>
 
-<!-- ADMIN -->
-<div class="card hide" id="adminBox">
-<h3>🛠 ADMIN PANEL</h3>
-<div id="orderList"></div>
+<!-- TOPUP CARD -->
+<div class="card hide" id="topupCard">
+<h3>💳 Nạp Thẻ</h3>
+<select id="cardType">
+<option>Viettel</option>
+<option>Mobifone</option>
+<option>Vinaphone</option>
+</select>
+<input id="cardAmount" placeholder="Mệnh giá">
+<input id="cardCode" placeholder="Mã thẻ">
+<input id="cardSeri" placeholder="Seri">
+<button onclick="topupCard()">Gửi thẻ</button>
+</div>
+
+<!-- TOPUP BANK -->
+<div class="card hide" id="topupBank">
+<h3>🏦 Nạp Bank</h3>
+<p><b>STK:</b> 1373727384 – Techcombank – SNOW</p>
+<input id="bankAmount" placeholder="Số tiền">
+<textarea id="bankNote" placeholder="Nội dung chuyển khoản"></textarea>
+<button onclick="topupBank()">Đã chuyển</button>
 </div>
 
 </div>
 
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<div id="supportBubble" onclick="openSupport()">💬</div>
 
 <script>
-// ⚠️ DÁN CONFIG FIREBASE THẬT CỦA BẠN VÀO ĐÂY
-const firebaseConfig = {
-  apiKey: "AIzaSyBe1mlXDAnOWzqkMarFN5PKJmuM9YIKTs4",
-  authDomain: "nott-9d55e.firebaseapp.com",
-  projectId: "nott-9d55e",
-  storageBucket: "nott-9d55e.firebasestorage.app",
-  messagingSenderId: "1013326079626",
-  appId: "1:1013326079626:web:1be873b3eb551b2d87af73",
-  measurementId: "G-RGJXCLEY7L"
-};
-firebase.initializeApp(firebaseConfig);
+const WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-const WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+/* STORAGE */
+let users = JSON.parse(localStorage.snow_users||"{}");
+let orders = JSON.parse(localStorage.snow_orders||"[]");
+let topups = JSON.parse(localStorage.snow_topups||"[]");
+let user = localStorage.snow_user||"";
 
-goi.onchange = () => price.innerText = (+goi.value).toLocaleString()+"đ";
+/* PRICE */
+goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
 
-// AUTH STATE
-auth.onAuthStateChanged(user=>{
-  if(!user) return;
-  db.collection("users").doc(user.uid).onSnapshot(s=>{
-    const d=s.data();
-    authBox.classList.add("hide");
-    userBox.classList.remove("hide");
-    uname.innerText=d.username;
-    wallet.innerText=(d.wallet||0).toLocaleString()+"đ";
-
-    if(d.role==="admin"){
-      adminBox.classList.remove("hide");
-      orderBox.classList.add("hide");
-      loadOrders();
-    }else{
-      orderBox.classList.remove("hide");
-      adminBox.classList.add("hide");
-    }
-  });
-});
-
-// AUTH
-function register(){
-  if(!username.value) return alert("Nhập tên hiển thị");
-  auth.createUserWithEmailAndPassword(email.value,pass.value)
-  .then(r=>{
-    db.collection("users").doc(r.user.uid).set({
-      username:username.value,
-      wallet:0,
-      role:"user",
-      created:Date.now()
-    });
-    alert("✅ Đăng ký thành công");
-  }).catch(e=>alert(e.message));
+/* SAVE */
+function save(){
+localStorage.snow_users=JSON.stringify(users);
+localStorage.snow_orders=JSON.stringify(orders);
+localStorage.snow_topups=JSON.stringify(topups);
 }
 
+/* AUTH */
 function login(){
-  auth.signInWithEmailAndPassword(email.value,pass.value)
-  .catch(()=>alert("❌ Sai tài khoản hoặc mật khẩu"));
+if(!users[lu.value]||users[lu.value].pass!==lp.value)
+return alert("Sai tài khoản hoặc mật khẩu");
+user=lu.value; localStorage.snow_user=user; init();
+}
+function register(){
+if(users[lu.value]) return alert("Tài khoản đã tồn tại");
+users[lu.value]={pass:lp.value,wallet:0};
+save(); alert("Đăng ký thành công");
+}
+function logout(){
+localStorage.removeItem("snow_user");
+location.reload();
 }
 
-function logout(){auth.signOut();location.reload();}
-
-// BUY
-async function buy(){
-  const p=+goi.value;
-  if(!p) return alert("Chưa chọn gói");
-
-  const u=auth.currentUser;
-  const uRef=db.collection("users").doc(u.uid);
-
-  try{
-    await db.runTransaction(async t=>{
-      const us=await t.get(uRef);
-      if(us.data().wallet<p) throw "Thiếu tiền";
-      t.update(uRef,{wallet:us.data().wallet-p});
-      t.set(db.collection("orders").doc(),{
-        uid:u.uid,
-        username:us.data().username,
-        goi:goi.options[goi.selectedIndex].text,
-        price:p,
-        note:note.value,
-        status:"pending",
-        time:Date.now()
-      });
-    });
-
-    fetch(WEBHOOK,{
-      method:"POST",
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({content:`📦 ĐƠN MỚI\n👤 ${uname.innerText}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ`})
-    });
-
-    alert("✅ Đã tạo đơn");
-  }catch(e){alert(e)}
+/* INIT */
+function init(){
+loginBox.classList.add("hide");
+orderBox.classList.remove("hide");
+topupCard.classList.remove("hide");
+topupBank.classList.remove("hide");
+userBox.classList.remove("hide");
+uname.innerText=user;
+wallet.innerText=users[user].wallet.toLocaleString()+"đ";
 }
 
-// ADMIN
-function loadOrders(){
-  db.collection("orders").orderBy("time","desc").onSnapshot(s=>{
-    orderList.innerHTML="";
-    s.forEach(d=>{
-      const o=d.data();
-      orderList.innerHTML+=`
-      <div class="order">
-        👤 ${o.username}<br>
-        📦 ${o.goi}<br>
-        💰 ${o.price.toLocaleString()}đ<br>
-        📌 <b>${o.status}</b><br>
-        ${o.status==="pending"?`
-          <button onclick="done('${d.id}')">Duyệt</button>
-          <button onclick="refund('${d.id}','${o.uid}',${o.price})">Hoàn</button>
-        `:""}
-      </div>`;
-    });
-  });
+/* BUY */
+function buy(){
+let p=Number(goi.value);
+if(p<=0) return alert("Chưa chọn gói");
+if(users[user].wallet<p) return alert("Không đủ tiền");
+users[user].wallet-=p;
+
+let text=goi.options[goi.selectedIndex].text;
+orders.push({user,goi:text,price:p,status:"Đang làm"});
+save(); init();
+
+fetch(WEBHOOK,{method:"POST",headers:{'Content-Type':'application/json'},
+body:JSON.stringify({content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${text}\n💰 ${p}đ`})});
+
+alert("✅ Đặt đơn thành công");
 }
 
-function done(id){
-  db.collection("orders").doc(id).update({status:"done"});
+/* TOPUP */
+function topupCard(){
+topups.push({user,type:"CARD",card:cardType.value,
+amount:Number(cardAmount.value),
+code:cardCode.value,seri:cardSeri.value,status:"Chờ duyệt"});
+save(); alert("⏳ Đã gửi thẻ");
 }
-function refund(id,uid,price){
-  db.runTransaction(async t=>{
-    const u=db.collection("users").doc(uid);
-    const us=await t.get(u);
-    t.update(u,{wallet:us.data().wallet+price});
-    t.update(db.collection("orders").doc(id),{status:"refund"});
-  });
+function topupBank(){
+topups.push({user,type:"BANK",
+amount:Number(bankAmount.value),
+note:bankNote.value,status:"Chờ duyệt"});
+save(); alert("⏳ Đã báo chuyển khoản");
 }
+
+function openSupport(){
+window.open("https://zalo.me/0373727384","fb: https://www.facebook.com/share/17vMiH38z5/)
+
+if(user) init();
 </script>
+
 </body>
 </html>
-<div class="card hide" id="topupBox">
-<h3>💳 Nạp tiền</h3>
-
-<select id="type">
-  <option value="card">📱 Thẻ cào</option>
-  <option value="bank">🏦 Momo / Bank</option>
-</select>
-
-<div id="cardBox">
-  <input id="telco" placeholder="Nhà mạng (VIETTEL)">
-  <input id="amount" placeholder="Mệnh giá">
-  <input id="serial" placeholder="Serial">
-  <input id="code" placeholder="Mã thẻ">
-</div>
-
-<div id="bankBox" class="hide">
-  <p>📌 Nội dung CK: <b id="napCode"></b></p>
-  <img id="qr" width="220">
-</div>
-
-<button onclick="topup()">NẠP AUTO</button>
-
-<h4>📜 Lịch sử giao dịch</h4>
-<div id="history"></div>
-</div>
