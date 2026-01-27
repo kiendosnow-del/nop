@@ -2,68 +2,36 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>SNOW | Đăng nhập</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-
+<title>Đăng nhập | SNOW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{background:#0b1220;font-family:Arial;color:white}
-.box{
-  max-width:380px;margin:80px auto;
-  background:#111b34;padding:25px;border-radius:14px
-}
-input,button{
-  width:100%;padding:12px;margin-top:12px;
-  border-radius:8px;border:none;font-size:15px
-}
-button{background:#1e90ff;color:white;font-weight:bold}
-a{color:#6cb6ff;text-decoration:none}
+body{font-family:Arial;background:#f4f8ff;padding:20px}
+.card{max-width:400px;margin:auto;background:#fff;padding:20px;border-radius:14px}
+input,button{width:100%;padding:10px;margin:8px 0;border-radius:10px}
+button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </style>
 </head>
-
 <body>
 
-<div class="box">
-<h2>❄️ Đăng nhập SNOW</h2>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Mật khẩu">
-
-<button onclick="login()">ĐĂNG NHẬP</button>
-
-<p style="margin-top:15px">
-Chưa có tài khoản?
-<a href="register.html">Đăng ký</a>
-</p>
+<div class="card">
+<h2>🔐 Đăng nhập SNOW</h2>
+<input id="user" placeholder="Tên tài khoản">
+<input id="pass" type="password" placeholder="Mật khẩu">
+<button onclick="login()">Đăng nhập</button>
 </div>
 
 <script>
-firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
-});
+let users = JSON.parse(localStorage.getItem("snow_users")) || {};
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+function login(){
+  const u = user.value;
+  const p = pass.value;
+  if(!users[u] || users[u].password!==p)
+    return alert("Sai tài khoản hoặc mật khẩu");
 
-async function login(){
-  const e = email.value.trim();
-  const p = password.value;
-
-  const res = await auth.signInWithEmailAndPassword(e,p);
-  const uid = res.user.uid;
-
-  const u = await db.collection("users").doc(uid).get();
-  if(u.data().role === "admin"){
-    location.href = "admin.html";
-  }else{
-    location.href = "index.html";
-  }
+  localStorage.setItem("snow_user",u);
+  location.href="index.html";
 }
 </script>
-
 </body>
 </html>
