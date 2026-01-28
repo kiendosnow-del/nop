@@ -7,34 +7,90 @@
 
 <style>
 :root{
---bg:#0f172a;--card:#020617;--main:#38bdf8;--vip:#facc15
+--bg:#0b1220;
+--card:#111827;
+--main:#38bdf8;
+--vip:#facc15;
+--text:#e5e7eb;
+--muted:#9ca3af;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial;background:var(--bg);color:#fff}
-header{padding:16px;text-align:center;background:linear-gradient(135deg,#0ea5e9,#2563eb)}
-header h1{margin:0;font-size:22px}
-header b{color:#fff}
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text)}
 
-nav{display:flex;justify-content:space-around;background:#020617;padding:10px}
-nav button{background:none;border:none;color:#fff;font-size:14px}
+header{
+padding:18px;
+text-align:center;
+background:linear-gradient(135deg,#0284c7,#2563eb)
+}
+header h1{margin:0;font-size:22px}
+header .wallet{margin-top:6px;font-weight:bold}
+
+nav{
+display:flex;
+justify-content:space-around;
+background:#020617;
+padding:10px
+}
+nav button{
+background:none;border:none;
+color:#fff;font-size:14px
+}
 
 .container{max-width:520px;margin:auto;padding:12px}
-.card{background:#020617;border-radius:14px;padding:14px;margin-bottom:12px}
-h3{margin-top:0;color:#38bdf8}
+
+.card{
+background:var(--card);
+border-radius:16px;
+padding:14px;
+margin-bottom:14px;
+box-shadow:0 8px 20px rgba(0,0,0,.25)
+}
+
+h3{margin:0 0 10px;color:var(--main)}
 
 input,select,textarea,button{
-width:100%;padding:10px;margin:6px 0;border-radius:10px;
-border:none;font-size:15px
+width:100%;
+padding:11px;
+margin:6px 0;
+border-radius:12px;
+border:none;
+font-size:15px
 }
-input,select,textarea{background:#0f172a;color:#fff}
-button{background:var(--main);color:#000;font-weight:bold}
-.hidden{display:none}
-.small{font-size:12px;color:#9ca3af}
+input,select,textarea{
+background:#020617;
+color:#fff
+}
 
-.vip{background:linear-gradient(135deg,#facc15,#eab308);color:#000}
+button{
+background:var(--main);
+color:#000;
+font-weight:bold;
+cursor:pointer
+}
+
+.hidden{display:none}
+.small{font-size:12px;color:var(--muted)}
+
+.vip{
+background:linear-gradient(135deg,#facc15,#eab308);
+color:#000
+}
 .vip h3{color:#000}
 
-.log{font-size:13px;padding:6px 0;border-bottom:1px dashed #334155}
+.log{
+font-size:13px;
+padding:6px 0;
+border-bottom:1px dashed #334155
+}
+
+.badge{
+display:inline-block;
+padding:4px 8px;
+border-radius:999px;
+font-size:12px;
+background:#020617;
+color:#38bdf8
+}
 </style>
 </head>
 
@@ -42,12 +98,12 @@ button{background:var(--main);color:#000;font-weight:bold}
 
 <header>
 <h1>❄️ SNOW SHOP</h1>
-<div>Ví: <b id="sodu">0</b>đ</div>
+<div class="wallet">💰 Ví: <b id="sodu">0</b>đ</div>
 </header>
 
 <nav>
-<button onclick="tab('shop')">🛒 Shop</button>
-<button onclick="tab('nap')">💳 Nạp</button>
+<button onclick="tab('shop')">🛒 Thuê cày</button>
+<button onclick="tab('nap')">💳 Nạp tiền</button>
 <button onclick="tab('lichsu')">📜 Lịch sử</button>
 <button onclick="tab('admin')">🔐 Admin</button>
 </nav>
@@ -56,79 +112,88 @@ button{background:var(--main);color:#000;font-weight:bold}
 
 <!-- SHOP -->
 <div id="shop" class="card">
-<h3>🛒 GÓI CÀY THUÊ</h3>
+<h3>🛒 THUÊ CÀY BLOX FRUITS</h3>
+
 <input id="ten" placeholder="Tên Roblox / Discord">
 
 <select id="goi">
 <option value="">-- Chọn gói --</option>
 
 <optgroup label="🔰 LEVEL">
-<option value="Level 700|20000">Level 700 (20k)</option>
-<option value="700 → 1500|20000">700 → 1500 (20k)</option>
-<option value="1500 → 2800|20000">1500 → 2800 (20k)</option>
-<option value="0 → MAX|50000">0 → MAX (50k)</option>
+<option value="Level 700|20000">Level 700 – 20.000đ</option>
+<option value="700 → 1500|20000">700 → 1500 – 20.000đ</option>
+<option value="1500 → 2800|20000">1500 → 2800 – 20.000đ</option>
+<option value="0 → MAX|50000">0 → MAX – 50.000đ</option>
 </optgroup>
 
 <optgroup label="🎒 ITEM">
-<option value="Mỏ Neo|20000">Mỏ Neo (20k)</option>
-<option value="Tushita|15000">Tushita (15k)</option>
-<option value="Yama|30000">Yama (30k)</option>
-<option value="Tam Kiếm Lẻ|20000">Tam Kiếm Lẻ (20k)</option>
-<option value="Tam Kiếm Full|35000">Tam Kiếm Full (35k)</option>
-<option value="CDK|30000">CDK (30k)</option>
+<option value="Mỏ Neo|20000">Mỏ Neo – 20.000đ</option>
+<option value="Tushita|15000">Tushita – 15.000đ</option>
+<option value="Yama|30000">Yama – 30.000đ</option>
+<option value="Tam Kiếm Full|35000">Tam Kiếm Full – 35.000đ</option>
+<option value="CDK|30000">CDK – 30.000đ</option>
 </optgroup>
 
 <optgroup label="💠 UP V4">
-<option value="Full Gear|30000">Full Gear (30k)</option>
-<option value="Gạt Cần|20000">Gạt Cần (20k)</option>
-<option value="Mảnh Gương|20000">Mảnh Gương (20k)</option>
-<option value="1 Gear|5000">1 Gear (5k)</option>
+<option value="Full Gear|30000">Full Gear – 30.000đ</option>
+<option value="1 Gear|5000">1 Gear – 5.000đ</option>
 </optgroup>
 
 <optgroup label="🥋 MELEE">
-<option value="Godhuman|20000">Godhuman (20k)</option>
-<option value="Melee V2|15000">Melee V2 (15k)</option>
+<option value="Godhuman|20000">Godhuman – 20.000đ</option>
+<option value="Melee V2|15000">Melee V2 – 15.000đ</option>
 </optgroup>
 </select>
 
 <textarea id="note" placeholder="Ghi chú thêm (tuỳ chọn)"></textarea>
-<button onclick="datDon()">📤 ĐẶT ĐƠN</button>
+<button onclick="datDon()">🚀 ĐẶT ĐƠN NGAY</button>
 </div>
 
 <!-- NẠP -->
 <div id="nap" class="card hidden">
-<h3>💳 NẠP TIỀN</h3>
-<input id="nap_tien" type="number" placeholder="Số tiền">
-<button onclick="nap()">Nạp vào ví</button>
-<p class="small">✔ Sẵn sàng gắn Thesieure / Bank auto bằng PHP</p>
+<h3>💳 NẠP TIỀN VÀO VÍ</h3>
+
+<div class="badge">CARD / BANK SHOP LỚN</div>
+
+<input id="nap_tien" type="number" placeholder="Nhập số tiền muốn nạp">
+<button onclick="nap()">💎 Xác nhận nạp</button>
+
+<p class="small">
+✔ Shop hỗ trợ thẻ cào & chuyển khoản<br>
+✔ Sẵn sàng gắn Thesieure / QR Bank auto
+</p>
 </div>
 
 <!-- LỊCH SỬ -->
 <div id="lichsu" class="card hidden">
-<h3>📜 LỊCH SỬ</h3>
+<h3>📜 LỊCH SỬ GIAO DỊCH</h3>
 <div id="logs"></div>
 </div>
 
 <!-- ADMIN -->
 <div id="admin" class="card hidden vip">
-<h3>🔐 ADMIN</h3>
+<h3>🔐 ADMIN PANEL</h3>
 <input id="pass" placeholder="Mật khẩu admin">
 <button onclick="login()">Đăng nhập</button>
 
 <div id="adminBox" class="hidden">
-<input id="gift" type="number" placeholder="Gift tiền">
-<button onclick="gift()">🎁 Gift tiền</button>
+<input id="gift" type="number" placeholder="Gift tiền (không trừ shop)">
+<button onclick="gift()">🎁 GIFT TIỀN</button>
 </div>
 </div>
 
 </div>
 
 <script>
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+/* ===== DISCORD WEBHOOK ===== */
+const WEBHOOK_NAP = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+const WEBHOOK_DON = "https://discord.com/api/webhooks/1465766081548390534/iClDUAzau9xqGY3PFZTS6CT24uspMk8w5gLBvKyVyhjcxvuf-SD07-y9f9pC8Vax5lHE";
 
+/* ===== DATA ===== */
 let sodu = Number(localStorage.sodu||0);
 let logs = JSON.parse(localStorage.logs||"[]");
 
+/* ===== CORE ===== */
 function save(){
 localStorage.sodu=sodu;
 localStorage.logs=JSON.stringify(logs);
@@ -136,19 +201,19 @@ render();
 }
 
 function render(){
-document.getElementById("sodu").innerText=sodu;
-document.getElementById("logs").innerHTML=
-logs.map(l=>`<div class="log">• ${l}</div>`).join("");
+soduEl().innerText=sodu;
+logsEl().innerHTML=logs.map(l=>`<div class="log">• ${l}</div>`).join("");
 }
 render();
 
 function tab(id){
-["shop","nap","lichsu","admin"].forEach(t=>document.getElementById(t).classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
+["shop","nap","lichsu","admin"].forEach(t=>gid(t).classList.add("hidden"));
+gid(id).classList.remove("hidden");
 }
 
-function send(title,color,fields){
-fetch(DISCORD_WEBHOOK,{
+/* ===== DISCORD ===== */
+function send(webhook,title,color,fields){
+fetch(webhook,{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
@@ -158,16 +223,15 @@ embeds:[{title,color,fields,timestamp:new Date()}]
 });
 }
 
+/* ===== ACTION ===== */
 function datDon(){
-let ten=ten.value;
-let g=goi.value;
-if(!ten||!g)return alert("Thiếu thông tin");
-let [tenG,gia]=g.split("|");
+if(!ten.value||!goi.value)return alert("Thiếu thông tin");
+let [tenG,gia]=goi.value.split("|");
 if(sodu<gia)return alert("Không đủ tiền");
 sodu-=gia;
-logs.unshift(`Đặt ${tenG} -${gia}đ`);
-send("🛒 ĐƠN MỚI",3066993,[
-{name:"User",value:ten},
+logs.unshift(`Thuê ${tenG} -${gia}đ`);
+send(WEBHOOK_DON,"🛒 ĐƠN THUÊ CÀY",3066993,[
+{name:"User",value:ten.value},
 {name:"Gói",value:tenG},
 {name:"Giá",value:gia+"đ"}
 ]);
@@ -179,22 +243,31 @@ let t=Number(nap_tien.value);
 if(t<=0)return;
 sodu+=t;
 logs.unshift(`Nạp +${t}đ`);
-send("💳 NẠP TIỀN",15844367,[{name:"Số tiền",value:t+"đ"}]);
+send(WEBHOOK_NAP,"💳 NẠP TIỀN",15844367,[
+{name:"Số tiền",value:t+"đ"}
+]);
 save();
 }
 
 function login(){
 if(pass.value==="admin123")
-document.getElementById("adminBox").classList.remove("hidden");
+gid("adminBox").classList.remove("hidden");
 }
 
 function gift(){
 let t=Number(gift.value);
 sodu+=t;
 logs.unshift(`Admin gift +${t}đ`);
-send("🎁 ADMIN GIFT",15158332,[{name:"Số tiền",value:t+"đ"}]);
+send(WEBHOOK_NAP,"🎁 ADMIN GIFT",15158332,[
+{name:"Số tiền",value:t+"đ"}
+]);
 save();
 }
+
+/* ===== SHORT ===== */
+const gid=id=>document.getElementById(id);
+const soduEl=()=>gid("sodu");
+const logsEl=()=>gid("logs");
 </script>
 
 </body>
