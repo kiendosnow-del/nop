@@ -30,7 +30,6 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 <div class="container">
 
-<!-- LOGIN -->
 <div class="card" id="loginBox">
 <input id="lu" placeholder="Tài khoản">
 <input id="lp" type="password" placeholder="Mật khẩu">
@@ -38,22 +37,18 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="register()">Đăng ký</button>
 </div>
 
-<!-- ORDER -->
 <div class="card hide" id="orderBox">
 <select id="goi">
 <option value="">-- Chọn gói cày thuê --</option>
-
 <optgroup label="🔰 LEVEL">
 <option value="LV_700_1500">700 → 1500 (20k)</option>
 <option value="LV_1500_MAX">1500 → MAX (20k)</option>
 </optgroup>
-
 <optgroup label="🧰 ITEM">
 <option value="CDK">CDK (30k)</option>
 <option value="TAM_KIEM">Tam Kiếm Full (35k)</option>
 <option value="MO_NEO">Mỏ Neo (20k)</option>
 </optgroup>
-
 </select>
 
 <div class="price">Giá: <span id="price">—</span></div>
@@ -62,8 +57,7 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="buy()">🛒 ĐẶT ĐƠN</button>
 </div>
 
-<!-- NẠP CARD -->
-<div class="card hide">
+<div class="card hide" id="cardBox">
 <h3>💳 Nạp thẻ cào</h3>
 <select id="cardType">
 <option>VIETTEL</option>
@@ -76,8 +70,7 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="napCard()">NẠP THẺ</button>
 </div>
 
-<!-- NẠP BANK -->
-<div class="card hide">
+<div class="card hide" id="bankBox">
 <h3>🏦 Nạp Bank</h3>
 <input id="bankAmount" placeholder="Số tiền">
 <input id="bankNote" placeholder="Nội dung CK">
@@ -89,28 +82,31 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <script>
 const API="http://YOUR_VPS_IP:3000";
 const click=()=>document.getElementById("clickSound").play();
-let token="", priceMap={};
+let token="";
 
 goi.onchange=async()=>{
- const res=await fetch(API+"/pack/"+goi.value);
- const data=await res.json();
- price.innerText=data.price.toLocaleString()+"đ";
+ if(!goi.value) return price.innerText="—";
+ const r=await fetch(API+"/pack/"+goi.value);
+ const d=await r.json();
+ if(!d.ok) return price.innerText="Lỗi";
+ price.innerText=d.price.toLocaleString()+"đ";
 }
 
 async function login(){
  click();
- const res=await fetch(API+"/login",{method:"POST",headers:{'Content-Type':'application/json'},
+ const r=await fetch(API+"/login",{method:"POST",headers:{'Content-Type':'application/json'},
  body:JSON.stringify({u:lu.value,p:lp.value})});
- const d=await res.json();
+ const d=await r.json();
  if(!d.ok) return alert(d.msg);
- token=d.token; init(d.user);
+ token=d.token;
+ init(d.user);
 }
 
 async function register(){
  click();
- await fetch(API+"/register",{method:"POST",headers:{'Content-Type':'application/json'},
+ const r=await fetch(API+"/register",{method:"POST",headers:{'Content-Type':'application/json'},
  body:JSON.stringify({u:lu.value,p:lp.value})});
- alert("Đăng ký xong");
+ alert((await r.json()).msg);
 }
 
 function logout(){location.reload()}
@@ -118,41 +114,46 @@ function logout(){location.reload()}
 function init(u){
  loginBox.classList.add("hide");
  orderBox.classList.remove("hide");
- document.querySelectorAll(".card").forEach(c=>c.classList.remove("hide"));
+ cardBox.classList.remove("hide");
+ bankBox.classList.remove("hide");
+ userBox.classList.remove("hide");
  uname.innerText=u.username;
  wallet.innerText=u.wallet.toLocaleString()+"đ";
 }
 
 async function buy(){
  click();
- const res=await fetch(API+"/order",{method:"POST",
+ const r=await fetch(API+"/order",{method:"POST",
  headers:{'Content-Type':'application/json',Authorization:"Bearer "+token},
  body:JSON.stringify({pack:goi.value,roblox:rbx.value,note:note.value})});
- const d=await res.json();
+ const d=await r.json();
  alert(d.msg);
- wallet.innerText=d.wallet.toLocaleString()+"đ";
+ if(d.wallet!==undefined) wallet.innerText=d.wallet.toLocaleString()+"đ";
 }
 
 async function napCard(){
  click();
- const res=await fetch(API+"/topup/card",{method:"POST",
+ const r=await fetch(API+"/topup/card",{method:"POST",
  headers:{'Content-Type':'application/json',Authorization:"Bearer "+token},
  body:JSON.stringify({
  type:cardType.value,
- amount:cardAmount.value,
+ amount:+cardAmount.value,
  serial:cardSerial.value,
  code:cardCode.value
  })});
- alert((await res.json()).msg);
+ const d=await r.json();
+ alert(d.msg);
+ if(d.wallet) wallet.innerText=d.wallet.toLocaleString()+"đ";
 }
 
 async function napBank(){
  click();
- const res=await fetch(API+"/topup/bank",{method:"POST",
+ const r=await fetch(API+"/topup/bank",{method:"POST",
  headers:{'Content-Type':'application/json',Authorization:"Bearer "+token},
- body:JSON.stringify({amount:bankAmount.value,note:bankNote.value})});
- alert((await res.json()).msg);
+ body:JSON.stringify({amount:+bankAmount.value,note:bankNote.value})});
+ alert((await r.json()).msg);
 }
 </script>
+
 </body>
 </html>
