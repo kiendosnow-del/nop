@@ -1,60 +1,42 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!DOCTYPE html><html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>❄️ SNOW | Cày Thuê Blox Fruits</title>
+<title>❄️ SNOW | Shop Cày Thuê Blox Fruits</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{margin:0;font-family:Arial;background:#020617;color:#e5e7eb}
-header{background:linear-gradient(135deg,#1e90ff,#00c6ff);padding:14px;text-align:center}
+header{background:linear-gradient(135deg,#1e90ff,#2563eb);padding:14px;text-align:center}
 .container{max-width:520px;margin:auto;padding:14px}
-.box,.card{background:#020617;border:1px solid #1e293b;border-radius:14px;padding:14px;margin-bottom:14px}
-h2,h3{margin:0 0 10px;color:#38bdf8}
-.item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #334155}
-.item:last-child{border-bottom:none}
+.card{background:#020617;border:1px solid #1e293b;border-radius:14px;padding:14px;margin-bottom:14px}
 input,select,textarea,button{width:100%;padding:11px;margin:6px 0;border-radius:10px;border:1px solid #334155;background:#020617;color:#fff}
 button{background:linear-gradient(135deg,#38bdf8,#2563eb);border:none;font-weight:bold}
 .hide{display:none}
-.price{font-size:18px;color:#38bdf8;font-weight:bold}
 .log{border-bottom:1px dashed #334155;padding:6px 0;font-size:14px}
-footer{text-align:center;font-size:13px;opacity:.7}
+.price{color:#38bdf8;font-weight:bold}
+.admin{border:1px solid #facc15}
+small{opacity:.7}
+optgroup{color:#38bdf8}
 </style>
 </head>
-<body>
-
-<header>
+<body><header>
 <h2>❄️ SNOW – CÀY THUÊ BLOX FRUITS</h2>
-<div>Uy tín • Nhanh • Đúng gói</div>
-<div id="userBox" class="hide">
-👤 <b id="uname"></b> | 💰 <b id="wallet"></b>
-<button onclick="logout()">Đăng xuất</button>
-</div>
-</header>
-
-<div class="container">
-
-<!-- LOGIN -->
-<div class="card" id="loginBox">
+<div id="userBox" class="hide">👤 <b id="uname"></b> | 💰 <b id="wallet"></b></div>
+</header><div class="container"><!-- LOGIN --><div class="card" id="loginBox">
 <input id="lu" placeholder="Tài khoản">
 <input id="lp" type="password" placeholder="Mật khẩu">
 <button onclick="login()">Đăng nhập</button>
 <button onclick="register()">Đăng ký</button>
-</div>
-
-<!-- ĐẶT ĐƠN -->
-<div class="card hide" id="orderBox">
-<h3>🛒 ĐẶT GÓI CÀY THUÊ</h3>
-
+<button onclick="adminLogin()">Admin</button>
+</div><!-- USER --><div id="userArea" class="hide"><div class="card">
+<h3>🛒 ĐẶT ĐƠN CÀY THUÊ</h3>
 <select id="goi">
-<option value="">-- Chọn gói --</option>
-
+<option value="">-- Chọn gói cày --</option>
 <optgroup label="🔰 LEVEL">
 <option value="700 → 1500|20000">700 → 1500 (20k)</option>
 <option value="1500 → 2800|20000">1500 → 2800 (20k)</option>
 <option value="0 → MAX|50000">0 → MAX (50k)</option>
 </optgroup>
-
-<optgroup label="🧰 ITEM">
+<optgroup label="🎒 ITEM">
 <option value="Mỏ Neo|20000">Mỏ Neo (20k)</option>
 <option value="Tushita|15000">Tushita (15k)</option>
 <option value="Yama|30000">Yama (30k)</option>
@@ -62,156 +44,79 @@ footer{text-align:center;font-size:13px;opacity:.7}
 <option value="Tam Kiếm Full|35000">Tam Kiếm Full (35k)</option>
 <option value="CDK|30000">CDK (30k)</option>
 </optgroup>
-
-<optgroup label="⚙️ UP V4">
-<option value="Full Gear|30000">Full Gear (30k)</option>
-<option value="Gạt Cần|20000">Gạt Cần (20k)</option>
+<optgroup label="💠 UP V4">
+<option value="Full Gear V4|30000">Full Gear V4 (30k)</option>
+<option value="Gạt Cần V4|20000">Gạt Cần (20k)</option>
 <option value="Mảnh Gương|20000">Mảnh Gương (20k)</option>
-<option value="1 Gear|5000">1 Gear (5k)</option>
+<option value="1 Gear V4|5000">1 Gear (5k)</option>
 </optgroup>
-
 <optgroup label="🧬 RACE">
 <option value="Cyborg|20000">Cyborg (20k)</option>
 <option value="Ghoul|20000">Ghoul (20k)</option>
 </optgroup>
-
 <optgroup label="🥋 MELEE">
 <option value="Godhuman|20000">Godhuman (20k)</option>
 <option value="Melee V2|15000">Melee V2 (15k)</option>
 </optgroup>
-
 <optgroup label="💰 BELI / FRAG">
 <option value="500K Beli|1000">500K Beli (1k)</option>
 <option value="1K Fragment|1000">1K Fragment (1k)</option>
 </optgroup>
-
 <optgroup label="📈 MASTERY">
 <option value="600 Mas|45000">600 Mas (45k)</option>
 <option value="600 Mas Gun|50000">600 Mas Gun (50k)</option>
 </optgroup>
 </select>
-
-<div class="price">Giá: <span id="price">0đ</span></div>
-<input id="rbx" placeholder="Username Roblox">
+<div class="price" id="price">0đ</div>
+<input id="rbx" placeholder="Roblox Username">
 <textarea id="note" placeholder="Ghi chú"></textarea>
-<button onclick="buy()">🛒 XÁC NHẬN ĐƠN</button>
-</div>
-
-<!-- NẠP -->
-<div class="card hide" id="topupBox">
-<h3>💳 NẠP TIỀN</h3>
-<select id="amount">
-<option value="10000">10.000</option>
-<option value="20000">20.000</option>
-<option value="50000">50.000</option>
-<option value="100000">100.000</option>
-</select>
-<button onclick="nap()">GỬI YÊU CẦU NẠP</button>
-</div>
-
-<!-- LỊCH SỬ -->
-<div class="card hide" id="historyBox">
-<h3>📜 LỊCH SỬ NẠP</h3>
+<button onclick="buy()">Gửi đơn</button>
+</div><div class="card">
+<h3>💳 NẠP THẺ (ADMIN DUYỆT)</h3>
+<select id="telco"><option>Viettel</option><option>Mobifone</option><option>Vinaphone</option></select>
+<input id="seri" placeholder="Seri">
+<input id="code" placeholder="Mã thẻ">
+<select id="menhgia"><option value="10000">10.000</option><option value="20000">20.000</option><option value="50000">50.000</option></select>
+<button onclick="napThe()">Gửi thẻ</button>
+</div><div class="card">
+<h3>🏦 NẠP BANK</h3>
+<select id="bank"><option>MB Bank</option><option>Vietcombank</option><option>ACB</option></select>
+<input id="sotien" placeholder="Số tiền">
+<input id="nd" placeholder="Nội dung chuyển khoản">
+<button onclick="napBank()">Gửi bank</button>
+</div><div class="card">
+<h3>📜 LỊCH SỬ CỦA BẠN</h3>
 <div id="his"></div>
+</div></div><!-- ADMIN --><div id="adminArea" class="hide">
+<div class="card admin">
+<h3>🔐 DUYỆT NẠP</h3>
+<div id="pending"></div>
 </div>
-
+<div class="card admin">
+<h3>📊 LOG TOÀN HỆ THỐNG</h3>
+<div id="all"></div>
 </div>
-
-<footer>© SNOW Blox Fruits • VIP • Dark • Mobile</footer>
-
-<script>
-const DISCORD_WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
-
-let users=JSON.parse(localStorage.users||"{}");
-let history=JSON.parse(localStorage.history||"[]");
-let user=localStorage.user||"";
-
-goi.onchange=()=>{
-if(!goi.value){price.innerText="0đ";return;}
-let p=goi.value.split("|")[1];
-price.innerText=Number(p).toLocaleString()+"đ";
-};
-
-function save(){
-localStorage.users=JSON.stringify(users);
-localStorage.history=JSON.stringify(history);
-}
-
-function login(){
-if(!users[lu.value]||users[lu.value].pass!==lp.value) return alert("Sai tài khoản");
-user=lu.value;localStorage.user=user;init();
-}
-
-function register(){
-users[lu.value]={pass:lp.value,wallet:0};
-save();alert("Đăng ký thành công");
-}
-
-function logout(){localStorage.removeItem("user");location.reload();}
-
-function init(){
-loginBox.classList.add("hide");
-orderBox.classList.remove("hide");
-topupBox.classList.remove("hide");
-historyBox.classList.remove("hide");
-userBox.classList.remove("hide");
-uname.innerText=user;
-wallet.innerText=(users[user].wallet||0).toLocaleString()+"đ";
-loadHistory();
-}
-
-function buy(){
-let [ten,gia]=goi.value.split("|");
-gia=Number(gia);
-if(users[user].wallet<gia) return alert("Không đủ số dư");
-users[user].wallet-=gia;
-save();
-
-fetch(DISCORD_WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({content:
-`🧊 **ĐƠN CÀY THUÊ**
-👤 User: ${user}
-🎮 Roblox: ${rbx.value}
-📦 Gói: ${ten}
-💰 Giá: ${gia.toLocaleString()}đ
-📝 Note: ${note.value||"Không"}`
-})
-});
-
-alert("✅ Đã gửi đơn");
-init();
-}
-
-function nap(){
-let m=Number(amount.value);
-users[user].wallet+=m;
-history.push({user,amount:m,status:"✅ Đã cộng"});
-save();
-
-fetch(DISCORD_WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({content:
-`💳 **NẠP TIỀN**
-👤 ${user}
-💰 +${m.toLocaleString()}đ`
-})
-});
-
-loadHistory();
-alert("Đã cộng tiền (mô phỏng)");
-}
-
-function loadHistory(){
-his.innerHTML="";
-history.filter(h=>h.user===user).reverse()
-.forEach(h=>his.innerHTML+=`<div class="log">+${h.amount.toLocaleString()}đ - ${h.status}</div>`);
-}
-
-if(user) init();
-</script>
-
-</body>
+</div></div><script>
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+let users = JSON.parse(localStorage.users||"{}");
+let pendings = JSON.parse(localStorage.pendings||"[]");
+let logs = JSON.parse(localStorage.logs||"[]");
+let user = localStorage.user || "";
+goig = document.getElementById('goi');
+goig.onchange = ()=>price.innerText = goig.value ? Number(goig.value.split('|')[1]).toLocaleString()+"đ" : "0đ";
+function save(){localStorage.users=JSON.stringify(users);localStorage.pendings=JSON.stringify(pendings);localStorage.logs=JSON.stringify(logs)}
+function sendDiscord(msg){fetch(DISCORD_WEBHOOK,{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify({content:msg})})}
+function login(){if(!users[lu.value]||users[lu.value].pass!==lp.value)return alert("Sai tài khoản");user=lu.value;localStorage.user=user;initUser()}
+function register(){users[lu.value]={pass:lp.value,wallet:0};save();alert("Đăng ký thành công")}
+function adminLogin(){if(lu.value==='admin'&&lp.value==='admin123'){loginBox.classList.add('hide');adminArea.classList.remove('hide');loadAdmin()}}
+function initUser(){loginBox.classList.add('hide');userArea.classList.remove('hide');userBox.classList.remove('hide');uname.innerText=user;wallet.innerText=users[user].wallet.toLocaleString()+"đ";loadHistory()}
+function buy(){let [ten,gia]=goig.value.split('|');gia=Number(gia);if(users[user].wallet<gia)return alert('Không đủ tiền');users[user].wallet-=gia;logs.push('🧊 ĐƠN | '+user+' | '+ten+' | '+gia);sendDiscord('🧊 ĐƠN\nUser: '+user+'\nGói: '+ten+'\nGiá: '+gia);save();initUser()}
+function napThe(){pendings.push({type:'CARD',user,amount:menhgia.value});logs.push('💳 GỬI THẺ | '+user+' | '+menhgia.value);sendDiscord('💳 NẠP THẺ\nUser: '+user+'\n'+menhgia.value);save();alert('Đã gửi thẻ – chờ duyệt')}
+function napBank(){pendings.push({type:'BANK',user,amount:sotien.value});logs.push('🏦 GỬI BANK | '+user+' | '+sotien.value);sendDiscord('🏦 NẠP BANK\nUser: '+user+'\n'+sotien.value);save();alert('Đã gửi bank')}
+function loadHistory(){his.innerHTML='';logs.filter(l=>l.includes(user)).reverse().forEach(l=>his.innerHTML+='<div class=log>'+l+'</div>')}
+function loadAdmin(){pending.innerHTML='';pendings.forEach((p,i)=>{pending.innerHTML+=`<div class=log>${p.type} | ${p.user} | ${p.amount} <button onclick=duyet(${i})>✔</button> <button onclick=xoa(${i})>✖</button></div>`});all.innerHTML=logs.map(l=>'<div class=log>'+l+'</div>').join('')}
+function duyet(i){let p=pendings[i];users[p.user].wallet+=Number(p.amount);logs.push('✅ DUYỆT '+p.type+' | '+p.user+' +'+p.amount);sendDiscord('✅ DUYỆT\n'+p.user+' +'+p.amount);pendings.splice(i,1);save();loadAdmin()}
+function xoa(i){pendings.splice(i,1);save();loadAdmin()}
+if(user) initUser();
+</script></body>
 </html>
