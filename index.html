@@ -3,432 +3,604 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>❄️ SNOW SHOP | Cày Thuê Blox Fruits</title>
+<title>SNOW SHOP — Thuê Cày Blox Fruits</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 :root{
-  --bg:#0b1220;--card:#111827;--main:#38bdf8;--vip:#facc15;
-  --text:#e5e7eb;--muted:#9ca3af}
+  --bg:#0b1220;
+  --card:#0f1724;
+  --panel:#0b1220;
+  --muted:#9ca3af;
+  --text:#e5e7eb;
+  --accent:#06b6d4; /* cyan */
+  --accent-2:#facc15; /* yellow */
+  --glass: rgba(255,255,255,0.03);
+  --glass-2: rgba(255,255,255,0.02);
+  --success: #10b981;
+  --danger:#ef4444;
+  --radius:12px;
+}
+
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg,#061021 0%, var(--bg) 100%);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
+}
+
+/* Header */
 .header{
-  padding:18px;text-align:center;background:linear-gradient(135deg,#0284c7,#2563eb);
-  position:sticky;top:0;z-index:10
+  max-width:1200px;margin:18px auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;
 }
-.header .meta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;font-size:14px}
-nav{display:flex;flex-wrap:wrap;justify-content:space-around;background:#020617;padding:8px 6px;position:sticky;top:72px;z-index:9}
-nav button{background:none;border:none;color:#fff;font-weight:700;padding:8px;border-radius:8px;cursor:pointer}
-.container{max-width:720px;margin:16px auto;padding:12px}
-.card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 6px 18px rgba(0,0,0,0.35)}
-h3{color:var(--main);margin:4px 0 12px}
-input,select,textarea,button{
-  width:100%;padding:11px;margin:6px 0;border-radius:10px;border:none;background:#020617;color:#fff}
-textarea{min-height:90px;resize:vertical}
-.btn{background:var(--main);font-weight:700;cursor:pointer;border-radius:10px;padding:10px}
-.hidden{display:none}
-.small{font-size:13px;color:var(--muted)}
-.detailBox{white-space:pre-line;background:#020617;padding:10px;border-radius:10px;margin-top:6px}
-.log{font-size:13px;border-bottom:1px dashed #334155;padding:8px 0}
-.flex{display:flex;gap:10px}
-.col{flex:1}
-.center{text-align:center}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#081126;color:var(--main);font-weight:600;font-size:13px}
-.orderItem{border-radius:8px;padding:8px;margin-bottom:8px;background:linear-gradient(180deg,#07101a,#05080b);border:1px solid #0f1724}
-.footerNote{font-size:13px;color:var(--muted);margin-top:8px}
-@media (max-width:640px){
-  .container{padding:8px}
-  nav{font-size:14px}
+.brand{
+  display:flex;gap:12px;align-items:center;
 }
+.logo{
+  width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#2563eb);display:flex;align-items:center;justify-content:center;font-weight:800;color:#021022;font-size:20px;
+  box-shadow:0 6px 18px rgba(2,8,23,0.6);
+}
+.site-title{font-weight:700;font-size:18px}
+.header-meta{display:flex;gap:14px;align-items:center;font-size:14px}
+.header-meta .badge{background:var(--glass);padding:8px 12px;border-radius:999px;font-weight:600;color:var(--accent);}
+
+/* Nav */
+.nav{
+  max-width:1200px;margin:0 auto;background:transparent;padding:0 20px;display:flex;justify-content:center;
+}
+.nav .nav-inner{display:flex;gap:10px;align-items:center}
+.nav button{
+  background:transparent;border:none;color:var(--muted);padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;
+}
+.nav button.active, .nav button:hover{color:var(--text);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))}
+
+/* Main container */
+.container{max-width:1200px;margin:18px auto;padding:18px;display:grid;grid-template-columns:1fr 340px;gap:18px}
+@media (max-width:980px){ .container{grid-template-columns:1fr} }
+
+/* Left column */
+.panel{
+  background:linear-gradient(180deg,var(--panel),#071122);border-radius:var(--radius);padding:20px;box-shadow:0 12px 30px rgba(1,6,16,0.6);
+}
+
+/* Hero */
+.hero{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px;border-radius:12px;background:linear-gradient(90deg,rgba(6,182,212,0.06),rgba(58,123,213,0.03));}
+.hero-left{max-width:64%}
+.hero h1{margin:0;font-size:20px;color:var(--text);line-height:1.05}
+.hero p{margin:8px 0 0;color:var(--muted);font-size:14px}
+.hero-cta{margin-top:12px;display:flex;gap:10px}
+.btn{
+  border:0;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;
+  background:linear-gradient(90deg,var(--accent),#2563eb);color:#021022;
+  box-shadow:0 8px 20px rgba(6,182,212,0.08);
+}
+.btn-outline{
+  background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)
+}
+
+/* Packages grid */
+.packages{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+@media (max-width:980px){ .packages{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:640px){ .packages{grid-template-columns:1fr} }
+
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+  border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.03);
+}
+.package-title{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pkg-name{font-weight:800}
+.pkg-price{font-weight:800;color:var(--accent)}
+.pkg-desc{color:var(--muted);font-size:13px;margin-top:6px}
+.features{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.feature{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted)}
+.feature .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--accent),#60a5fa);margin-top:6px}
+
+/* Right column (sidebar) */
+.sidebar{display:flex;flex-direction:column;gap:12px}
+.wallet{padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.03)}
+.wallet h4{margin:0}
+.balance{font-weight:800;font-size:18px;color:var(--accent);margin-top:8px}
+
+/* Order history */
+.orders-list{padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.03)}
+.order-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass-2);}
+
+/* Footer */
+.footer{max-width:1200px;margin:18px auto;padding:14px;color:var(--muted);font-size:13px;text-align:center}
+
+/* Modal (simple) */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:60}
+.modal{width:100%;max-width:720px;background:linear-gradient(180deg,#071022,#05101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.modal h3{margin:0 0 12px}
+
+/* Small helpers */
+.kv{font-size:13px;color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Micro animations */
+.card, .package-card{transition:transform .18s ease, box-shadow .18s ease}
+.card:hover, .package-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.6)}
 </style>
 </head>
+
 <body>
-<header class="header">
-  <h1>❄️ SNOW SHOP</h1>
-  <div class="meta">
-    <div>👤 <b id="userLabel">Chưa đăng nhập</b></div>
-    <div>💰 Ví: <b id="sodu">0</b>đ</div>
-  </div>
-</header>
-
-<nav id="mainNav" aria-label="Chức năng chính">
-  <button data-tab="account">👤 Tài khoản</button>
-  <button data-tab="shop">🛒 Thuê cày</button>
-  <button data-tab="lichsu">📜 Lịch sử</button>
-</nav>
-
-<main class="container">
-
-  <!-- ACCOUNT -->
-  <section id="account" class="card" aria-labelledby="accountTitle">
-    <h3 id="accountTitle">👤 TÀI KHOẢN</h3>
-    <div id="authBox">
-      <input id="acc_user" placeholder="Tên đăng nhập (ví dụ: user01)" />
-      <input id="acc_pass" type="password" placeholder="Mật khẩu" />
-      <div class="flex">
-        <button id="btnLogin" class="btn col">Đăng nhập</button>
-        <button id="btnRegister" class="btn col" style="background:linear-gradient(135deg,#facc15,#eab308);color:#000">Đăng ký</button>
-      </div>
-      <p class="footerNote">Mật khẩu được băm bằng SHA-256 trước khi lưu (localStorage). Không dùng tài khoản thật quan trọng trên demo này.</p>
-    </div>
-
-    <div id="logoutBox" class="hidden">
-      <p>✅ Xin chào <b id="accName"></b></p>
-      <div class="flex">
-        <button id="btnLogout" class="btn col">Đăng xuất</button>
-        <button id="btnGoShop" class="btn col" style="background:#0ea5e9">Đi tới cửa hàng</button>
+  <header class="header" role="banner">
+    <div class="brand">
+      <div class="logo" aria-hidden>SS</div>
+      <div>
+        <div class="site-title">SNOW SHOP</div>
+        <div class="kv">Thuê cày Blox Fruits — Uy tín • Nhanh • An toàn</div>
       </div>
     </div>
-  </section>
 
-  <!-- SHOP -->
-  <section id="shop" class="card hidden" aria-labelledby="shopTitle">
-    <h3 id="shopTitle">🛒 THUÊ CÀY BLOX FRUITS</h3>
-
-    <input id="ten" placeholder="Tên Roblox / Discord" />
-    <input id="login" placeholder="Login Roblox" />
-
-    <select id="goi" aria-label="Chọn gói">
-      <option value="">-- Chọn gói cày thuê --</option>
-
-      <optgroup label="🔰 LEVEL">
-        <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh\n✔ Không đổi trái\n✔ 3–5 giờ">Level 700 – 20.000đ</option>
-        <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest\n✔ Không mất đồ\n✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
-        <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3\n✔ An toàn 100%\n✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
-        <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3\n✔ Không mất acc\n✔ 4–6 ngày">0 → MAX – 50.000đ</option>
-      </optgroup>
-
-      <optgroup label="🎒 ITEM">
-        <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest\n✔ Không mất đồ\n✔ 1 ngày">Mỏ Neo – 20.000đ</option>
-        <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest\n✔ An toàn\n✔ Trong ngày">Tushita – 15.000đ</option>
-        <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama\n✔ Không mất đồ\n✔ 1–2 ngày">Yama – 30.000đ</option>
-        <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm\n✔ Không rollback\n✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
-        <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK\n✔ Không mất item\n✔ 1–2 ngày">CDK – 30.000đ</option>
-      </optgroup>
-
-      <optgroup label="💠 V4">
-        <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear\n✔ Thức tỉnh V4\n✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
-        <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ\n✔ Nhanh gọn\n✔ Trong ngày">1 Gear V4 – 5.000đ</option>
-      </optgroup>
-
-      <optgroup label="🥋 MELEE">
-        <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman\n✔ Farm nguyên liệu\n✔ 1 ngày">Godhuman – 20.000đ</option>
-        <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2\n✔ Nhanh\n✔ Trong ngày">Melee V2 – 15.000đ</option>
-      </optgroup>
-    </select>
-
-    <div id="goiInfo" class="small"></div>
-    <div id="goiDetail" class="detailBox hidden"></div>
-
-    <textarea id="note" placeholder="Ghi chú thêm (các yêu cầu, pass, thời gian chơi... )"></textarea>
-    <div class="flex">
-      <button id="btnOrder" class="btn col">🚀 ĐẶT ĐƠN</button>
-      <button id="btnPreview" class="btn col" style="background:#0ea5e9">Xem trước đơn</button>
+    <div class="header-meta" aria-hidden>
+      <div class="badge" id="userLabelSmall">Chưa đăng nhập</div>
+      <div class="badge">Ví: <strong id="soduSmall">0</strong>đ</div>
     </div>
+  </header>
 
-    <p class="footerNote">Lưu ý: để gửi webhook tới Discord từ trình duyệt có thể bị chặn do CORS. Hệ thống sẽ cố gắng gửi, nếu thất bại bạn được cung cấp payload để gửi qua server/backend.</p>
-  </section>
+  <nav class="nav" role="navigation" aria-label="Chính">
+    <div class="nav-inner">
+      <button data-tab="home" class="active">Gói dịch vụ</button>
+      <button data-tab="account">Tài khoản</button>
+      <button data-tab="orders">Lịch sử</button>
+      <button id="contactBtn">Liên hệ</button>
+    </div>
+  </nav>
 
-  <!-- LỊCH SỬ -->
-  <section id="lichsu" class="card hidden" aria-labelledby="lichsuTitle">
-    <h3 id="lichsuTitle">📜 LỊCH SỬ ĐƠN</h3>
-    <div id="ordersList" class="small"></div>
-  </section>
+  <main class="container" role="main">
+    <!-- LEFT COLUMN: main content -->
+    <section class="panel" id="home">
+      <div class="hero" aria-labelledby="heroTitle">
+        <div class="hero-left">
+          <h1 id="heroTitle">Thuê cày Blox Fruits nhanh — an toàn — bảo mật</h1>
+          <p>Gói chuyên nghiệp, cày nhanh, không mất đồ. Chọn gói, đặt đơn, team sẽ liên hệ và hoàn thành theo cam kết.</p>
+          <div class="hero-cta">
+            <button class="btn" id="shopNow">Mua ngay</button>
+            <button class="btn btn-outline" id="howItWorks">Cách hoạt động</button>
+          </div>
+        </div>
+        <div class="hero-right" style="text-align:right">
+          <div class="kv">Hỗ trợ 24/7</div>
+          <div style="margin-top:10px" class="chips">
+            <div class="kv">✅ Thanh toán đa dạng</div>
+            <div class="kv">✅ Kỹ thuật chuyên nghiệp</div>
+          </div>
+        </div>
+      </div>
 
-</main>
+      <!-- Packages -->
+      <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Gói nổi bật</h3>
+        <div class="kv">Chọn gói phù hợp — Giá hiển thị là VNĐ</div>
+      </div>
+
+      <div class="packages" id="packagesGrid" role="list" aria-label="Danh sách gói">
+        <!-- Packages are inserted by JS -->
+      </div>
+
+      <section style="margin-top:18px" class="card">
+        <h4 style="margin:0 0 8px">Cam kết</h4>
+        <ul class="kv" style="margin:6px 0 0;padding-left:16px">
+          <li>Hoàn tiền nếu không thực hiện đúng cam kết</li>
+          <li>Không thay đổi pass/không lấy thông tin cá nhân</li>
+          <li>Hỗ trợ sau bán hàng và nhận phản hồi</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- RIGHT COLUMN: sidebar -->
+    <aside class="sidebar">
+      <div class="wallet card">
+        <h4 style="margin:0">Tài khoản</h4>
+        <div class="kv" id="acctInfo">Bạn chưa đăng nhập</div>
+        <div class="balance" id="walletBalance">0đ</div>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn" id="openAccountBtn">Đăng nhập / Đăng ký</button>
+          <button class="btn btn-outline" id="quickOrder">Đặt nhanh</button>
+        </div>
+      </div>
+
+      <div class="orders-list" id="recentOrders">
+        <h4 style="margin:0 0 8px">Đơn gần đây</h4>
+        <div id="ordersPreview" aria-live="polite"></div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin:0 0 8px">Liên hệ & hỗ trợ</h4>
+        <div class="kv">Discord / Telegram / Zalo</div>
+        <div style="margin-top:8px">
+          <button class="btn btn-outline" id="supportContact">Mở liên hệ</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="footer">© <span id="year"></span> SNOW SHOP — Thiết kế chuyên nghiệp cho dịch vụ thuê cày.</div>
+
+  <!-- Modal markup (hidden) -->
+  <div id="modalRoot" class="hidden" aria-hidden="true"></div>
 
 <script>
-/*
-  IMPORTANT:
-  - For production, DO NOT send webhooks directly from the browser; use a backend to avoid exposing tokens and handle CORS.
-  - Replace DISCORD_WEBHOOK with your backend endpoint or keep empty and the UI will show the payload for server-side use.
-*/
-const DISCORD_WEBHOOK = ""; // <-- Put backend endpoint here, not a raw discord webhook URL
+/* --------------------------------------------------------------------------
+   Professional shop front-end (single-file)
+   - Responsive package grid
+   - Modal order flow
+   - Local demo auth (localStorage + SHA-256)
+   - Orders saved to localStorage
+   - Webhook forwarding placeholder (do not put raw Discord webhook in client)
+   -------------------------------------------------------------------------- */
+
+/* CONFIG */
+const DISCORD_WEBHOOK = ""; // set to your backend endpoint that safely forwards to Discord (do not put raw discord webhook here)
+const PACKAGE_LIST = [
+  { id:'p_lvl700', name:'Level 700', price:20000, time:'3–5 giờ', desc:'Farm quest nhanh • Không đổi trái', features:['Farm quest tối ưu','Không mất đồ','Nhanh gọn'] },
+  { id:'p_700_1500', name:'700 → 1500', price:20000, time:'1–2 ngày', desc:'Farm boss + quest', features:['Farm boss','Không mất đồ','An toàn'] },
+  { id:'p_1500_2800', name:'1500 → 2800', price:20000, time:'2–3 ngày', desc:'Farm Sea 3 full', features:['Full Sea 3','An toàn cao','Hoàn thành đúng hạn'] },
+  { id:'p_max', name:'0 → MAX', price:50000, time:'4–6 ngày', desc:'Cày từ đầu tới max', features:['Full Sea 1-2-3','Không mất acc','Cam kết hoàn thành'] },
+  { id:'p_tushita', name:'Tushita', price:15000, time:'Trong ngày', desc:'Kiếm Tushita an toàn', features:['Full quest','Nhanh','An toàn'] },
+  { id:'p_tamkiem', name:'Tam Kiếm Full', price:35000, time:'2–3 ngày', desc:'True Triple Katana', features:['Full 3 kiếm','Không rollback','Tỉ lệ cao'] },
+];
 
 /* ---------- Utilities ---------- */
-const qs = sel => document.querySelector(sel);
-const qsa = sel => Array.from(document.querySelectorAll(sel));
 const el = id => document.getElementById(id);
-
-function formatCurrency(v){
-  if(!v) return "0";
-  return Number(v).toLocaleString("vi-VN");
-}
-
-async function sha256(message){
+const qsa = sel => Array.from(document.querySelectorAll(sel));
+function formatVND(n){ return (Number(n)||0).toLocaleString('vi-VN'); }
+async function sha256(msg){
   const enc = new TextEncoder();
-  const msgUint8 = enc.encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+  const buf = await crypto.subtle.digest('SHA-256', enc.encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-/* ---------- Simple local "backend" ---------- */
+/* ---------- Local "backend" (demo) ---------- */
 const DB = {
-  usersKey: 'snowshop_users_v1',
-  ordersKey: 'snowshop_orders_v1',
-  loadUsers(){
-    return JSON.parse(localStorage.getItem(this.usersKey) || '{}');
-  },
-  saveUsers(u){
-    localStorage.setItem(this.usersKey, JSON.stringify(u));
-  },
-  loadOrders(){
-    return JSON.parse(localStorage.getItem(this.ordersKey) || '[]');
-  },
-  saveOrders(list){
-    localStorage.setItem(this.ordersKey, JSON.stringify(list));
-  }
+  usersKey: 'snowshop_users_v2',
+  ordersKey: 'snowshop_orders_v2',
+  loadUsers(){ return JSON.parse(localStorage.getItem(this.usersKey)||'{}'); },
+  saveUsers(u){ localStorage.setItem(this.usersKey, JSON.stringify(u)); },
+  loadOrders(){ return JSON.parse(localStorage.getItem(this.ordersKey)||'[]'); },
+  saveOrders(o){ localStorage.setItem(this.ordersKey, JSON.stringify(o)); }
 };
 
-function currentUser(){
-  return JSON.parse(sessionStorage.getItem('snow_current_user') || 'null');
-}
-function setCurrentUser(u){
-  if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u));
-  else sessionStorage.removeItem('snow_current_user');
-}
+function currentUser(){ return JSON.parse(sessionStorage.getItem('snow_current_user')||'null'); }
+function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
 
-/* ---------- UI: tabs ---------- */
-qsa('nav button').forEach(btn => btn.addEventListener('click', () => {
-  const tab = btn.dataset.tab;
-  openTab(tab);
-}));
+/* ---------- Initial render ---------- */
+(function bootstrap(){
+  el('year').textContent = new Date().getFullYear();
+  renderPackages();
+  renderHeaderAuth();
+  renderOrdersPreview();
+  attachNav();
+})();
 
-function openTab(name){
-  qsa('main > section').forEach(s => s.classList.add('hidden'));
-  const target = el(name);
-  if(target) target.classList.remove('hidden');
-  // Optional: focus first input
-  const fi = target && target.querySelector('input,select,textarea,button');
-  if(fi) fi.focus();
-}
-
-/* ---------- Account logic ---------- */
-async function registerAcc(){
-  const user = el('acc_user').value.trim();
-  const pass = el('acc_pass').value;
-  if(!user || !pass){ alert('Nhập tên đăng nhập và mật khẩu'); return; }
-  const users = DB.loadUsers();
-  if(users[user]){ alert('Tài khoản đã tồn tại'); return; }
-  const passHash = await sha256(pass);
-  users[user] = { username: user, passHash, balance: 0 };
-  DB.saveUsers(users);
-  alert('Đăng ký thành công! Vui lòng đăng nhập.');
-  el('acc_pass').value = '';
+/* ---------- Navigation / Tabs ---------- */
+function attachNav(){
+  qsa('.nav-inner button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      qsa('.nav-inner button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab || btn.textContent.toLowerCase();
+      // show panels
+      qsa('main .panel, main aside').forEach(n=>n.style.display='block');
+      if(tab === 'account'){ openAccountModal(); }
+      if(tab === 'orders'){ openOrdersPanel(); }
+      if(tab === 'home'){ /* nothing */ }
+    });
+  });
+  el('shopNow').addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+  el('howItWorks').addEventListener('click', ()=>alert('1) Chọn gói • 2) Đặt đơn • 3) Kỹ thuật thi hành • 4) Hoàn thành và nhận phản hồi'));
+  el('openAccountBtn').addEventListener('click', openAccountModal);
+  el('quickOrder').addEventListener('click', ()=>openQuickOrderModal());
+  el('contactBtn').addEventListener('click', ()=>alert('Liên hệ: Discord / Telegram / Zalo (thêm sau)'));
+  el('supportContact').addEventListener('click', ()=>alert('Mở kênh hỗ trợ...'));
 }
 
-async function loginAcc(){
-  const user = el('acc_user').value.trim();
-  const pass = el('acc_pass').value;
-  if(!user || !pass){ alert('Nhập tên đăng nhập và mật khẩu'); return; }
-  const users = DB.loadUsers();
-  const record = users[user];
-  if(!record){ alert('Không tìm thấy tài khoản'); return; }
-  const hash = await sha256(pass);
-  if(hash !== record.passHash){ alert('Mật khẩu sai'); return; }
-  setCurrentUser({ username:user });
-  refreshAuthUI();
-  alert('Đăng nhập thành công');
+/* ---------- Packages rendering ---------- */
+function renderPackages(){
+  const grid = el('packagesGrid');
+  grid.innerHTML = '';
+  PACKAGE_LIST.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card package-card';
+    card.setAttribute('role','listitem');
+    card.innerHTML = `
+      <div class="package-title">
+        <div>
+          <div class="pkg-name">${escapeHtml(p.name)}</div>
+          <div class="kv">${escapeHtml(p.desc)}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pkg-price">${formatVND(p.price)}₫</div>
+          <div class="kv" style="font-size:12px">${p.time}</div>
+        </div>
+      </div>
+      <div class="features" aria-hidden>
+        ${p.features.map(f=>`<div class="feature"><div class="dot"></div>${escapeHtml(f)}</div>`).join('')}
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn" data-buy="${p.id}">MUA NGAY</button>
+        <button class="btn btn-outline" data-info="${p.id}">CHI TIẾT</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Attach listeners
+  qsa('[data-buy]').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      const id = e.currentTarget.getAttribute('data-buy');
+      const pkg = PACKAGE_LIST.find(x=>x.id===id);
+      openOrderModal(pkg);
+    });
+  });
+  qsa('[data-info]').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      const id = e.currentTarget.getAttribute('data-info');
+      const pkg = PACKAGE_LIST.find(x=>x.id===id);
+      alert(`${pkg.name}\n\nMô tả: ${pkg.desc}\nThời gian: ${pkg.time}\nGiá: ${formatVND(pkg.price)}₫\n\nTính năng:\n- ${pkg.features.join('\n- ')}`);
+    });
+  });
 }
 
-function logout(){
-  setCurrentUser(null);
-  refreshAuthUI();
-}
-
-function refreshAuthUI(){
-  const cur = currentUser();
-  if(cur){
-    el('authBox').classList.add('hidden');
-    el('logoutBox').classList.remove('hidden');
-    el('accName').textContent = cur.username;
-    el('userLabel').textContent = cur.username;
-    // show balance
-    const users = DB.loadUsers();
-    const bal = (users[cur.username] && users[cur.username].balance) || 0;
-    el('sodu').textContent = formatCurrency(bal);
-  } else {
-    el('authBox').classList.remove('hidden');
-    el('logoutBox').classList.add('hidden');
-    el('userLabel').textContent = 'Chưa đăng nhập';
-    el('sodu').textContent = '0';
+/* ---------- Modal factory ---------- */
+function showModal(contentHTML, {closeOnBackdrop=true} = {}){
+  // create backdrop
+  const root = el('modalRoot');
+  root.innerHTML = '';
+  root.classList.remove('hidden');
+  root.style.position = 'fixed';
+  root.style.inset = 0;
+  root.style.zIndex = 60;
+  root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">${contentHTML}</div>`;
+  // backdrop close
+  if(closeOnBackdrop){
+    document.getElementById('modalBackdrop').addEventListener('click', (ev)=>{
+      if(ev.target.id === 'modalBackdrop') hideModal();
+    });
   }
 }
+function hideModal(){ const root = el('modalRoot'); root.innerHTML=''; root.classList.add('hidden'); }
 
-/* ---------- Shop interactions ---------- */
-const goiEl = el('goi');
-goiEl.addEventListener('change', () => {
-  const opt = goiEl.selectedOptions[0];
-  if(!opt || !opt.value){ el('goiInfo').textContent=''; el('goiDetail').classList.add('hidden'); return; }
-  el('goiInfo').textContent = opt.dataset.info || '';
-  const detail = opt.dataset.detail || opt.getAttribute('data-detail') || '';
-  el('goiDetail').textContent = detail.trim();
-  el('goiDetail').classList.toggle('hidden', !detail);
-});
-
-el('btnPreview').addEventListener('click', previewOrder);
-el('btnOrder').addEventListener('click', datDon);
-el('btnGoShop').addEventListener('click', () => openTab('shop'));
-el('btnLogout').addEventListener('click', logout);
-el('btnLogin').addEventListener('click', loginAcc);
-el('btnRegister').addEventListener('click', registerAcc);
-
-/* ---------- Orders ---------- */
-function parsePackageValue(val){
-  // format: "Name|price"
-  const [name, price] = (val || '').split('|');
-  return { name: name || '', price: Number(price||0) || 0 };
+/* ---------- Account modal (login/register) ---------- */
+function openAccountModal(){
+  const html = `
+    <div class="modal" role="document" style="max-width:480px">
+      <h3>Tài khoản</h3>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="m_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)"/>
+        <input id="m_pass" type="password" placeholder="Mật khẩu" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)"/>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn" id="m_login">Đăng nhập</button>
+        <button class="btn btn-outline" id="m_register">Đăng ký</button>
+        <button class="btn btn-outline" id="m_close">Đóng</button>
+      </div>
+      <p class="kv" style="margin-top:10px">Lưu ý: demo lưu dữ liệu cục bộ. Không dùng tài khoản thực quan trọng.</p>
+    </div>
+  `;
+  showModal(html);
+  el('m_close').addEventListener('click', hideModal);
+  el('m_register').addEventListener('click', async ()=>{
+    const user = el('m_user').value.trim(); const pass = el('m_pass').value;
+    if(!user || !pass){ alert('Nhập tên và mật khẩu'); return; }
+    const users = DB.loadUsers();
+    if(users[user]){ alert('Tài khoản đã tồn tại'); return; }
+    const passHash = await sha256(pass);
+    users[user] = { username:user, passHash, balance:0 };
+    DB.saveUsers(users);
+    alert('Đăng ký thành công. Vui lòng đăng nhập.');
+    el('m_pass').value = '';
+  });
+  el('m_login').addEventListener('click', async ()=>{
+    const user = el('m_user').value.trim(); const pass = el('m_pass').value;
+    if(!user || !pass){ alert('Nhập tên và mật khẩu'); return; }
+    const users = DB.loadUsers(); const rec = users[user];
+    if(!rec){ alert('Không tìm thấy tài khoản'); return; }
+    const h = await sha256(pass);
+    if(h !== rec.passHash){ alert('Mật khẩu sai'); return; }
+    setCurrentUser({ username:user });
+    hideModal();
+    renderHeaderAuth();
+    alert('Đăng nhập thành công');
+  });
 }
 
+/* ---------- Order modal / flow ---------- */
+function openOrderModal(pkg){
+  const cur = currentUser();
+  const html = `
+    <div class="modal" role="document">
+      <h3>Đặt gói — ${escapeHtml(pkg.name)} <span style="float:right;color:var(--accent)">${formatVND(pkg.price)}₫</span></h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <label class="kv">Tên (Roblox / Discord)</label>
+        <input id="o_name" placeholder="Tên người nhận / Discord" style="padding:10px;border-radius:8px"/>
+        <label class="kv">Login Roblox</label>
+        <input id="o_login" placeholder="Login Roblox" style="padding:10px;border-radius:8px"/>
+        <label class="kv">Ghi chú</label>
+        <textarea id="o_note" placeholder="Mô tả chi tiết, pass (nếu cần), thời gian ưu tiên..." style="padding:10px;border-radius:8px"></textarea>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn" id="o_confirm">XÁC NHẬN ĐẶT</button>
+        <button class="btn btn-outline" id="o_cancel">HỦY</button>
+      </div>
+      <p class="kv" style="margin-top:10px">Sau khi đặt, đơn hàng sẽ được lưu và gửi tới hệ thống. Bạn sẽ nhận được phản hồi từ team.</p>
+    </div>
+  `;
+  showModal(html);
+  if(cur) el('o_name').value = cur.username;
+  el('o_cancel').addEventListener('click', hideModal);
+  el('o_confirm').addEventListener('click', async ()=>{
+    const curUser = currentUser();
+    if(!curUser){ if(!confirm('Bạn chưa đăng nhập. Đăng nhập bây giờ?')) return; else { hideModal(); openAccountModal(); return; } }
+    const name = el('o_name').value.trim(); const login = el('o_login').value.trim(); const note = el('o_note').value.trim();
+    if(!name || !login){ alert('Nhập tên và login'); return; }
+    // confirm
+    if(!confirm(`Xác nhận đặt ${pkg.name} — ${formatVND(pkg.price)}₫ ?`)) return;
+    const order = {
+      id: 'o_' + Date.now(),
+      username: curUser.username,
+      name, login,
+      package: pkg.name,
+      price: pkg.price,
+      note,
+      createdAt: Date.now(),
+      sent:false
+    };
+    // Save locally
+    const list = DB.loadOrders(); list.unshift(order); DB.saveOrders(list);
+    renderOrdersPreview();
+    hideModal();
+    // Try to send to backend webhook
+    try{
+      await sendOrderToWebhook(order);
+      // mark as sent
+      const list2 = DB.loadOrders();
+      const idx = list2.findIndex(x=>x.id===order.id);
+      if(idx>=0){ list2[idx].sent=true; DB.saveOrders(list2); renderOrdersPreview(); }
+      alert('Đơn hàng đã gửi tới hệ thống!');
+    }catch(err){
+      console.warn('Webhook send failed', err);
+      // copy payload for admin/backend manual forwarding (demo)
+      const payload = JSON.stringify(buildOrderPayload(order), null, 2);
+      try{ await navigator.clipboard.writeText(payload); }catch(e){}
+      alert('Không thể gửi tự động. Payload đã được sao chép vào clipboard để gửi qua backend.');
+    }
+  });
+}
+
+/* Quick order modal (preselect first package) */
+function openQuickOrderModal(){
+  openOrderModal(PACKAGE_LIST[0]);
+}
+
+/* Build order payload for backend */
 function buildOrderPayload(order){
   return {
+    id: order.id,
     username: order.username,
     name: order.name,
     login: order.login,
     package: order.package,
     price: order.price,
     note: order.note,
-    created_at: order.createdAt
+    created_at: new Date(order.createdAt).toISOString()
   };
 }
 
-function saveOrder(order){
-  const list = DB.loadOrders();
-  list.unshift(order);
-  DB.saveOrders(list);
-  renderOrdersList();
-}
-
-/* Try to send to webhook (CORS likely blocked if direct discord webhook used). */
+/* Try to forward to DISCORD_WEBHOOK (which should be a safe backend endpoint) */
 async function sendOrderToWebhook(order){
-  if(!DISCORD_WEBHOOK) throw new Error('No webhook configured on client');
-  // Expect DISCORD_WEBHOOK to be a backend endpoint that will forward to Discord
+  if(!DISCORD_WEBHOOK) throw new Error('No webhook configured');
   const payload = {
     embeds: [{
-      title: `Đơn hàng mới: ${order.package}`,
+      title: `Đơn mới: ${order.package}`,
       color: 3447003,
-      fields: [
-        { name: 'Người đặt', value: order.username || '—', inline: true },
-        { name: 'Tên/Discord', value: order.name || '—', inline: true },
-        { name: 'Login', value: order.login || '—', inline: true },
-        { name: 'Gói', value: order.package, inline: true },
-        { name: 'Giá', value: formatCurrency(order.price) + 'đ', inline: true },
-        { name: 'Ghi chú', value: order.note || '—', inline: false },
+      fields:[
+        {name: 'Người đặt', value: order.username || '—', inline:true},
+        {name: 'Tên/Discord', value: order.name || '—', inline:true},
+        {name: 'Login', value: order.login || '—', inline:true},
+        {name: 'Giá', value: formatVND(order.price) + '₫', inline:true},
+        {name: 'Ghi chú', value: order.note || '—', inline:false}
       ],
       timestamp: new Date(order.createdAt).toISOString()
     }]
   };
   const res = await fetch(DISCORD_WEBHOOK, {
     method: 'POST',
-    headers: { 'Content-Type':'application/json' },
+    headers: {'Content-Type':'application/json'},
     body: JSON.stringify(payload)
   });
-  if(!res.ok) throw new Error(`Server returned ${res.status}`);
+  if(!res.ok) throw new Error('Forward failed: ' + res.status);
   return res;
 }
 
-async function datDon(){
-  const cur = currentUser();
-  if(!cur){ if(confirm('Bạn chưa đăng nhập. Đăng nhập bây giờ?')) openTab('account'); return; }
-  const name = el('ten').value.trim();
-  const login = el('login').value.trim();
-  const goiVal = el('goi').value;
-  if(!goiVal){ alert('Chọn gói'); return; }
-  const pkg = parsePackageValue(goiVal);
-  const note = el('note').value.trim();
-  // Confirm
-  if(!confirm(`Xác nhận đặt: ${pkg.name} — ${formatCurrency(pkg.price)}đ ?`)) return;
-
-  const order = {
-    id: 'o_' + Date.now(),
-    username: cur.username,
-    name, login,
-    package: pkg.name,
-    price: pkg.price,
-    note,
-    createdAt: Date.now(),
-    sent: false
-  };
-
-  // Save locally first
-  saveOrder(order);
-
-  // Try send
-  try {
-    await sendOrderToWebhook(order);
-    order.sent = true;
-    // update saved order
-    const list = DB.loadOrders();
-    const idx = list.findIndex(o => o.id === order.id);
-    if(idx>=0){ list[idx] = order; DB.saveOrders(list); renderOrdersList(); }
-    alert('Đơn đã gửi thành công!');
-  } catch (err){
-    console.warn('Send webhook failed:', err);
-    // Fallback: copy payload to clipboard for server-side forwarding
-    const payload = JSON.stringify(buildOrderPayload(order), null, 2);
-    await navigator.clipboard.writeText(payload).catch(()=>{});
-    alert('Không thể gửi trực tiếp (CORS/không cấu hình webhook). Payload đã được sao chép để gửi qua backend.');
-  }
-  // clear form
-  el('ten').value=''; el('login').value=''; el('note').value=''; el('goi').value='';
-  el('goiInfo').textContent=''; el('goiDetail').classList.add('hidden');
-}
-
-/* Preview order */
-function previewOrder(){
-  const cur = currentUser();
-  const name = el('ten').value.trim();
-  const login = el('login').value.trim();
-  const goiVal = el('goi').value;
-  if(!goiVal){ alert('Chọn gói để xem trước'); return; }
-  const pkg = parsePackageValue(goiVal);
-  const note = el('note').value.trim();
-  const s = `=== XEM TRƯỚC ĐƠN ===
-Người đặt: ${cur ? cur.username : 'Chưa đăng nhập'}
-Tên/Discord: ${name || '—'}
-Login: ${login || '—'}
-Gói: ${pkg.name}
-Giá: ${formatCurrency(pkg.price)}đ
-Ghi chú: ${note || '—'}`;
-  alert(s);
-}
-
-/* ---------- Orders UI ---------- */
-function renderOrdersList(){
+/* ---------- Orders preview / list ---------- */
+function renderOrdersPreview(){
+  const div = el('ordersPreview');
   const list = DB.loadOrders();
-  const container = el('ordersList');
-  if(!container) return;
-  if(list.length===0){
-    container.innerHTML = '<p class="small">Chưa có đơn nào.</p>';
-    return;
-  }
-  container.innerHTML = list.map(o => {
-    return `<div class="orderItem">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <strong>${escapeHtml(o.package)}</strong>
-        <span class="badge">${o.sent ? 'sent' : 'pending'}</span>
+  if(!div) return;
+  if(list.length===0){ div.innerHTML = '<div class="kv">Chưa có đơn gần đây</div>'; return; }
+  div.innerHTML = list.slice(0,6).map(o=>{
+    return `<div class="order-row" title="${escapeHtml(o.package)}">
+      <div style="max-width:70%"><strong>${escapeHtml(o.package)}</strong><div class="kv" style="font-size:12px">${escapeHtml(o.name)} • ${escapeHtml(o.login)}</div></div>
+      <div style="text-align:right">
+        <div class="kv">${formatVND(o.price)}₫</div>
+        <div style="font-size:12px;color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent ? 'Đã gửi' : 'Chờ gửi'}</div>
       </div>
-      <div class="small">Người: ${escapeHtml(o.username)} • Tên: ${escapeHtml(o.name)} • Login: ${escapeHtml(o.login)}</div>
-      <div class="small">Giá: ${formatCurrency(o.price)}đ • <span class="small">${new Date(o.createdAt).toLocaleString()}</span></div>
-      <div style="margin-top:6px" class="small">Ghi chú: ${escapeHtml(o.note||'—')}</div>
     </div>`;
   }).join('');
 }
 
-/* ---------- Small helpers ---------- */
-function escapeHtml(s){
-  if(!s) return '';
-  return s.replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
+/* ---------- Orders Panel (open full orders in modal) ---------- */
+function openOrdersPanel(){
+  const list = DB.loadOrders();
+  const html = `
+    <div class="modal" style="max-width:760px">
+      <h3>Lịch sử đơn hàng</h3>
+      <div style="max-height:480px;overflow:auto;margin-top:12px">
+        ${list.length===0 ? '<p class="kv">Chưa có đơn nào.</p>' : list.map(o=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass-2)">
+            <div>
+              <div><strong>${escapeHtml(o.package)}</strong> <span class="kv">• ${new Date(o.createdAt).toLocaleString()}</span></div>
+              <div class="kv">${escapeHtml(o.name)} — ${escapeHtml(o.login)}</div>
+              <div class="kv" style="margin-top:6px">Ghi chú: ${escapeHtml(o.note||'—')}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:800">${formatVND(o.price)}₫</div>
+              <div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent ? 'Đã gửi' : 'Chưa gửi'}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn" id="ordersClose">Đóng</button>
+        <button class="btn btn-outline" id="ordersExport">Xuất JSON</button>
+      </div>
+    </div>
+  `;
+  showModal(html);
+  el('ordersClose').addEventListener('click', hideModal);
+  el('ordersExport').addEventListener('click', ()=>{
+    const json = JSON.stringify(DB.loadOrders(), null, 2);
+    const w = window.open('', '_blank');
+    w.document.write('<pre>' + escapeHtml(json) + '</pre>');
+  });
 }
 
-/* ---------- Init ---------- */
-(function init(){
-  (async()=>{
-    // No built-in admin account anymore (removed per request).
-    refreshAuthUI();
-    renderOrdersList();
-    openTab('account');
-  })();
+/* ---------- Header / account rendering ---------- */
+function renderHeaderAuth(){
+  const cur = currentUser();
+  if(cur){
+    el('userLabelSmall').textContent = cur.username;
+    const users = DB.loadUsers();
+    const bal = (users[cur.username] && users[cur.username].balance) || 0;
+    el('soduSmall').textContent = formatVND(bal);
+    el('acctInfo').textContent = 'Xin chào, ' + cur.username;
+    el('walletBalance').textContent = formatVND(bal) + '₫';
+  } else {
+    el('userLabelSmall').textContent = 'Chưa đăng nhập';
+    el('soduSmall').textContent = '0';
+    el('acctInfo').textContent = 'Bạn chưa đăng nhập';
+    el('walletBalance').textContent = '0₫';
+  }
+}
+
+/* ---------- Escape helper ---------- */
+function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+/* ---------- Demo: create admin/demo user (optional) ---------- */
+(async ()=>{
+  const users = DB.loadUsers();
+  if(!users['demo']){ users['demo'] = { username:'demo', passHash: await sha256('demo'), balance: 50000 }; DB.saveUsers(users); }
+  renderHeaderAuth();
 })();
 
 </script>
