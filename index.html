@@ -100,40 +100,32 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 <h1>💰 NẠP TIỀN SHOP BLOX FRUITS</h1>
 
-<div class="container">
-    <h2>💳 NẠP CARD</h2>
+<h2>💳 NẠP CARD</h2>
 
-    <label>Loại thẻ</label>
-    <select>
-        <option>Viettel</option>
-        <option>Mobifone</option>
-        <option>Vinaphone</option>
-    </select>
+<label>Loại thẻ</label>
+<select>
+<option>Viettel</option>
+<option>Mobifone</option>
+<option>Vinaphone</option>
+</select>
 
-    <label>Mệnh giá</label>
-    <select>
-        <option>10.000 VNĐ</option>
-        <option>20.000 VNĐ</option>
-        <option>50.000 VNĐ</option>
-        <option>100.000 VNĐ</option>
-        <option>200.000 VNĐ</option>
-        <option>500.000 VNĐ</option>
-    </select>
+<label>Mệnh giá</label>
+<select>
+<option>10.000 VNĐ</option>
+<option>20.000 VNĐ</option>
+<option>50.000 VNĐ</option>
+<option>100.000 VNĐ</option>
+<option>200.000 VNĐ</option>
+<option>500.000 VNĐ</option>
+</select>
 
-    <label>Mã thẻ</label>
-    <input type="text" placeholder="Nhập mã thẻ">
+<label>Mã thẻ</label>
+<input placeholder="Nhập mã thẻ">
 
-    <label>Số seri</label>
-    <input type="text" placeholder="Nhập số seri">
+<label>Số seri</label>
+<input placeholder="Nhập số seri">
 
-    <button>NẠP NGAY</button>
-
-    <div class="note">
-        • Vui lòng nhập đúng loại thẻ & mệnh giá<br>
-        • Nạp thành công sẽ được cộng tiền/vật phẩm tự động<br>
-        • Thẻ sai hoặc đã dùng sẽ không được hoàn tiền<br>
-        • Thời gian xử lý: 1 – 5 phút
-    </div>
+<button>NẠP NGAY</button>
 
 <div class="box">
 <h2>💳 NẠP NGÂN HÀNG</h2>
@@ -148,6 +140,11 @@ Chủ TK: DO TRUNG KIEN
 </div>
 </div>
 
+<!-- 🔊 ÂM THANH CLICK -->
+<audio id="clickSound" preload="auto">
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c4f1c7a69.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 const WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
@@ -155,7 +152,22 @@ let users=JSON.parse(localStorage.snow_users||"{}");
 let orders=JSON.parse(localStorage.snow_orders||"[]");
 let user=localStorage.snow_user||"";
 
-goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
+goi.onchange=()=>{
+price.innerText=Number(goi.value).toLocaleString()+"đ";
+playClick();
+}
+
+function playClick(){
+let s=document.getElementById("clickSound");
+s.currentTime=0;
+s.play();
+}
+
+document.addEventListener("click",e=>{
+if(e.target.tagName==="BUTTON"||e.target.tagName==="SELECT"){
+playClick();
+}
+});
 
 function save(){
 localStorage.snow_users=JSON.stringify(users);
