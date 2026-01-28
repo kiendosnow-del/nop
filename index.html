@@ -24,6 +24,7 @@ button{background:var(--main);font-weight:bold;cursor:pointer}
 .vip{background:linear-gradient(135deg,#facc15,#eab308);color:#000}
 .log{font-size:13px;border-bottom:1px dashed #334155;padding:6px 0}
 .small{font-size:12px;color:#9ca3af}
+.pending{background:#020617;padding:8px;border-radius:10px;margin-bottom:8px}
 </style>
 </head>
 
@@ -81,7 +82,7 @@ button{background:var(--main);font-weight:bold;cursor:pointer}
 <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo">Mỏ Neo – 20.000đ</option>
 <option value="Tushita|15000" data-info="Làm kiếm Tushita">Tushita – 15.000đ</option>
 <option value="Yama|30000" data-info="Làm kiếm Yama">Yama – 30.000đ</option>
-<option value="Tam Kiếm Full|35000" data-info="Full 3 kiếm huyền thoại">Tam Kiếm Full – 35.000đ</option>
+<option value="Tam Kiếm Full|35000" data-info="Full 3 kiếm">Tam Kiếm Full – 35.000đ</option>
 <option value="CDK|30000" data-info="Cursed Dual Katana">CDK – 30.000đ</option>
 </optgroup>
 
@@ -126,37 +127,61 @@ button{background:var(--main);font-weight:bold;cursor:pointer}
 <!-- ADMIN -->
 <div id="admin" class="card hidden vip">
 <h3>🔐 ADMIN</h3>
-<input id="pass" placeholder="Mật khẩu">
+<input id="pass" placeholder="Mật khẩu admin">
 <button onclick="loginAdmin()">Đăng nhập</button>
 <div id="adminBox" class="hidden">
-<button onclick="duyetNap()">✔️ Duyệt toàn bộ nạp</button>
+<h4>💳 DUYỆT NẠP BANK</h4>
+<div id="pendingList"></div>
 </div>
 </div>
 
 </div>
 
 <script>
+/* ====== DISCORD WEBHOOK ====== */
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+
+function sendDiscord(content){
+if(!DISCORD_WEBHOOK) return;
+fetch(DISCORD_WEBHOOK,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+username:"❄️ SNOW SHOP",
+content:content
+})
+});
+}
+
+/* ====== CORE ====== */
 let users=JSON.parse(localStorage.users||"{}");
 let currentUser=localStorage.currentUser||null;
 const gid=id=>document.getElementById(id);
 
 function save(){localStorage.users=JSON.stringify(users);}
-function tab(id){["account","shop","nap","gift","lichsu","admin"].forEach(t=>gid(t).classList.add("hidden"));gid(id).classList.remove("hidden");}
+function tab(id){
+["account","shop","nap","gift","lichsu","admin"].forEach(t=>gid(t).classList.add("hidden"));
+gid(id).classList.remove("hidden");
+}
 
 function loginAcc(){
 let u=acc_user.value.trim(),p=acc_pass.value;
 if(!users[u]||users[u].pass!==p) return alert("Sai tài khoản");
 currentUser=u;localStorage.currentUser=u;loadUser();
 }
+
 function registerAcc(){
 let u=acc_user.value.trim(),p=acc_pass.value;
+if(!u||!p) return alert("Thiếu thông tin");
 if(users[u]) return alert("Tài khoản tồn tại");
 users[u]={pass:p,sodu:0,logs:[],pending:0};
 save();alert("Đăng ký thành công");
 }
+
 function logout(){localStorage.removeItem("currentUser");location.reload();}
 
 function loadUser(){
+if(!currentUser) return;
 let u=users[currentUser];
 userLabel.innerText=currentUser;
 accName.innerText=currentUser;
@@ -167,25 +192,49 @@ logs.innerHTML=u.logs.map(l=>`<div class="log">${l}</div>`).join("");
 }
 
 function datDon(){
+if(!currentUser) return alert("Vui lòng đăng nhập");
+if(!goi.value) return alert("Chưa chọn gói");
 let [name,gia]=goi.value.split("|");gia=+gia;
 let u=users[currentUser];
 if(u.sodu<gia) return alert("Không đủ tiền");
 u.sodu-=gia;
 u.logs.unshift(`🛒 ${name} -${gia}đ`);
 save();loadUser();
+
+sendDiscord(
+`🛒 **ĐƠN MỚI**
+👤 User: **${currentUser}**
+🎮 Nick: ${ten.value}
+📦 Gói: ${name}
+💰 Giá: ${gia}đ
+📝 Note: ${note.value||"Không có"}`
+);
 }
 
 function nap(){
+if(!currentUser) return alert("Vui lòng đăng nhập");
 let t=+nap_tien.value;
+if(t<=0) return alert("Số tiền không hợp lệ");
 users[currentUser].pending+=t;
-users[currentUser].logs.unshift(`⏳ Nạp ${t}đ`);
+users[currentUser].logs.unshift(`⏳ Chờ duyệt nạp ${t}đ`);
 save();loadUser();
+
+sendDiscord(
+`💳 **YÊU CẦU NẠP TIỀN**
+👤 User: **${currentUser}**
+💰 Số tiền: ${t}đ
+📌 Nội dung CK: SNOW ${currentUser}`
+);
+alert("Đã gửi yêu cầu nạp");
 }
 
 function giftTien(){
+if(!currentUser) return alert("Vui lòng đăng nhập");
 let to=gift_user.value.trim(),m=+gift_money.value;
 let from=currentUser;
-if(!users[to]||to===from||m<=0||users[from].sodu<m) return alert("Gift lỗi");
+if(!users[to]) return alert("Nick không tồn tại");
+if(to===from) return alert("Không thể gift cho chính mình");
+if(m<=0||users[from].sodu<m) return alert("Không đủ tiền");
 users[from].sodu-=m;
 users[to].sodu+=m;
 users[from].logs.unshift(`🎁 Gift ${m}đ cho ${to}`);
@@ -193,18 +242,40 @@ users[to].logs.unshift(`🎁 Nhận ${m}đ từ ${from}`);
 save();loadUser();
 }
 
-function loginAdmin(){if(pass.value==="admin123")adminBox.classList.remove("hidden");}
-function duyetNap(){
-for(let u in users){
-if(users[u].pending>0){
-users[u].sodu+=users[u].pending;
-users[u].logs.unshift(`✅ Duyệt +${users[u].pending}đ`);
-users[u].pending=0;
-}}
-save();alert("Đã duyệt");
+function loginAdmin(){
+if(pass.value!=="admin123") return alert("Sai mật khẩu");
+adminBox.classList.remove("hidden");
+renderPending();
 }
 
-goi.addEventListener("change",()=>goiInfo.innerText=goi.options[goi.selectedIndex].dataset.info||"");
+function renderPending(){
+pendingList.innerHTML="";
+for(let u in users){
+if(users[u].pending>0){
+pendingList.innerHTML+=`
+<div class="pending">
+<b>${u}</b> – ${users[u].pending}đ
+<button onclick="duyetUser('${u}')">✔️ Duyệt</button>
+</div>`;
+}}
+}
+
+function duyetUser(u){
+let t=users[u].pending;
+users[u].pending=0;
+users[u].sodu+=t;
+users[u].logs.unshift(`✅ Admin duyệt +${t}đ`);
+save();
+renderPending();
+
+sendDiscord(`✅ **DUYỆT NẠP**
+👤 User: ${u}
+💰 +${t}đ`);
+}
+
+goi.addEventListener("change",()=>goiInfo.innerText=
+goi.options[goi.selectedIndex].dataset.info||"");
+
 if(currentUser) loadUser();
 </script>
 
