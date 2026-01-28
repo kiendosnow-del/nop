@@ -16,12 +16,19 @@ button{background:linear-gradient(135deg,#38bdf8,#2563eb);border:none;font-weigh
 .price{color:#38bdf8;font-weight:bold}
 .admin{border:1px solid #facc15}
 optgroup{color:#38bdf8}
+.topbar{display:flex;justify-content:space-between;align-items:center}
+.logout{background:#ef4444;margin-top:8px}
+.bank-box{background:#020617;border:1px dashed #38bdf8;border-radius:12px;padding:10px;font-size:14px}
+.bank-box b{color:#38bdf8}
 </style>
 </head>
 
 <body>
 <header>
-<h2>❄️ SNOW – CÀY THUÊ BLOX FRUITS</h2>
+<div class="topbar">
+<h3>❄️ SNOW – BLOX FRUITS</h3>
+<button class="logout hide" id="logoutBtn" onclick="logout()">Đăng xuất</button>
+</div>
 <div id="userBox" class="hide">👤 <b id="uname"></b> | 💰 <b id="wallet"></b></div>
 </header>
 
@@ -39,6 +46,7 @@ optgroup{color:#38bdf8}
 <!-- USER -->
 <div id="userArea" class="hide">
 
+<!-- ĐẶT ĐƠN -->
 <div class="card">
 <h3>🛒 ĐẶT ĐƠN CÀY THUÊ</h3>
 <select id="goi">
@@ -66,24 +74,9 @@ optgroup{color:#38bdf8}
 <option value="1 Gear|5000">1 Gear (5k)</option>
 </optgroup>
 
-<optgroup label="🧬 RACE">
-<option value="Cyborg|20000">Cyborg (20k)</option>
-<option value="Ghoul|20000">Ghoul (20k)</option>
-</optgroup>
-
 <optgroup label="🥋 MELEE">
 <option value="Godhuman|20000">Godhuman (20k)</option>
 <option value="Melee V2|15000">Melee V2 (15k)</option>
-</optgroup>
-
-<optgroup label="💰 BELI / FRAG">
-<option value="500K Beli|1000">500K Beli (1k)</option>
-<option value="1K Frag|1000">1K Frag (1k)</option>
-</optgroup>
-
-<optgroup label="📈 MASTERY">
-<option value="600 Mas|45000">600 Mas (45k)</option>
-<option value="600 Mas Gun|50000">600 Mas Gun (50k)</option>
 </optgroup>
 </select>
 
@@ -93,6 +86,7 @@ optgroup{color:#38bdf8}
 <button onclick="buy()">Gửi đơn</button>
 </div>
 
+<!-- NẠP THẺ -->
 <div class="card">
 <h3>💳 NẠP THẺ (THESIEURE AUTO)</h3>
 <select id="telco">
@@ -110,8 +104,25 @@ optgroup{color:#38bdf8}
 <button onclick="napThe()">Nạp thẻ</button>
 </div>
 
+<!-- NẠP BANK CHI TIẾT -->
 <div class="card">
-<h3>📜 LỊCH SỬ</h3>
+<h3>🏦 NẠP BANK (TỰ ĐỘNG + NHANH)</h3>
+
+<div class="bank-box">
+<b>Ngân hàng:</b> MB Bank<br>
+<b>STK:</b> 0123456789<br>
+<b>Chủ TK:</b> NGUYEN VAN A<br>
+<b>Nội dung:</b> <span style="color:#22c55e">SNOW + TÀI KHOẢN</span>
+</div>
+
+<input id="bankAmount" placeholder="Số tiền đã chuyển">
+<input id="bankNote" placeholder="Nội dung bạn đã chuyển">
+<button onclick="napBank()">Tôi đã chuyển khoản</button>
+</div>
+
+<!-- LỊCH SỬ -->
+<div class="card">
+<h3>📜 LỊCH SỬ GIAO DỊCH</h3>
 <div id="his"></div>
 </div>
 
@@ -128,8 +139,6 @@ optgroup{color:#38bdf8}
 </div>
 
 <script>
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
-
 let users = JSON.parse(localStorage.users||"{}");
 let logs  = JSON.parse(localStorage.logs||"[]");
 let user  = localStorage.user || "";
@@ -145,10 +154,17 @@ function login(){
 if(!users[lu.value]||users[lu.value].pass!==lp.value) return alert("Sai");
 user=lu.value;localStorage.user=user;initUser();
 }
+
 function register(){
 users[lu.value]={pass:lp.value,wallet:0};
-save();alert("OK");
+save();alert("Đăng ký thành công");
 }
+
+function logout(){
+localStorage.removeItem("user");
+location.reload();
+}
+
 function adminLogin(){
 if(lu.value==="admin"&&lp.value==="admin123"){
 loginBox.classList.add("hide");
@@ -156,10 +172,12 @@ adminArea.classList.remove("hide");
 all.innerHTML=logs.map(l=>"<div class=log>"+l+"</div>").join("");
 }
 }
+
 function initUser(){
 loginBox.classList.add("hide");
 userArea.classList.remove("hide");
 userBox.classList.remove("hide");
+logoutBtn.classList.remove("hide");
 uname.innerText=user;
 wallet.innerText=users[user].wallet.toLocaleString()+"đ";
 loadHistory();
@@ -193,6 +211,12 @@ save();loadHistory();
 alert("Nạp thành công");
 }else alert(d.msg);
 });
+}
+
+function napBank(){
+logs.push("🏦 BANK | "+user+" | "+bankAmount.value+" | "+bankNote.value);
+save();loadHistory();
+alert("Đã ghi nhận – admin sẽ cộng tiền");
 }
 
 function loadHistory(){
