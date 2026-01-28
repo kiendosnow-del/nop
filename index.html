@@ -12,10 +12,10 @@
 body{margin:0;font-family:Arial;background:var(--bg);color:var(--text)}
 header{padding:18px;text-align:center;background:linear-gradient(135deg,#0284c7,#2563eb)}
 nav{display:flex;justify-content:space-around;background:#020617;padding:10px}
-nav button{background:none;border:none;color:#fff}
+nav button{background:none;border:none;color:#fff;font-weight:bold}
 .container{max-width:520px;margin:auto;padding:12px}
 .card{background:var(--card);border-radius:16px;padding:14px;margin-bottom:14px}
-h3{color:var(--main);margin-bottom:10px}
+h3{color:var(--main)}
 input,select,textarea,button{
 width:100%;padding:11px;margin:6px 0;border-radius:12px;border:none}
 input,select,textarea{background:#020617;color:#fff}
@@ -90,10 +90,10 @@ button{background:var(--main);font-weight:bold;cursor:pointer}
 <p class="small">
 MB Bank – 1373727384<br>
 DO TRUNG KIEN<br>
-Nội dung: <b>SNOW + TÊN NICK</b>
+ND: <b>SNOW + TÊN NICK</b>
 </p>
 <input id="nap_tien" type="number" placeholder="Số tiền nạp">
-<button onclick="nap()">📩 GỬI YÊU CẦU NẠP</button>
+<button onclick="nap()">📩 GỬI YÊU CẦU</button>
 </div>
 
 <!-- LỊCH SỬ -->
@@ -109,25 +109,39 @@ Nội dung: <b>SNOW + TÊN NICK</b>
 <button onclick="login()">Đăng nhập</button>
 
 <div id="adminBox" class="hidden">
-<h4>✅ DUYỆT NẠP</h4>
-<input id="duyetTien" type="number" placeholder="Số tiền duyệt">
-<button onclick="duyetNap()">✔️ DUYỆT</button>
-
-<hr>
-
-<input id="giftNick" placeholder="Nick nhận gift">
-<input id="giftTien" type="number" placeholder="Tiền gift">
-<button onclick="gift()">🎁 GIFT</button>
+<input id="duyetTien" type="number" placeholder="Tiền duyệt">
+<button onclick="duyetNap()">✔️ DUYỆT NẠP</button>
 </div>
 </div>
 
 </div>
 
 <script>
+// ===== DISCORD CONFIG =====
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+const TAG_ADMIN = "<@kienmcmc>";
+const TAG_STAFF = "<@zbhk1>";
+
+function sendDiscord(title, desc, tag){
+fetch(DISCORD_WEBHOOK,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+content: tag,
+embeds:[{
+title:title,
+description:desc,
+color:3447003,
+timestamp:new Date()
+}]
+})
+});
+}
+
+// ===== LOCAL DATA =====
 let sodu=+localStorage.sodu||0;
 let logs=JSON.parse(localStorage.logs||"[]");
 let pendingNap=+localStorage.pendingNap||0;
-
 const gid=id=>document.getElementById(id);
 
 function save(){
@@ -148,9 +162,9 @@ function nap(){
 let t=+gid("nap_tien").value;
 if(t<=0) return;
 pendingNap+=t;
-logs.unshift(`⏳ Yêu cầu nạp ${t}đ (chờ duyệt)`);
+logs.unshift(`⏳ Yêu cầu nạp ${t}đ`);
 save();
-alert("Đã gửi yêu cầu, chờ admin duyệt");
+sendDiscord("💳 YÊU CẦU NẠP",`💰 ${t}đ`,TAG_ADMIN);
 }
 
 function duyetNap(){
@@ -158,29 +172,37 @@ let t=+gid("duyetTien").value;
 if(t<=0||t>pendingNap) return;
 pendingNap-=t;
 sodu+=t;
-logs.unshift(`✅ Admin duyệt nạp +${t}đ`);
+logs.unshift(`✅ Duyệt nạp +${t}đ`);
 save();
-}
-
-function gift(){
-let n=gid("giftNick").value.trim();
-let t=+gid("giftTien").value;
-if(!n||t<=0) return;
-sodu+=t;
-logs.unshift(`🎁 Gift ${n} +${t}đ`);
-save();
+sendDiscord("✅ DUYỆT NẠP",`💰 +${t}đ`,TAG_STAFF);
 }
 
 function datDon(){
 let user=gid("ten").value.trim();
+let login=gid("login").value.trim();
+let note=gid("note").value.trim();
 let goi=gid("goi").value;
-if(!user||!goi) return alert("Thiếu thông tin");
+if(!user||!login||!goi) return alert("Thiếu thông tin");
+
 let [name,gia]=goi.split("|");
 gia=+gia;
 if(sodu<gia) return alert("Không đủ tiền");
+
 sodu-=gia;
-logs.unshift(`🛒 Thuê ${name} -${gia}đ`);
+logs.unshift(`🛒 ${name} -${gia}đ`);
 save();
+
+sendDiscord(
+"🛒 ĐƠN CÀY MỚI",
+`👤 Khách: ${user}
+🔐 Login: ${login}
+📦 Gói: ${name}
+💰 Giá: ${gia}đ
+📝 Ghi chú: ${note||"Không có"}`,
+TAG_ADMIN+" "+TAG_STAFF
+);
+
+alert("✅ Đặt đơn thành công – Admin/Staff đã nhận!");
 }
 
 function login(){
