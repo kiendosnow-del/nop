@@ -19,7 +19,7 @@ border-radius:14px;
 padding:14px;
 margin-bottom:14px
 }
-.box h2{color:#38bdf8;margin:0 0 8px}
+h2{margin:0 0 10px;color:#38bdf8}
 .item{
 display:flex;justify-content:space-between;
 padding:6px 0;border-bottom:1px dashed #334155
@@ -54,7 +54,7 @@ footer{text-align:center;font-size:13px;opacity:.7}
 
 <div class="container">
 
-<!-- BẢNG GIÁ -->
+<!-- ===== BẢNG GIÁ HIỂN THỊ ===== -->
 <div class="box">
 <h2>🔰 LEVEL</h2>
 <div class="item"><span>700 → 1500</span><b>20.000đ</b></div>
@@ -93,18 +93,18 @@ footer{text-align:center;font-size:13px;opacity:.7}
 </div>
 
 <div class="box">
-<h2>💰 BELI / FRAGMENT</h2>
+<h2>💰 BELI / FRAG</h2>
 <div class="item"><span>500K Beli</span><b>1.000đ</b></div>
 <div class="item"><span>1K Fragment</span><b>1.000đ</b></div>
 </div>
 
 <div class="box">
 <h2>📈 MASTERY</h2>
-<div class="item"><span>600 Mastery</span><b>45.000đ</b></div>
-<div class="item"><span>600 Mastery Gun</span><b>50.000đ</b></div>
+<div class="item"><span>600 Mas</span><b>45.000đ</b></div>
+<div class="item"><span>600 Mas Gun</span><b>50.000đ</b></div>
 </div>
 
-<!-- LOGIN -->
+<!-- ===== LOGIN ===== -->
 <div class="card" id="loginBox">
 <input id="lu" placeholder="Tài khoản">
 <input id="lp" type="password" placeholder="Mật khẩu">
@@ -112,21 +112,61 @@ footer{text-align:center;font-size:13px;opacity:.7}
 <button onclick="register()">Đăng ký</button>
 </div>
 
-<!-- ĐẶT ĐƠN -->
+<!-- ===== ĐẶT ĐƠN ===== -->
 <div class="card hide" id="orderBox">
 <select id="goi">
-<option value="0">-- Chọn gói --</option>
+<option value="0">-- Chọn gói cày thuê --</option>
+
+<optgroup label="🔰 LEVEL">
 <option value="20000">700 → 1500 (20k)</option>
-<option value="30000">CDK (30k)</option>
+<option value="20000">1500 → 2800 (20k)</option>
 <option value="50000">0 → MAX (50k)</option>
+</optgroup>
+
+<optgroup label="🧰 ITEM">
+<option value="20000">Mỏ Neo (20k)</option>
+<option value="15000">Tushita (15k)</option>
+<option value="30000">Yama (30k)</option>
+<option value="20000">Tam Kiếm lẻ (20k)</option>
+<option value="35000">Tam Kiếm Full (35k)</option>
+<option value="30000">CDK (30k)</option>
+</optgroup>
+
+<optgroup label="⚙️ UP V4">
+<option value="30000">Full Gear (30k)</option>
+<option value="20000">Gạt Cần (20k)</option>
+<option value="20000">Mảnh Gương (20k)</option>
+<option value="5000">1 Gear (5k)</option>
+</optgroup>
+
+<optgroup label="🧬 RACE">
+<option value="20000">Cyborg (20k)</option>
+<option value="20000">Ghoul (20k)</option>
+</optgroup>
+
+<optgroup label="🥋 MELEE">
+<option value="20000">Godhuman (20k)</option>
+<option value="15000">Melee V2 (15k)</option>
+</optgroup>
+
+<optgroup label="💰 BELI / FRAG">
+<option value="1000">500K Beli (1k)</option>
+<option value="1000">1K Fragment (1k)</option>
+</optgroup>
+
+<optgroup label="📈 MASTERY">
+<option value="45000">600 Mas (45k)</option>
+<option value="50000">600 Mas Gun (50k)</option>
+</optgroup>
 </select>
+
 <div class="price">Giá: <span id="price">0đ</span></div>
 <input id="rbx" placeholder="Username Roblox">
 <textarea id="note" placeholder="Ghi chú"></textarea>
 <button onclick="buy()">🛒 ĐẶT ĐƠN</button>
 </div>
 
-<!-- NẠP -->
+<!-- ===== NẠP ===== -->
 <div class="card hide" id="topupBox">
 <h3>💳 NẠP THẺ</h3>
 <select id="telco">
@@ -138,6 +178,7 @@ footer{text-align:center;font-size:13px;opacity:.7}
 <option value="10000">10.000</option>
 <option value="20000">20.000</option>
 <option value="50000">50.000</option>
+<option value="100000">100.000</option>
 </select>
 <input placeholder="Mã thẻ">
 <input placeholder="Seri">
@@ -151,17 +192,24 @@ footer{text-align:center;font-size:13px;opacity:.7}
 
 </div>
 
-<footer>© SNOW Blox Fruits • Dark • Mobile • VIP</footer>
+<footer>© SNOW Blox Fruits • VIP • Dark • Mobile</footer>
 
 <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
 
 <script>
+/* ====== CẤU HÌNH ====== */
+const DISCORD_WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+
+/* ====== ÂM THANH CLICK ====== */
 const sound=document.getElementById("clickSound");
 document.addEventListener("click",e=>{
-if(e.target.tagName==="BUTTON"||e.target.tagName==="SELECT")
+if(e.target.tagName==="BUTTON"||e.target.tagName==="SELECT"){
+sound.currentTime=0;
 sound.play();
+}
 });
 
+/* ====== LOGIC ====== */
 let users=JSON.parse(localStorage.users||"{}");
 let history=JSON.parse(localStorage.history||"[]");
 let user=localStorage.user||"";
@@ -172,15 +220,17 @@ function save(){
 localStorage.users=JSON.stringify(users);
 localStorage.history=JSON.stringify(history);
 }
+
 function login(){
-if(!users[lu.value]||users[lu.value].pass!==lp.value) return alert("Sai TK");
+if(!users[lu.value]||users[lu.value].pass!==lp.value) return alert("Sai tài khoản");
 user=lu.value;localStorage.user=user;init();
 }
 function register(){
 users[lu.value]={pass:lp.value,wallet:0};
-save();alert("Đăng ký OK");
+save();alert("Đăng ký thành công");
 }
 function logout(){localStorage.removeItem("user");location.reload();}
+
 function init(){
 loginBox.classList.add("hide");
 orderBox.classList.remove("hide");
@@ -191,16 +241,56 @@ uname.innerText=user;
 wallet.innerText=(users[user].wallet||0).toLocaleString()+"đ";
 loadHistory();
 }
-function buy(){alert("Đã gửi đơn (demo)");}
+
+function buy(){
+let p=Number(goi.value);
+if(p<=0) return alert("Chưa chọn gói");
+if(users[user].wallet<p) return alert("Không đủ tiền");
+
+users[user].wallet-=p;
+save();
+
+fetch(https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:
+`🧊 **ĐƠN MỚI**
+👤 User: ${user}
+🎮 Roblox: ${rbx.value}
+📦 Gói: ${goi.options[goi.selectedIndex].text}
+💰 Giá: ${p.toLocaleString()}đ
+📝 Ghi chú: ${note.value||"Không"}`
+})
+});
+
+alert("✅ Đã gửi đơn");
+init();
+}
+
 function nap(){
 history.push({user,amount:+amount.value,status:"⏳ Chờ duyệt"});
-save();loadHistory();
+save();
+fetch(DISCORD_WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`💳 **YÊU CẦU NẠP**
+👤 ${user}
+💰 ${amount.value}đ
+📌 Trạng thái: Chờ duyệt`
+})
+});
+alert("Đã gửi yêu cầu nạp");
+loadHistory();
 }
+
 function loadHistory(){
 his.innerHTML="";
 history.filter(h=>h.user===user).reverse()
 .forEach(h=>his.innerHTML+=`<div class="log">${h.amount.toLocaleString()}đ - ${h.status}</div>`);
 }
+
 if(user) init();
 </script>
 
