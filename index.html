@@ -9,7 +9,7 @@
 body{margin:0;font-family:Arial;background:#0f172a;color:#fff}
 header{background:linear-gradient(135deg,#1e90ff,#00c6ff);padding:14px;text-align:center}
 .container{max-width:520px;margin:auto;padding:14px}
-.card{background:#fff;color:#000;border-radius:14px;padding:14px;margin-bottom:12px}
+.card,.box{background:#fff;color:#000;border-radius:14px;padding:14px;margin-bottom:12px}
 input,select,textarea,button{
 width:100%;padding:10px;margin:6px 0;border-radius:10px;
 border:1px solid #ddd;font-size:15px
@@ -17,6 +17,8 @@ border:1px solid #ddd;font-size:15px
 button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 .price{font-size:18px;font-weight:bold;color:#1e90ff}
 .hide{display:none}
+.bank{border:1px dashed #1e90ff;padding:10px;border-radius:8px;margin:6px 0;font-family:monospace}
+.warning{color:#e11d48;font-weight:bold}
 </style>
 </head>
 
@@ -85,125 +87,67 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </select>
 
 <div class="price">Giá: <span id="price">0đ</span></div>
-<input id="rbx" placeholder="Username Roblox">
 
-<inlut id="rbx" placeholder="Login Roblox">
+<input id="rbx_user" placeholder="Username Roblox">
+<input id="rbx_login" placeholder="Login Roblox">
 
 <textarea id="note" placeholder="Ghi chú"></textarea>
 <button onclick="buy()">🛒 ĐẶT ĐƠN</button>
 </div>
 
 <!-- TOPUP -->
-<div class="container">
+<div class="container hide" id="topupBox">
 
-    <h1>💰 NẠP TIỀN SHOP BLOX FRUITS</h1>
+<h1>💰 NẠP TIỀN SHOP BLOX FRUITS</h1>
 
-    <!-- NẠP CARD -->
-    <div class="box">
-        <h2>🔥 NẠP THẺ CÀO</h2>
+<div class="box">
+<h2>🔥 NẠP THẺ CÀO</h2>
+<ul>
+<li>Viettel</li><li>Mobifone</li><li>Vinaphone</li><li>Vietnamobile</li><li>Zing</li>
+</ul>
+<p>10k – 20k – 50k – 100k – 200k – 500k</p>
+<p class="warning">⚠ Sai mệnh giá không hoàn tiền</p>
+</div>
 
-        <p><b>Loại thẻ hỗ trợ:</b></p>
-        <ul>
-            <li>Viettel</li>
-            <li>Mobifone</li>
-            <li>Vinaphone</li>
-            <li>Vietnamobile</li>
-            <li>Zing</li>
-        </ul>
+<div class="box">
+<h2>💳 NẠP NGÂN HÀNG</h2>
+<div class="bank">
+Ngân hàng: MBBank<br>
+STK: 1373727384<br>
+Chủ TK: NGUYEN VAN A
+</div>
+<div class="bank">NAP SHOP &lt;USERNAME&gt;</div>
+</div>
 
-        <p><b>Mệnh giá nhận:</b></p>
-        <p>10.000đ – 20.000đ – 50.000đ – 100.000đ – 200.000đ – 500.000đ</p>
-
-        <p><b>Cách nạp:</b></p>
-        <ol>
-            <li>Chọn loại thẻ</li>
-            <li>Chọn mệnh giá</li>
-            <li>Nhập mã thẻ</li>
-            <li>Nhập seri</li>
-            <li>Nhấn <b>NẠP NGAY</b></li>
-        </ol>
-
-        <p><b>Tỷ lệ:</b></p>
-        <ul>
-            <li>Thẻ đúng mệnh giá: <b>100%</b></li>
-            <li>Thẻ sai mệnh giá: <span class="warning">mất thẻ</span></li>
-            <li>Thẻ lỗi/đã dùng: <span class="warning">không cộng tiền</span></li>
-        </ul>
-
-        <p><b>Thời gian xử lý:</b> 5 – 30 giây (tối đa 3 phút)</p>
-
-        <p class="warning">⚠ Nhập đúng mệnh giá – Sai mệnh giá không hoàn tiền</p>
-    </div>
-     <!-- NẠP BANK -->
-    <div class="box">
-        <h2>💳 NẠP NGÂN HÀNG</h2>
-
-        <p><b>Ngân hàng hỗ trợ:</b></p>
-        <ul>
-            <li>MBBank</li>
-            <li>Vietcombank</li>
-            <li>ACB</li>
-            <li>Techcombank</li>
-            <li>BIDV</li>
-            <li>VPBank</li>
-            <li>MoMo / ZaloPay</li>
-        </ul>
-
-        <p><b>Thông tin chuyển khoản:</b></p>
-        <div class="bank">
-            Ngân hàng: MBBank <br>
-            Số tài khoản: 0xxx xxx xxx <br>
-            Chủ tài khoản: NGUYEN VAN A <br>
-            Chi nhánh: Hà Nội
-        </div>
-
-        <p><b>Nội dung chuyển khoản (BẮT BUỘC):</b></p>
-        <div class="bank">
-            NAP SHOP &lt;ID hoặc Tên user&gt;
-        </div>
-
-        <p><b>Số tiền nạp:</b> Tối thiểu 10.000đ – Không giới hạn</p>
-        <p><b>Thời gian cộng tiền:</b> 1 – 5 phút (tối đa 10 phút)</p>
-
-        <p class="warning">⚠ Sai nội dung → liên hệ admin để xử lý</p>
-    </div>
-    
-
+</div>
 </div>
 
 <script>
-const WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+const WEBHOOK="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
-/* DATA */
-let users = JSON.parse(localStorage.snow_users || "{}");
-let orders = JSON.parse(localStorage.snow_orders || "[]");
-let topups = JSON.parse(localStorage.snow_topups || "[]");
-let user = localStorage.snow_user || "";
+let users=JSON.parse(localStorage.snow_users||"{}");
+let orders=JSON.parse(localStorage.snow_orders||"[]");
+let user=localStorage.snow_user||"";
 
-/* PRICE */
-goi.onchange = ()=> price.innerText =
-Number(goi.value).toLocaleString()+"đ";
+goi.onchange=()=>price.innerText=Number(goi.value).toLocaleString()+"đ";
 
-/* SAVE */
 function save(){
-localStorage.snow_users = JSON.stringify(users);
-localStorage.snow_orders = JSON.stringify(orders);
-localStorage.snow_topups = JSON.stringify(topups);
+localStorage.snow_users=JSON.stringify(users);
+localStorage.snow_orders=JSON.stringify(orders);
 }
 
-/* AUTH */
 function login(){
-if(!users[lu.value] || users[lu.value].pass !== lp.value)
+if(!users[lu.value]||users[lu.value].pass!==lp.value)
 return alert("Sai tài khoản hoặc mật khẩu");
-user = lu.value;
-localStorage.snow_user = user;
+user=lu.value;
+localStorage.snow_user=user;
 init();
 }
 
 function register(){
 if(users[lu.value]) return alert("Tài khoản đã tồn tại");
-users[lu.value] = {pass: lp.value, wallet: 0};
-save(); alert("Đăng ký thành công");
+users[lu.value]={pass:lp.value,wallet:0};
+save();alert("Đăng ký thành công");
 }
 
 function logout(){
@@ -211,60 +155,33 @@ localStorage.removeItem("snow_user");
 location.reload();
 }
 
-/* INIT */
 function init(){
 loginBox.classList.add("hide");
 orderBox.classList.remove("hide");
 topupBox.classList.remove("hide");
 userBox.classList.remove("hide");
-uname.innerText = user;
-wallet.innerText = users[user].wallet.toLocaleString()+"đ";
+uname.innerText=user;
+wallet.innerText=users[user].wallet.toLocaleString()+"đ";
 }
 
-/* BUY */
 function buy(){
-let p = Number(goi.value);
+let p=Number(goi.value);
 if(p<=0) return alert("Chưa chọn gói");
-if(users[user].wallet < p) return alert("Không đủ tiền");
+if(users[user].wallet<p) return alert("Không đủ tiền");
 
-users[user].wallet -= p;
-orders.push({
-user,
-goi: goi.options[goi.selectedIndex].text,
-price: p,
-status: "Đang làm"
-});
-save(); init();
+users[user].wallet-=p;
+orders.push({user,goi:goi.options[goi.selectedIndex].text,price:p});
+save();init();
 
 fetch(WEBHOOK,{
 method:"POST",
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify({
-content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ\n🎮 ${rbx.value}`
+content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ\n🎮 ${rbx_user.value}`
 })
 });
 
 alert("✅ Đặt đơn thành công");
-}
-
-/* TOPUP */
-function topup(){
-let a = Number(amount.value);
-if(a<=0) return alert("Nhập số tiền");
-topups.push({
-user, amount:a, method:method.value, status:"Chờ duyệt"
-});
-save();
-
-fetch(WEBHOOK,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-content:`💳 NẠP ${method.value}\n👤 ${user}\n💰 ${a.toLocaleString()}đ`
-})
-});
-
-alert("⏳ Đã gửi yêu cầu nạp");
 }
 
 if(user) init();
