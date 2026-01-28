@@ -48,7 +48,7 @@ button{background:var(--main);font-weight:bold;cursor:pointer}
 <div id="shop" class="card">
 <h3>🛒 THUÊ CÀY BLOX FRUITS</h3>
 <input id="ten" placeholder="Tên Roblox / Discord">
-<input id="ten" placeholder="Login Roblox">
+<input id="login" placeholder="Login Roblox">
 
 <select id="goi">
 <option value="">-- Chọn gói --</option>
@@ -79,22 +79,21 @@ button{background:var(--main);font-weight:bold;cursor:pointer}
 </optgroup>
 </select>
 
-<textarea id="note" placeholder="Ghi chú thêm (tuỳ chọn)"></textarea>
-<button onclick="datDon()">🚀 ĐẶT ĐƠN NGAY</button>
+<textarea id="note" placeholder="Ghi chú thêm"></textarea>
+<button onclick="datDon()">🚀 ĐẶT ĐƠN</button>
 </div>
 
 <!-- NẠP -->
 <div id="nap" class="card hidden">
-<h3>💳 NẠP TIỀN</h3>
-<div class="badge">🏦 NẠP BANK</div>
+<h3>💳 NẠP BANK</h3>
+<div class="badge">ANTI AUTO – DUYỆT TAY</div>
 <p class="small">
-Ngân hàng: <b>MB Bank</b><br>
-STK: <b>1373727384</b><br>
-Chủ TK: <b>DO TRUNG KIEN</b><br>
-Nội dung: <b>SNOW + Tên Nick</b>
+MB Bank – 1373727384<br>
+DO TRUNG KIEN<br>
+Nội dung: <b>SNOW + TÊN NICK</b>
 </p>
-<input id="nap_tien" type="number" placeholder="Nhập số tiền">
-<button onclick="nap()">Xác nhận nạp</button>
+<input id="nap_tien" type="number" placeholder="Số tiền nạp">
+<button onclick="nap()">📩 GỬI YÊU CẦU NẠP</button>
 </div>
 
 <!-- LỊCH SỬ -->
@@ -110,8 +109,14 @@ Nội dung: <b>SNOW + Tên Nick</b>
 <button onclick="login()">Đăng nhập</button>
 
 <div id="adminBox" class="hidden">
-<input id="giftNick" placeholder="Tên nick nhận gift">
-<input id="giftTien" type="number" placeholder="Số tiền gift">
+<h4>✅ DUYỆT NẠP</h4>
+<input id="duyetTien" type="number" placeholder="Số tiền duyệt">
+<button onclick="duyetNap()">✔️ DUYỆT</button>
+
+<hr>
+
+<input id="giftNick" placeholder="Nick nhận gift">
+<input id="giftTien" type="number" placeholder="Tiền gift">
 <button onclick="gift()">🎁 GIFT</button>
 </div>
 </div>
@@ -119,17 +124,16 @@ Nội dung: <b>SNOW + Tên Nick</b>
 </div>
 
 <script>
-const WEBHOOK_NAP="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
-const WEBHOOK_DON="https://discord.com/api/webhooks/1465766081548390534/iClDUAzau9xqGY3PFZTS6CT24uspMk8w5gLBvKyVyhjcxvuf-SD07-y9f9pC8Vax5lHE";
-
-let sodu=Number(localStorage.sodu)||0;
+let sodu=+localStorage.sodu||0;
 let logs=JSON.parse(localStorage.logs||"[]");
+let pendingNap=+localStorage.pendingNap||0;
 
 const gid=id=>document.getElementById(id);
 
 function save(){
 localStorage.sodu=sodu;
 localStorage.logs=JSON.stringify(logs);
+localStorage.pendingNap=pendingNap;
 gid("sodu").innerText=sodu;
 gid("logs").innerHTML=logs.map(l=>`<div class="log">• ${l}</div>`).join("");
 }
@@ -140,64 +144,48 @@ function tab(id){
 gid(id).classList.remove("hidden");
 }
 
-function send(webhook,title,fields){
-fetch(webhook,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-username:"SNOW SHOP",
-embeds:[{title,fields,timestamp:new Date().toISOString()}]
-})
-});
+function nap(){
+let t=+gid("nap_tien").value;
+if(t<=0) return;
+pendingNap+=t;
+logs.unshift(`⏳ Yêu cầu nạp ${t}đ (chờ duyệt)`);
+save();
+alert("Đã gửi yêu cầu, chờ admin duyệt");
 }
 
-function datDon(){
-let ten=gid("ten").value.trim();
-let goi=gid("goi").value;
-if(!ten||!goi) return alert("Thiếu thông tin");
-
-let [tenG,gia]=goi.split("|");
-gia=Number(gia);
-
-if(sodu<gia) return alert("Không đủ tiền");
-
-sodu-=gia;
-logs.unshift(`Thuê ${tenG} -${gia}đ`);
-send(WEBHOOK_DON,"🛒 ĐƠN THUÊ CÀY",[
-{name:"User",value:ten},
-{name:"Gói",value:tenG},
-{name:"Giá",value:gia+"đ"}
-]);
+function duyetNap(){
+let t=+gid("duyetTien").value;
+if(t<=0||t>pendingNap) return;
+pendingNap-=t;
+sodu+=t;
+logs.unshift(`✅ Admin duyệt nạp +${t}đ`);
 save();
 }
 
-function nap(){
-let t=Number(gid("nap_tien").value);
-if(t<=0) return;
+function gift(){
+let n=gid("giftNick").value.trim();
+let t=+gid("giftTien").value;
+if(!n||t<=0) return;
 sodu+=t;
-logs.unshift(`Nạp +${t}đ`);
-send(WEBHOOK_NAP,"💳 NẠP TIỀN",[
-{name:"Số tiền",value:t+"đ"}
-]);
+logs.unshift(`🎁 Gift ${n} +${t}đ`);
+save();
+}
+
+function datDon(){
+let user=gid("ten").value.trim();
+let goi=gid("goi").value;
+if(!user||!goi) return alert("Thiếu thông tin");
+let [name,gia]=goi.split("|");
+gia=+gia;
+if(sodu<gia) return alert("Không đủ tiền");
+sodu-=gia;
+logs.unshift(`🛒 Thuê ${name} -${gia}đ`);
 save();
 }
 
 function login(){
 if(gid("pass").value==="admin123")
 gid("adminBox").classList.remove("hidden");
-}
-
-function gift(){
-let nick=gid("giftNick").value.trim();
-let t=Number(gid("giftTien").value);
-if(!nick||t<=0) return;
-sodu+=t;
-logs.unshift(`Admin gift ${nick} +${t}đ`);
-send(WEBHOOK_NAP,"🎁 ADMIN GIFT",[
-{name:"Nick",value:nick},
-{name:"Số tiền",value:t+"đ"}
-]);
-save();
 }
 </script>
 
