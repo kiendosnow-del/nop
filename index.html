@@ -3,130 +3,168 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SNOW SHOP — Thuê Cày Blox Fruits</title>
+<title>SNOW SHOP — Thuê cày Blox Fruits</title>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<!-- Google Font (preconnect + preload for performance) -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
+/* -------------------------
+   Visual / Layout (modern)
+   ------------------------- */
 :root{
-  --bg:#0b1220;
-  --card:#0f1724;
-  --panel:#0b1220;
-  --muted:#9ca3af;
-  --text:#e5e7eb;
-  --accent:#06b6d4; /* cyan */
-  --accent-2:#facc15; /* yellow */
-  --glass: rgba(255,255,255,0.03);
-  --glass-2: rgba(255,255,255,0.02);
-  --success: #10b981;
+  --bg:#051024;
+  --panel:#071226;
+  --card:#0d1a2a;
+  --muted:#9aa3af;
+  --text:#e6eef6;
+  --accent:#06b6d4;
+  --accent-2:#60a5fa;
+  --success:#10b981;
   --danger:#ef4444;
+  --glass: rgba(255,255,255,0.02);
   --radius:12px;
+  --shadow: 0 10px 30px rgba(2,6,23,0.6);
+  --transition: 200ms cubic-bezier(.2,.9,.3,1);
+  --max-width:1200px;
+  --card-gap:14px;
 }
-
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
-  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: linear-gradient(180deg,#061021 0%, var(--bg) 100%);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+  background:linear-gradient(180deg,var(--bg),#03101d 150%);
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   line-height:1.45;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Header */
 .header{
-  max-width:1200px;margin:18px auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  max-width:var(--max-width);
+  margin:18px auto;
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
 }
-.brand{
-  display:flex;gap:12px;align-items:center;
-}
+.brand{display:flex;align-items:center;gap:12px}
 .logo{
-  width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#2563eb);display:flex;align-items:center;justify-content:center;font-weight:800;color:#021022;font-size:20px;
-  box-shadow:0 6px 18px rgba(2,8,23,0.6);
+  width:56px;height:56px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),#2563eb);
+  display:flex;align-items:center;justify-content:center;font-weight:800;color:#021022;
+  box-shadow:var(--shadow);font-size:20px;
 }
-.site-title{font-weight:700;font-size:18px}
-.header-meta{display:flex;gap:14px;align-items:center;font-size:14px}
-.header-meta .badge{background:var(--glass);padding:8px 12px;border-radius:999px;font-weight:600;color:var(--accent);}
+.title{font-weight:700}
+.header-info{display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted)}
 
 /* Nav */
 .nav{
-  max-width:1200px;margin:0 auto;background:transparent;padding:0 20px;display:flex;justify-content:center;
+  max-width:var(--max-width);
+  margin:0 auto;
+  padding:8px 18px 0;
+  display:flex;
+  gap:8px;
+  justify-content:center;
 }
-.nav .nav-inner{display:flex;gap:10px;align-items:center}
 .nav button{
-  background:transparent;border:none;color:var(--muted);padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;
+  background:transparent;border:0;color:var(--muted);padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;
+  transition:color var(--transition), background var(--transition);
 }
-.nav button.active, .nav button:hover{color:var(--text);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))}
+.nav button[aria-current="true"], .nav button:hover{ color:var(--text); background:var(--glass) }
 
-/* Main container */
-.container{max-width:1200px;margin:18px auto;padding:18px;display:grid;grid-template-columns:1fr 340px;gap:18px}
-@media (max-width:980px){ .container{grid-template-columns:1fr} }
+/* Main layout */
+.main{
+  max-width:var(--max-width);
+  margin:18px auto;
+  padding:18px;
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:18px;
+}
+@media (max-width:980px){ .main{ grid-template-columns:1fr } }
 
-/* Left column */
+/* Panels */
 .panel{
-  background:linear-gradient(180deg,var(--panel),#071122);border-radius:var(--radius);padding:20px;box-shadow:0 12px 30px rgba(1,6,16,0.6);
+  background:linear-gradient(180deg,var(--panel),#061224);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(255,255,255,0.03);
 }
 
 /* Hero */
-.hero{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px;border-radius:12px;background:linear-gradient(90deg,rgba(6,182,212,0.06),rgba(58,123,213,0.03));}
-.hero-left{max-width:64%}
-.hero h1{margin:0;font-size:20px;color:var(--text);line-height:1.05}
-.hero p{margin:8px 0 0;color:var(--muted);font-size:14px}
-.hero-cta{margin-top:12px;display:flex;gap:10px}
-.btn{
-  border:0;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;
-  background:linear-gradient(90deg,var(--accent),#2563eb);color:#021022;
-  box-shadow:0 8px 20px rgba(6,182,212,0.08);
+.hero{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(6,182,212,0.05),rgba(58,123,213,0.03))}
+.hero h1{margin:0;font-size:20px}
+.hero p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.hero .actions{display:flex;gap:8px;margin-top:12px}
+
+/* Search / filter */
+.controls{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.controls input, .controls select{
+  background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:10px;border-radius:10px;width:100%;
 }
-.btn-outline{
-  background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)
-}
+.controls .col{min-width:160px;flex:1}
 
 /* Packages grid */
-.packages{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
-@media (max-width:980px){ .packages{grid-template-columns:repeat(2,1fr)} }
-@media (max-width:640px){ .packages{grid-template-columns:1fr} }
-
-.card{
-  background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
-  border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.03);
+.grid{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:var(--card-gap);
 }
-.package-title{display:flex;justify-content:space-between;align-items:center;gap:8px}
+@media (max-width:980px){ .grid{ grid-template-columns: repeat(2,1fr) } }
+@media (max-width:640px){ .grid{ grid-template-columns:1fr } }
+
+.card-item{
+  background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+  padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);
+  transition: transform var(--transition), box-shadow var(--transition);
+  will-change: transform;
+}
+.card-item:hover{ transform: translateY(-6px); box-shadow: 0 20px 40px rgba(2,6,23,0.6); }
+
+/* package header */
+.pkg-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .pkg-name{font-weight:800}
 .pkg-price{font-weight:800;color:var(--accent)}
-.pkg-desc{color:var(--muted);font-size:13px;margin-top:6px}
-.features{margin-top:10px;display:flex;flex-direction:column;gap:6px}
-.feature{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted)}
-.feature .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--accent),#60a5fa);margin-top:6px}
+.pkg-meta{color:var(--muted);font-size:13px;margin-top:8px}
 
-/* Right column (sidebar) */
+/* features */
+.features{margin-top:10px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:13px}
+.feature{display:flex;gap:8px;align-items:flex-start}
+.feature .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--accent),var(--accent-2));margin-top:6px}
+
+/* action row */
+.actions-row{display:flex;gap:8px;margin-top:12px}
+.btn{
+  border:0;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer;color:#021022;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  transition: transform var(--transition);
+}
+.btn.secondary{ background:transparent;color:var(--text); border:1px solid rgba(255,255,255,0.04) }
+.btn:active{ transform: translateY(1px) }
+
+/* Sidebar */
 .sidebar{display:flex;flex-direction:column;gap:12px}
-.wallet{padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.03)}
-.wallet h4{margin:0}
-.balance{font-weight:800;font-size:18px;color:var(--accent);margin-top:8px}
+.wallet{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.03)}
+.wallet .balance{font-weight:800;color:var(--accent);font-size:18px;margin-top:8px}
+.orders-preview{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.03)}
+.order-small{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:var(--glass);margin-bottom:8px}
 
-/* Order history */
-.orders-list{padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.03)}
-.order-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass-2);}
-
-/* Footer */
-.footer{max-width:1200px;margin:18px auto;padding:14px;color:var(--muted);font-size:13px;text-align:center}
-
-/* Modal (simple) */
+/* modal / toast */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:60}
-.modal{width:100%;max-width:720px;background:linear-gradient(180deg,#071022,#05101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-.modal h3{margin:0 0 12px}
+.modal{width:100%;max-width:720px;background:linear-gradient(180deg,#071022,#05101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 40px rgba(0,0,0,0.7)}
+.toast-wrap{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:70}
 
-/* Small helpers */
-.kv{font-size:13px;color:var(--muted)}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-
-/* Micro animations */
-.card, .package-card{transition:transform .18s ease, box-shadow .18s ease}
-.card:hover, .package-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.6)}
+/* small helpers */
+.kv{color:var(--muted);font-size:13px}
+.hidden{display:none}
+.small{font-size:13px;color:var(--muted)}
 </style>
 </head>
 
@@ -135,474 +173,443 @@ body{
     <div class="brand">
       <div class="logo" aria-hidden>SS</div>
       <div>
-        <div class="site-title">SNOW SHOP</div>
+        <div class="title">SNOW SHOP</div>
         <div class="kv">Thuê cày Blox Fruits — Uy tín • Nhanh • An toàn</div>
       </div>
     </div>
 
-    <div class="header-meta" aria-hidden>
-      <div class="badge" id="userLabelSmall">Chưa đăng nhập</div>
-      <div class="badge">Ví: <strong id="soduSmall">0</strong>đ</div>
+    <div class="header-info" aria-hidden>
+      <div class="kv">👤 <strong id="hdr-user">Chưa đăng nhập</strong></div>
+      <div class="kv">💰 <strong id="hdr-balance">0đ</strong></div>
     </div>
   </header>
 
   <nav class="nav" role="navigation" aria-label="Chính">
-    <div class="nav-inner">
-      <button data-tab="home" class="active">Gói dịch vụ</button>
-      <button data-tab="account">Tài khoản</button>
-      <button data-tab="orders">Lịch sử</button>
-      <button id="contactBtn">Liên hệ</button>
-    </div>
+    <button data-tab="packages" aria-current="true">Gói dịch vụ</button>
+    <button data-tab="account">Tài khoản</button>
+    <button data-tab="orders">Lịch sử</button>
+    <button id="contactBtn">Liên hệ</button>
   </nav>
 
-  <main class="container" role="main">
-    <!-- LEFT COLUMN: main content -->
-    <section class="panel" id="home">
-      <div class="hero" aria-labelledby="heroTitle">
-        <div class="hero-left">
-          <h1 id="heroTitle">Thuê cày Blox Fruits nhanh — an toàn — bảo mật</h1>
-          <p>Gói chuyên nghiệp, cày nhanh, không mất đồ. Chọn gói, đặt đơn, team sẽ liên hệ và hoàn thành theo cam kết.</p>
-          <div class="hero-cta">
-            <button class="btn" id="shopNow">Mua ngay</button>
-            <button class="btn btn-outline" id="howItWorks">Cách hoạt động</button>
+  <main class="main" role="main">
+    <!-- left: packages -->
+    <section class="panel" aria-labelledby="hero-title">
+      <div class="hero" id="hero">
+        <div>
+          <h1 id="hero-title">Thuê cày chuyên nghiệp — An toàn & Nhanh</h1>
+          <p>Chọn gói, đặt đơn, theo dõi tiến trình. Hệ thống demo đã được tối ưu UX/hiệu năng.</p>
+          <div class="hero-actions" style="margin-top:10px">
+            <button class="btn" id="cta-order">Mua ngay</button>
+            <button class="btn secondary" id="cta-learn">Cách hoạt động</button>
           </div>
         </div>
-        <div class="hero-right" style="text-align:right">
+
+        <div style="text-align:right">
           <div class="kv">Hỗ trợ 24/7</div>
-          <div style="margin-top:10px" class="chips">
-            <div class="kv">✅ Thanh toán đa dạng</div>
-            <div class="kv">✅ Kỹ thuật chuyên nghiệp</div>
-          </div>
+          <div style="margin-top:10px" class="kv">Cam kết hoàn tiền nếu vi phạm</div>
         </div>
       </div>
 
-      <!-- Packages -->
-      <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:center">
-        <h3 style="margin:0">Gói nổi bật</h3>
-        <div class="kv">Chọn gói phù hợp — Giá hiển thị là VNĐ</div>
+      <div class="controls" aria-hidden>
+        <input id="searchInput" placeholder="Tìm kiếm gói (ví dụ: Level, Tushita, Yama)" class="col" />
+        <select id="sortSelect" class="col" aria-label="Sắp xếp">
+          <option value="popular">Mặc định</option>
+          <option value="price_asc">Giá tăng dần</option>
+          <option value="price_desc">Giá giảm dần</option>
+        </select>
       </div>
 
-      <div class="packages" id="packagesGrid" role="list" aria-label="Danh sách gói">
-        <!-- Packages are inserted by JS -->
-      </div>
-
-      <section style="margin-top:18px" class="card">
-        <h4 style="margin:0 0 8px">Cam kết</h4>
-        <ul class="kv" style="margin:6px 0 0;padding-left:16px">
-          <li>Hoàn tiền nếu không thực hiện đúng cam kết</li>
-          <li>Không thay đổi pass/không lấy thông tin cá nhân</li>
-          <li>Hỗ trợ sau bán hàng và nhận phản hồi</li>
-        </ul>
-      </section>
+      <div id="packagesGrid" class="grid" aria-live="polite" aria-label="Danh sách gói"></div>
     </section>
 
-    <!-- RIGHT COLUMN: sidebar -->
+    <!-- right: sidebar -->
     <aside class="sidebar">
-      <div class="wallet card">
-        <h4 style="margin:0">Tài khoản</h4>
-        <div class="kv" id="acctInfo">Bạn chưa đăng nhập</div>
-        <div class="balance" id="walletBalance">0đ</div>
-        <div style="margin-top:10px;display:flex;gap:8px">
-          <button class="btn" id="openAccountBtn">Đăng nhập / Đăng ký</button>
-          <button class="btn btn-outline" id="quickOrder">Đặt nhanh</button>
+      <div class="wallet panel">
+        <div class="kv">Tài khoản</div>
+        <div id="acctName" class="kv" style="margin-top:6px">Bạn chưa đăng nhập</div>
+        <div id="balance" class="balance">0đ</div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn" id="openAccount">Đăng nhập / Đăng ký</button>
+          <button class="btn secondary" id="quickBuy">Đặt nhanh</button>
         </div>
       </div>
 
-      <div class="orders-list" id="recentOrders">
-        <h4 style="margin:0 0 8px">Đơn gần đây</h4>
-        <div id="ordersPreview" aria-live="polite"></div>
+      <div class="orders-preview panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>Đơn gần đây</strong>
+          <button class="small" id="viewOrders">Xem tất cả</button>
+        </div>
+        <div id="ordersPreview" style="margin-top:12px"></div>
       </div>
 
-      <div class="card">
-        <h4 style="margin:0 0 8px">Liên hệ & hỗ trợ</h4>
-        <div class="kv">Discord / Telegram / Zalo</div>
-        <div style="margin-top:8px">
-          <button class="btn btn-outline" id="supportContact">Mở liên hệ</button>
-        </div>
+      <div class="panel">
+        <strong>Hỗ trợ</strong>
+        <div class="kv" style="margin-top:8px">Liên hệ: Discord / Telegram / Zalo (cập nhật sau)</div>
+        <div style="margin-top:12px"><button class="btn secondary" id="contactSupport">Mở kênh hỗ trợ</button></div>
       </div>
     </aside>
   </main>
 
-  <div class="footer">© <span id="year"></span> SNOW SHOP — Thiết kế chuyên nghiệp cho dịch vụ thuê cày.</div>
-
-  <!-- Modal markup (hidden) -->
   <div id="modalRoot" class="hidden" aria-hidden="true"></div>
+  <div id="toastWrap" class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
 
 <script>
-/* --------------------------------------------------------------------------
-   Professional shop front-end (single-file)
-   - Responsive package grid
-   - Modal order flow
-   - Local demo auth (localStorage + SHA-256)
-   - Orders saved to localStorage
-   - Webhook forwarding placeholder (do not put raw Discord webhook in client)
-   -------------------------------------------------------------------------- */
+/*
+  Improved & optimized single-file front-end
+  - Better UX: toast notifications, accessible modal, non-blocking flow
+  - Performance: event delegation, debounced search, minimal reflows
+  - Security: don't embed Discord webhook in client; use backend to forward
+  - Storage: wrapped localStorage usage
+*/
 
-/* CONFIG */
-const DISCORD_WEBHOOK = ""; // set to your backend endpoint that safely forwards to Discord (do not put raw discord webhook here)
-const PACKAGE_LIST = [
-  { id:'p_lvl700', name:'Level 700', price:20000, time:'3–5 giờ', desc:'Farm quest nhanh • Không đổi trái', features:['Farm quest tối ưu','Không mất đồ','Nhanh gọn'] },
-  { id:'p_700_1500', name:'700 → 1500', price:20000, time:'1–2 ngày', desc:'Farm boss + quest', features:['Farm boss','Không mất đồ','An toàn'] },
-  { id:'p_1500_2800', name:'1500 → 2800', price:20000, time:'2–3 ngày', desc:'Farm Sea 3 full', features:['Full Sea 3','An toàn cao','Hoàn thành đúng hạn'] },
-  { id:'p_max', name:'0 → MAX', price:50000, time:'4–6 ngày', desc:'Cày từ đầu tới max', features:['Full Sea 1-2-3','Không mất acc','Cam kết hoàn thành'] },
-  { id:'p_tushita', name:'Tushita', price:15000, time:'Trong ngày', desc:'Kiếm Tushita an toàn', features:['Full quest','Nhanh','An toàn'] },
-  { id:'p_tamkiem', name:'Tam Kiếm Full', price:35000, time:'2–3 ngày', desc:'True Triple Katana', features:['Full 3 kiếm','Không rollback','Tỉ lệ cao'] },
+/* -------- CONFIG -------- */
+const DISCORD_WEBHOOK = ""; // Set to your backend endpoint that forwards to Discord (do NOT embed raw Discord webhook)
+const PACKAGES = [
+  { id:'p1', name:'Level 700', price:20000, time:'3–5 giờ', desc:'Farm quest nhanh • Không đổi trái', features:['Farm quest tối ưu','Không mất đồ','Nhanh gọn'] },
+  { id:'p2', name:'700 → 1500', price:20000, time:'1–2 ngày', desc:'Farm boss + quest', features:['Farm boss','Không mất đồ','An toàn'] },
+  { id:'p3', name:'1500 → 2800', price:20000, time:'2–3 ngày', desc:'Farm Sea 3 full', features:['Full Sea 3','An toàn cao','Hoàn thành đúng hạn'] },
+  { id:'p4', name:'0 → MAX', price:50000, time:'4–6 ngày', desc:'Cày từ đầu tới max', features:['Full Sea 1-2-3','Không mất acc','Cam kết hoàn thành'] },
+  { id:'p5', name:'Tushita', price:15000, time:'Trong ngày', desc:'Kiếm Tushita an toàn', features:['Full quest','Nhanh','An toàn'] },
+  { id:'p6', name:'Tam Kiếm Full', price:35000, time:'2–3 ngày', desc:'True Triple Katana', features:['Full 3 kiếm','Không rollback','Tỉ lệ cao'] },
 ];
 
-/* ---------- Utilities ---------- */
-const el = id => document.getElementById(id);
-const qsa = sel => Array.from(document.querySelectorAll(sel));
-function formatVND(n){ return (Number(n)||0).toLocaleString('vi-VN'); }
-async function sha256(msg){
-  const enc = new TextEncoder();
-  const buf = await crypto.subtle.digest('SHA-256', enc.encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+/* -------- Utilities -------- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const fmt = n => (Number(n)||0).toLocaleString('vi-VN');
+const now = () => Date.now();
+async function sha256(msg){ const enc = new TextEncoder(); const buf = await crypto.subtle.digest('SHA-256', enc.encode(msg)); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function debounce(fn, wait){ let t; return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), wait); }; }
 
-/* ---------- Local "backend" (demo) ---------- */
-const DB = {
-  usersKey: 'snowshop_users_v2',
-  ordersKey: 'snowshop_orders_v2',
-  loadUsers(){ return JSON.parse(localStorage.getItem(this.usersKey)||'{}'); },
-  saveUsers(u){ localStorage.setItem(this.usersKey, JSON.stringify(u)); },
-  loadOrders(){ return JSON.parse(localStorage.getItem(this.ordersKey)||'[]'); },
-  saveOrders(o){ localStorage.setItem(this.ordersKey, JSON.stringify(o)); }
+/* Storage wrapper */
+const Storage = {
+  usersKey: 'snow_v3_users',
+  ordersKey: 'snow_v3_orders',
+  getUsers(){ try{return JSON.parse(localStorage.getItem(this.usersKey) || '{}')}catch(e){return{}} },
+  saveUsers(v){ localStorage.setItem(this.usersKey, JSON.stringify(v)) },
+  getOrders(){ try{return JSON.parse(localStorage.getItem(this.ordersKey) || '[]')}catch(e){return[]} },
+  saveOrders(v){ localStorage.setItem(this.ordersKey, JSON.stringify(v)) },
 };
 
-function currentUser(){ return JSON.parse(sessionStorage.getItem('snow_current_user')||'null'); }
+/* Current user (session) */
+function currentUser(){ try{return JSON.parse(sessionStorage.getItem('snow_current_user')||'null')}catch(e){return null} }
 function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
 
-/* ---------- Initial render ---------- */
-(function bootstrap(){
-  el('year').textContent = new Date().getFullYear();
-  renderPackages();
-  renderHeaderAuth();
-  renderOrdersPreview();
-  attachNav();
-})();
-
-/* ---------- Navigation / Tabs ---------- */
-function attachNav(){
-  qsa('.nav-inner button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      qsa('.nav-inner button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      const tab = btn.dataset.tab || btn.textContent.toLowerCase();
-      // show panels
-      qsa('main .panel, main aside').forEach(n=>n.style.display='block');
-      if(tab === 'account'){ openAccountModal(); }
-      if(tab === 'orders'){ openOrdersPanel(); }
-      if(tab === 'home'){ /* nothing */ }
-    });
-  });
-  el('shopNow').addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
-  el('howItWorks').addEventListener('click', ()=>alert('1) Chọn gói • 2) Đặt đơn • 3) Kỹ thuật thi hành • 4) Hoàn thành và nhận phản hồi'));
-  el('openAccountBtn').addEventListener('click', openAccountModal);
-  el('quickOrder').addEventListener('click', ()=>openQuickOrderModal());
-  el('contactBtn').addEventListener('click', ()=>alert('Liên hệ: Discord / Telegram / Zalo (thêm sau)'));
-  el('supportContact').addEventListener('click', ()=>alert('Mở kênh hỗ trợ...'));
+/* -------- UI: Toast (non-blocking) -------- */
+const toastWrap = $('#toastWrap');
+function toast(message, {type='info', timeout=3000}={}) {
+  const el = document.createElement('div');
+  el.className = 'panel';
+  el.style.padding = '10px 12px';
+  el.style.minWidth = '200px';
+  el.style.borderRadius = '10px';
+  el.style.background = type==='error' ? 'linear-gradient(180deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03))' : 'linear-gradient(180deg, rgba(6,182,212,0.04), transparent)';
+  el.innerText = message;
+  toastWrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity = '0'; el.style.transform='translateX(12px)'; setTimeout(()=>el.remove(), 300); }, timeout);
 }
 
-/* ---------- Packages rendering ---------- */
-function renderPackages(){
-  const grid = el('packagesGrid');
-  grid.innerHTML = '';
-  PACKAGE_LIST.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'card package-card';
-    card.setAttribute('role','listitem');
-    card.innerHTML = `
-      <div class="package-title">
-        <div>
-          <div class="pkg-name">${escapeHtml(p.name)}</div>
-          <div class="kv">${escapeHtml(p.desc)}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="pkg-price">${formatVND(p.price)}₫</div>
-          <div class="kv" style="font-size:12px">${p.time}</div>
-        </div>
-      </div>
-      <div class="features" aria-hidden>
-        ${p.features.map(f=>`<div class="feature"><div class="dot"></div>${escapeHtml(f)}</div>`).join('')}
-      </div>
-      <div style="margin-top:12px;display:flex;gap:8px">
-        <button class="btn" data-buy="${p.id}">MUA NGAY</button>
-        <button class="btn btn-outline" data-info="${p.id}">CHI TIẾT</button>
-      </div>
-    `;
-    grid.appendChild(card);
+/* -------- Modal (accessible) -------- */
+const modalRoot = $('#modalRoot');
+function showModal(contentHTML, {onOpen=null}={}) {
+  modalRoot.innerHTML = `<div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true">${contentHTML}</div>`;
+  modalRoot.classList.remove('hidden');
+  // trap focus minimal: focus first focusable element
+  requestAnimationFrame(()=> {
+    const focusable = modalRoot.querySelector('button, input, textarea, [tabindex]:not([tabindex="-1"])');
+    if(focusable) focusable.focus();
+    if(typeof onOpen === 'function') onOpen();
   });
+  // close on ESC
+  const onKey = (e) => { if(e.key === 'Escape') hideModal(); };
+  document.addEventListener('keydown', onKey, {once:false});
+  modalRoot.dataset.keyHandler = true;
+  modalRoot._onKey = onKey;
+}
+function hideModal(){ modalRoot.innerHTML=''; modalRoot.classList.add('hidden'); if(modalRoot._onKey) document.removeEventListener('keydown', modalRoot._onKey); }
 
-  // Attach listeners
-  qsa('[data-buy]').forEach(b=>{
-    b.addEventListener('click', (e)=>{
-      const id = e.currentTarget.getAttribute('data-buy');
-      const pkg = PACKAGE_LIST.find(x=>x.id===id);
-      openOrderModal(pkg);
-    });
-  });
-  qsa('[data-info]').forEach(b=>{
-    b.addEventListener('click', (e)=>{
-      const id = e.currentTarget.getAttribute('data-info');
-      const pkg = PACKAGE_LIST.find(x=>x.id===id);
-      alert(`${pkg.name}\n\nMô tả: ${pkg.desc}\nThời gian: ${pkg.time}\nGiá: ${formatVND(pkg.price)}₫\n\nTính năng:\n- ${pkg.features.join('\n- ')}`);
-    });
-  });
+/* -------- Auth (demo) -------- */
+async function registerUser(username, password) {
+  if(!username || !password) throw new Error('Nhập tên và mật khẩu');
+  const users = Storage.getUsers();
+  if(users[username]) throw new Error('Tài khoản đã tồn tại');
+  users[username] = { username, passHash: await sha256(password), balance:0 };
+  Storage.saveUsers(users);
+  return true;
+}
+async function loginUser(username, password) {
+  const users = Storage.getUsers();
+  const rec = users[username];
+  if(!rec) throw new Error('Không tìm thấy tài khoản');
+  const h = await sha256(password);
+  if(h !== rec.passHash) throw new Error('Mật khẩu sai');
+  setCurrentUser({ username });
+  return true;
 }
 
-/* ---------- Modal factory ---------- */
-function showModal(contentHTML, {closeOnBackdrop=true} = {}){
-  // create backdrop
-  const root = el('modalRoot');
-  root.innerHTML = '';
-  root.classList.remove('hidden');
-  root.style.position = 'fixed';
-  root.style.inset = 0;
-  root.style.zIndex = 60;
-  root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">${contentHTML}</div>`;
-  // backdrop close
-  if(closeOnBackdrop){
-    document.getElementById('modalBackdrop').addEventListener('click', (ev)=>{
-      if(ev.target.id === 'modalBackdrop') hideModal();
-    });
+/* -------- Orders -------- */
+function saveOrder(order) {
+  const list = Storage.getOrders();
+  list.unshift(order);
+  Storage.saveOrders(list);
+}
+function getOrders(){ return Storage.getOrders(); }
+function buildOrderPayload(order){
+  return {
+    id: order.id, username: order.username, name: order.name,
+    login: order.login, package: order.package, price: order.price,
+    note: order.note || '', created_at: new Date(order.createdAt).toISOString()
+  };
+}
+async function forwardOrder(order){
+  if(!DISCORD_WEBHOOK) throw new Error('No webhook configured');
+  const payload = { embeds: [{ title:`Đơn mới: ${order.package}`, color:3447003,
+    fields:[
+      {name:'Người đặt', value:order.username || '-', inline:true},
+      {name:'Tên/Discord', value:order.name || '-', inline:true},
+      {name:'Login', value:order.login || '-', inline:true},
+      {name:'Giá', value:fmt(order.price)+'₫', inline:true},
+      {name:'Ghi chú', value:order.note || '-', inline:false}
+    ], timestamp: new Date(order.createdAt).toISOString()
+  }]};
+  const res = await fetch(DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  if(!res.ok) throw new Error('Forward failed: '+res.status);
+  return res;
+}
+
+/* -------- Rendering -------- */
+function renderHeader(){
+  const cur = currentUser();
+  if(cur){
+    $('#hdr-user').textContent = cur.username;
+    const users = Storage.getUsers();
+    const bal = (users[cur.username] && users[cur.username].balance) || 0;
+    $('#hdr-balance').textContent = fmt(bal)+'đ';
+    $('#acctName').textContent = 'Xin chào, '+cur.username;
+    $('#balance').textContent = fmt(bal)+'đ';
+  } else {
+    $('#hdr-user').textContent = 'Chưa đăng nhập';
+    $('#hdr-balance').textContent = '0đ';
+    $('#acctName').textContent = 'Bạn chưa đăng nhập';
+    $('#balance').textContent = '0đ';
   }
 }
-function hideModal(){ const root = el('modalRoot'); root.innerHTML=''; root.classList.add('hidden'); }
 
-/* ---------- Account modal (login/register) ---------- */
-function openAccountModal(){
-  const html = `
-    <div class="modal" role="document" style="max-width:480px">
-      <h3>Tài khoản</h3>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="m_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)"/>
-        <input id="m_pass" type="password" placeholder="Mật khẩu" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)"/>
+/* Render package cards (optimized: build fragments) */
+function renderPackages(list = PACKAGES){
+  const grid = $('#packagesGrid');
+  // use document fragment to minimize reflows
+  const frag = document.createDocumentFragment();
+  list.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card-item';
+    card.innerHTML = `
+      <div class="pkg-head">
+        <div>
+          <div class="pkg-name">${escapeHtml(p.name)}</div>
+          <div class="pkg-meta">${escapeHtml(p.desc)}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pkg-price">${fmt(p.price)}₫</div>
+          <div class="kv" style="font-size:12px">${escapeHtml(p.time)}</div>
+        </div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn" id="m_login">Đăng nhập</button>
-        <button class="btn btn-outline" id="m_register">Đăng ký</button>
-        <button class="btn btn-outline" id="m_close">Đóng</button>
+      <div class="features">${p.features.map(f=>`<div class="feature"><div class="dot"></div>${escapeHtml(f)}</div>`).join('')}</div>
+      <div class="actions-row">
+        <button class="btn" data-buy="${p.id}">MUA NGAY</button>
+        <button class="btn secondary" data-info="${p.id}">CHI TIẾT</button>
       </div>
-      <p class="kv" style="margin-top:10px">Lưu ý: demo lưu dữ liệu cục bộ. Không dùng tài khoản thực quan trọng.</p>
-    </div>
-  `;
-  showModal(html);
-  el('m_close').addEventListener('click', hideModal);
-  el('m_register').addEventListener('click', async ()=>{
-    const user = el('m_user').value.trim(); const pass = el('m_pass').value;
-    if(!user || !pass){ alert('Nhập tên và mật khẩu'); return; }
-    const users = DB.loadUsers();
-    if(users[user]){ alert('Tài khoản đã tồn tại'); return; }
-    const passHash = await sha256(pass);
-    users[user] = { username:user, passHash, balance:0 };
-    DB.saveUsers(users);
-    alert('Đăng ký thành công. Vui lòng đăng nhập.');
-    el('m_pass').value = '';
+    `;
+    frag.appendChild(card);
   });
-  el('m_login').addEventListener('click', async ()=>{
-    const user = el('m_user').value.trim(); const pass = el('m_pass').value;
-    if(!user || !pass){ alert('Nhập tên và mật khẩu'); return; }
-    const users = DB.loadUsers(); const rec = users[user];
-    if(!rec){ alert('Không tìm thấy tài khoản'); return; }
-    const h = await sha256(pass);
-    if(h !== rec.passHash){ alert('Mật khẩu sai'); return; }
-    setCurrentUser({ username:user });
-    hideModal();
-    renderHeaderAuth();
-    alert('Đăng nhập thành công');
+  grid.innerHTML = '';
+  grid.appendChild(frag);
+}
+
+/* Render orders preview */
+function renderOrdersPreview(){
+  const container = $('#ordersPreview');
+  const list = getOrders();
+  if(!container) return;
+  if(!list || list.length === 0){ container.innerHTML = '<div class="kv">Chưa có đơn gần đây</div>'; return; }
+  container.innerHTML = list.slice(0,6).map(o => `
+    <div class="order-small">
+      <div style="max-width:65%"><strong>${escapeHtml(o.package)}</strong><div class="kv" style="font-size:12px">${escapeHtml(o.name)} • ${escapeHtml(o.login)}</div></div>
+      <div style="text-align:right"><div class="kv">${fmt(o.price)}₫</div><div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent? 'Đã gửi':'Chưa gửi'}</div></div>
+    </div>
+  `).join('');
+}
+
+/* -------- Search & Sort (debounced) -------- */
+const onSearch = debounce(() => {
+  const q = $('#searchInput').value.trim().toLowerCase();
+  let filtered = PACKAGES.filter(p => !q || (p.name + ' ' + p.desc + ' ' + p.features.join(' ')).toLowerCase().includes(q));
+  const sort = $('#sortSelect').value;
+  if(sort === 'price_asc') filtered.sort((a,b)=>a.price-b.price);
+  else if(sort === 'price_desc') filtered.sort((a,b)=>b.price-a.price);
+  renderPackages(filtered);
+}, 160);
+
+/* -------- Event handling (delegation) -------- */
+document.addEventListener('click', (e) => {
+  const buy = e.target.closest('[data-buy]');
+  if(buy) {
+    const id = buy.getAttribute('data-buy'); const pkg = PACKAGES.find(p=>p.id===id);
+    openOrderModal(pkg);
+    return;
+  }
+  const info = e.target.closest('[data-info]');
+  if(info){
+    const id = info.getAttribute('data-info'); const pkg = PACKAGES.find(p=>p.id===id);
+    showInfoModal(pkg);
+    return;
+  }
+});
+
+/* Header/nav interactions */
+$$('.nav button').forEach(b => b.addEventListener('click', (ev) => {
+  $$('.nav button').forEach(x => x.setAttribute('aria-current','false'));
+  b.setAttribute('aria-current','true');
+  const tab = b.getAttribute('data-tab');
+  if(tab === 'account') openAuthModal();
+  else if(tab === 'orders') openOrdersModal();
+}));
+
+$('#contactBtn').addEventListener('click', ()=>toast('Liên hệ: Discord / Telegram / Zalo — cập nhật sau'));
+$('#cta-learn').addEventListener('click', ()=>toast('1) Chọn gói → 2) Đặt đơn → 3) Team thực hiện → 4) Hoàn thành'));
+$('#openAccount').addEventListener('click', openAuthModal);
+$('#quickBuy').addEventListener('click', ()=>openOrderModal(PACKAGES[0]));
+$('#viewOrders').addEventListener('click', openOrdersModal);
+$('#contactSupport').addEventListener('click', ()=>toast('Mở kênh hỗ trợ — demo'));
+
+/* Search and sort */
+$('#searchInput').addEventListener('input', onSearch);
+$('#sortSelect').addEventListener('change', onSearch);
+
+/* CTA order open first package */
+$('#cta-order').addEventListener('click', ()=>openOrderModal(PACKAGES[0]));
+
+/* -------- Info modal -------- */
+function showInfoModal(pkg){
+  showModal(`<div class="modal"><h3>${escapeHtml(pkg.name)}</h3>
+    <div class="kv" style="margin-top:8px">${escapeHtml(pkg.desc)}</div>
+    <div style="margin-top:8px"><strong>Thời gian:</strong> ${escapeHtml(pkg.time)} • <strong>Giá:</strong> ${fmt(pkg.price)}₫</div>
+    <div style="margin-top:10px"><strong>Tính năng:</strong><ul class="kv">${pkg.features.map(f=>`<li>${escapeHtml(f)}</li>`).join('')}</ul></div>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="infoBuy">MUA NGAY</button><button class="btn secondary" id="infoClose">ĐÓNG</button></div></div>`, {
+      onOpen: ()=> {
+        $('#infoClose').addEventListener('click', hideModal);
+        $('#infoBuy').addEventListener('click', ()=>{ hideModal(); openOrderModal(pkg); });
+      }
   });
 }
 
-/* ---------- Order modal / flow ---------- */
-function openOrderModal(pkg){
-  const cur = currentUser();
-  const html = `
-    <div class="modal" role="document">
-      <h3>Đặt gói — ${escapeHtml(pkg.name)} <span style="float:right;color:var(--accent)">${formatVND(pkg.price)}₫</span></h3>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-        <label class="kv">Tên (Roblox / Discord)</label>
-        <input id="o_name" placeholder="Tên người nhận / Discord" style="padding:10px;border-radius:8px"/>
-        <label class="kv">Login Roblox</label>
-        <input id="o_login" placeholder="Login Roblox" style="padding:10px;border-radius:8px"/>
-        <label class="kv">Ghi chú</label>
-        <textarea id="o_note" placeholder="Mô tả chi tiết, pass (nếu cần), thời gian ưu tiên..." style="padding:10px;border-radius:8px"></textarea>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn" id="o_confirm">XÁC NHẬN ĐẶT</button>
-        <button class="btn btn-outline" id="o_cancel">HỦY</button>
-      </div>
-      <p class="kv" style="margin-top:10px">Sau khi đặt, đơn hàng sẽ được lưu và gửi tới hệ thống. Bạn sẽ nhận được phản hồi từ team.</p>
+/* -------- Auth modal (login / register) -------- */
+function openAuthModal(){
+  showModal(`<div class="modal">
+    <h3>Tài khoản</h3>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <input id="m_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)" />
+      <input id="m_pass" type="password" placeholder="Mật khẩu" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)" />
     </div>
-  `;
-  showModal(html);
-  if(cur) el('o_name').value = cur.username;
-  el('o_cancel').addEventListener('click', hideModal);
-  el('o_confirm').addEventListener('click', async ()=>{
-    const curUser = currentUser();
-    if(!curUser){ if(!confirm('Bạn chưa đăng nhập. Đăng nhập bây giờ?')) return; else { hideModal(); openAccountModal(); return; } }
-    const name = el('o_name').value.trim(); const login = el('o_login').value.trim(); const note = el('o_note').value.trim();
-    if(!name || !login){ alert('Nhập tên và login'); return; }
-    // confirm
-    if(!confirm(`Xác nhận đặt ${pkg.name} — ${formatVND(pkg.price)}₫ ?`)) return;
-    const order = {
-      id: 'o_' + Date.now(),
-      username: curUser.username,
-      name, login,
-      package: pkg.name,
-      price: pkg.price,
-      note,
-      createdAt: Date.now(),
-      sent:false
-    };
-    // Save locally
-    const list = DB.loadOrders(); list.unshift(order); DB.saveOrders(list);
-    renderOrdersPreview();
-    hideModal();
-    // Try to send to backend webhook
-    try{
-      await sendOrderToWebhook(order);
-      // mark as sent
-      const list2 = DB.loadOrders();
-      const idx = list2.findIndex(x=>x.id===order.id);
-      if(idx>=0){ list2[idx].sent=true; DB.saveOrders(list2); renderOrdersPreview(); }
-      alert('Đơn hàng đã gửi tới hệ thống!');
-    }catch(err){
-      console.warn('Webhook send failed', err);
-      // copy payload for admin/backend manual forwarding (demo)
-      const payload = JSON.stringify(buildOrderPayload(order), null, 2);
-      try{ await navigator.clipboard.writeText(payload); }catch(e){}
-      alert('Không thể gửi tự động. Payload đã được sao chép vào clipboard để gửi qua backend.');
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn" id="m_login">Đăng nhập</button>
+      <button class="btn secondary" id="m_register">Đăng ký</button>
+      <button class="btn secondary" id="m_close">Đóng</button>
+    </div>
+    <p class="kv" style="margin-top:10px">Demo lưu dữ liệu cục bộ. Không dùng tài khoản thật.</p>
+  </div>`, { onOpen: () => {
+    $('#m_close').addEventListener('click', hideModal);
+    $('#m_register').addEventListener('click', async ()=>{
+      const u = $('#m_user').value.trim(), p = $('#m_pass').value;
+      try{ await registerUser(u,p); toast('Đăng ký thành công — vui lòng đăng nhập'); $('#m_pass').value=''; } catch(err){ toast(err.message || 'Lỗi', {type:'error'}); }
+    });
+    $('#m_login').addEventListener('click', async ()=>{
+      const u = $('#m_user').value.trim(), p = $('#m_pass').value;
+      try{ await loginUser(u,p); hideModal(); renderHeader(); toast('Đăng nhập thành công'); } catch(err){ toast(err.message || 'Lỗi', {type:'error'}); }
+    });
+  }});
+}
+
+/* -------- Order modal flow -------- */
+function openOrderModal(pkg){
+  showModal(`<div class="modal">
+    <h3>Đặt gói — ${escapeHtml(pkg.name)} <span style="float:right;color:var(--accent)">${fmt(pkg.price)}₫</span></h3>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+      <input id="o_name" placeholder="Tên (Roblox / Discord)" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"/>
+      <input id="o_login" placeholder="Login Roblox" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"/>
+      <textarea id="o_note" placeholder="Ghi chú (pass, yêu cầu...)" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn" id="o_confirm">XÁC NHẬN ĐẶT</button>
+      <button class="btn secondary" id="o_cancel">HỦY</button>
+    </div>
+    <p class="kv" style="margin-top:10px">Hệ thống demo sẽ lưu đơn cục bộ. Để gửi tới kênh quản lý thực tế, cần backend an toàn.</p>
+  </div>`, {
+    onOpen: () => {
+      const cur = currentUser();
+      if(cur) $('#o_name').value = cur.username;
+      $('#o_cancel').addEventListener('click', hideModal);
+      $('#o_confirm').addEventListener('click', async ()=>{
+        const curUser = currentUser();
+        if(!curUser){ if(confirm('Bạn chưa đăng nhập. Đăng nhập bây giờ?')) { hideModal(); openAuthModal(); } return; }
+        const name = $('#o_name').value.trim(), login = $('#o_login').value.trim(), note = $('#o_note').value.trim();
+        if(!name || !login){ toast('Nhập tên và login', {type:'error'}); return; }
+        if(!confirm(`Xác nhận đặt: ${pkg.name} — ${fmt(pkg.price)}₫ ?`)) return;
+        const order = { id:'o_'+now(), username:curUser.username, name, login, package:pkg.name, price:pkg.price, note, createdAt: now(), sent:false };
+        saveOrder(order);
+        renderOrdersPreview();
+        hideModal();
+        toast('Đã lưu đơn cục bộ, đang gửi tới hệ thống...');
+        try{
+          await forwardOrder(order);
+          // mark sent
+          const list = Storage.getOrders(); const idx = list.findIndex(x=>x.id===order.id); if(idx>=0){ list[idx].sent=true; Storage.saveOrders(list); renderOrdersPreview(); }
+          toast('Đơn đã gửi tới hệ thống');
+        }catch(err){
+          // fallback: copy payload to clipboard (if available) so developer can forward on server
+          try{ await navigator.clipboard.writeText(JSON.stringify(buildOrderPayload(order), null, 2)); }catch(e){}
+          toast('Không thể gửi tự động. Payload đã sao chép (nếu trình duyệt hỗ trợ).', {type:'error', timeout:5000});
+        }
+      });
     }
   });
 }
 
-/* Quick order modal (preselect first package) */
-function openQuickOrderModal(){
-  openOrderModal(PACKAGE_LIST[0]);
-}
-
-/* Build order payload for backend */
-function buildOrderPayload(order){
-  return {
-    id: order.id,
-    username: order.username,
-    name: order.name,
-    login: order.login,
-    package: order.package,
-    price: order.price,
-    note: order.note,
-    created_at: new Date(order.createdAt).toISOString()
-  };
-}
-
-/* Try to forward to DISCORD_WEBHOOK (which should be a safe backend endpoint) */
-async function sendOrderToWebhook(order){
-  if(!DISCORD_WEBHOOK) throw new Error('No webhook configured');
-  const payload = {
-    embeds: [{
-      title: `Đơn mới: ${order.package}`,
-      color: 3447003,
-      fields:[
-        {name: 'Người đặt', value: order.username || '—', inline:true},
-        {name: 'Tên/Discord', value: order.name || '—', inline:true},
-        {name: 'Login', value: order.login || '—', inline:true},
-        {name: 'Giá', value: formatVND(order.price) + '₫', inline:true},
-        {name: 'Ghi chú', value: order.note || '—', inline:false}
-      ],
-      timestamp: new Date(order.createdAt).toISOString()
-    }]
-  };
-  const res = await fetch(DISCORD_WEBHOOK, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  });
-  if(!res.ok) throw new Error('Forward failed: ' + res.status);
-  return res;
-}
-
-/* ---------- Orders preview / list ---------- */
-function renderOrdersPreview(){
-  const div = el('ordersPreview');
-  const list = DB.loadOrders();
-  if(!div) return;
-  if(list.length===0){ div.innerHTML = '<div class="kv">Chưa có đơn gần đây</div>'; return; }
-  div.innerHTML = list.slice(0,6).map(o=>{
-    return `<div class="order-row" title="${escapeHtml(o.package)}">
-      <div style="max-width:70%"><strong>${escapeHtml(o.package)}</strong><div class="kv" style="font-size:12px">${escapeHtml(o.name)} • ${escapeHtml(o.login)}</div></div>
-      <div style="text-align:right">
-        <div class="kv">${formatVND(o.price)}₫</div>
-        <div style="font-size:12px;color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent ? 'Đã gửi' : 'Chờ gửi'}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-/* ---------- Orders Panel (open full orders in modal) ---------- */
-function openOrdersPanel(){
-  const list = DB.loadOrders();
-  const html = `
-    <div class="modal" style="max-width:760px">
-      <h3>Lịch sử đơn hàng</h3>
-      <div style="max-height:480px;overflow:auto;margin-top:12px">
-        ${list.length===0 ? '<p class="kv">Chưa có đơn nào.</p>' : list.map(o=>`
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass-2)">
-            <div>
-              <div><strong>${escapeHtml(o.package)}</strong> <span class="kv">• ${new Date(o.createdAt).toLocaleString()}</span></div>
-              <div class="kv">${escapeHtml(o.name)} — ${escapeHtml(o.login)}</div>
-              <div class="kv" style="margin-top:6px">Ghi chú: ${escapeHtml(o.note||'—')}</div>
-            </div>
-            <div style="text-align:right">
-              <div style="font-weight:800">${formatVND(o.price)}₫</div>
-              <div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent ? 'Đã gửi' : 'Chưa gửi'}</div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn" id="ordersClose">Đóng</button>
-        <button class="btn btn-outline" id="ordersExport">Xuất JSON</button>
-      </div>
+/* -------- Orders modal (full) -------- */
+function openOrdersModal(){
+  const list = getOrders();
+  showModal(`<div class="modal"><h3>Lịch sử đơn hàng</h3>
+    <div style="max-height:420px;overflow:auto;margin-top:12px">
+      ${list.length===0 ? '<p class="kv">Chưa có đơn nào.</p>' : list.map(o=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass)">
+          <div style="max-width:70%"><strong>${escapeHtml(o.package)}</strong><div class="kv">${escapeHtml(o.name)} — ${escapeHtml(o.login)}</div><div class="kv" style="margin-top:6px">Ghi chú: ${escapeHtml(o.note||'—')}</div></div>
+          <div style="text-align:right"><div style="font-weight:800">${fmt(o.price)}₫</div><div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent? 'Đã gửi':'Chưa gửi'}</div></div>
+        </div>`).join('')}
     </div>
-  `;
-  showModal(html);
-  el('ordersClose').addEventListener('click', hideModal);
-  el('ordersExport').addEventListener('click', ()=>{
-    const json = JSON.stringify(DB.loadOrders(), null, 2);
-    const w = window.open('', '_blank');
-    w.document.write('<pre>' + escapeHtml(json) + '</pre>');
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ordersClose">Đóng</button><button class="btn secondary" id="ordersExport">Xuất JSON</button></div></div>`, {
+      onOpen: () => {
+        $('#ordersClose').addEventListener('click', hideModal);
+        $('#ordersExport').addEventListener('click', ()=> {
+          const json = JSON.stringify(getOrders(), null, 2);
+          const w = window.open('', '_blank');
+          if(w){ w.document.write('<pre>'+escapeHtml(json)+'</pre>'); w.document.title='Orders JSON'; }
+        });
+      }
   });
 }
 
-/* ---------- Header / account rendering ---------- */
-function renderHeaderAuth(){
-  const cur = currentUser();
-  if(cur){
-    el('userLabelSmall').textContent = cur.username;
-    const users = DB.loadUsers();
-    const bal = (users[cur.username] && users[cur.username].balance) || 0;
-    el('soduSmall').textContent = formatVND(bal);
-    el('acctInfo').textContent = 'Xin chào, ' + cur.username;
-    el('walletBalance').textContent = formatVND(bal) + '₫';
-  } else {
-    el('userLabelSmall').textContent = 'Chưa đăng nhập';
-    el('soduSmall').textContent = '0';
-    el('acctInfo').textContent = 'Bạn chưa đăng nhập';
-    el('walletBalance').textContent = '0₫';
-  }
-}
-
-/* ---------- Escape helper ---------- */
-function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-/* ---------- Demo: create admin/demo user (optional) ---------- */
-(async ()=>{
-  const users = DB.loadUsers();
-  if(!users['demo']){ users['demo'] = { username:'demo', passHash: await sha256('demo'), balance: 50000 }; DB.saveUsers(users); }
-  renderHeaderAuth();
-})();
-
+/* -------- Init (on DOM ready) -------- */
+document.addEventListener('DOMContentLoaded', () => {
+  renderPackages(); renderHeader(); renderOrdersPreview();
+  // create demo user if none
+  (async()=>{
+    const users = Storage.getUsers();
+    if(!users['demo']){ users['demo'] = { username:'demo', passHash: await sha256('demo'), balance: 50000 }; Storage.saveUsers(users); }
+    // reflect header if logged
+    renderHeader();
+  })();
+});
 </script>
 </body>
 </html>
