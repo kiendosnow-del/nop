@@ -53,10 +53,7 @@ textarea{min-height:90px;resize:vertical}
 <nav id="mainNav" aria-label="Chức năng chính">
   <button data-tab="account">👤 Tài khoản</button>
   <button data-tab="shop">🛒 Thuê cày</button>
-  <button data-tab="nap">💳 Nạp</button>
-  <button data-tab="gift">🎁 Gift</button>
   <button data-tab="lichsu">📜 Lịch sử</button>
-  <button data-tab="admin">🔐 Admin</button>
 </nav>
 
 <main class="container">
@@ -131,37 +128,10 @@ textarea{min-height:90px;resize:vertical}
     <p class="footerNote">Lưu ý: để gửi webhook tới Discord từ trình duyệt có thể bị chặn do CORS. Hệ thống sẽ cố gắng gửi, nếu thất bại bạn được cung cấp payload để gửi qua server/backend.</p>
   </section>
 
-  <!-- NẠP -->
-  <section id="nap" class="card hidden">
-    <h3>💳 NẠP</h3>
-    <p class="small">Tính năng nạp tiền tạm thời chưa được kết nối. Dùng admin để chỉnh số dư giả để test.</p>
-  </section>
-
-  <!-- GIFT -->
-  <section id="gift" class="card hidden">
-    <h3>🎁 GIFT</h3>
-    <p class="small">Chức năng gift sẽ được triển khai sau.</p>
-  </section>
-
   <!-- LỊCH SỬ -->
   <section id="lichsu" class="card hidden" aria-labelledby="lichsuTitle">
     <h3 id="lichsuTitle">📜 LỊCH SỬ ĐƠN</h3>
     <div id="ordersList" class="small"></div>
-  </section>
-
-  <!-- ADMIN -->
-  <section id="admin" class="card hidden">
-    <h3>🔐 Admin</h3>
-    <p class="small">Đăng nhập bằng tài khoản admin để sử dụng. (Tên: admin)</p>
-    <div class="flex">
-      <input id="adminSetBalanceUser" placeholder="Người dùng (user) để chỉnh số dư" />
-      <input id="adminSetBalance" placeholder="Số dư (VD: 50000)" />
-    </div>
-    <div class="flex">
-      <button id="btnAdminSetBalance" class="btn col">Cập nhật ví</button>
-      <button id="btnAdminClearOrders" class="btn col" style="background:#ef4444">Xóa lịch sử (test)</button>
-    </div>
-    <div id="adminOrders" style="margin-top:10px"></div>
   </section>
 
 </main>
@@ -445,40 +415,6 @@ function renderOrdersList(){
   }).join('');
 }
 
-/* ---------- Admin ---------- */
-el('btnAdminSetBalance').addEventListener('click', () => {
-  const admin = currentUser();
-  if(!admin || admin.username !== 'admin'){ alert('Chỉ admin mới sử dụng chức năng này'); return; }
-  const target = el('adminSetBalanceUser').value.trim();
-  let amount = parseInt(el('adminSetBalance').value.trim() || '0', 10);
-  if(!target || isNaN(amount)){ alert('Nhập người dùng và số dư'); return; }
-  const users = DB.loadUsers();
-  if(!users[target]){ alert('Không tìm thấy user'); return; }
-  users[target].balance = amount;
-  DB.saveUsers(users);
-  alert('Cập nhật số dư thành công');
-  renderAdminOrders();
-  refreshAuthUI();
-});
-
-el('btnAdminClearOrders').addEventListener('click', () => {
-  const admin = currentUser();
-  if(!admin || admin.username !== 'admin'){ alert('Chỉ admin mới sử dụng chức năng này'); return; }
-  if(!confirm('Xóa toàn bộ lịch sử đơn?')) return;
-  DB.saveOrders([]);
-  renderOrdersList();
-  renderAdminOrders();
-});
-
-/* render admin orders */
-function renderAdminOrders(){
-  const list = DB.loadOrders();
-  el('adminOrders').innerHTML = `<p class="small">Tổng đơn: ${list.length}</p>`;
-  if(list.length){
-    el('adminOrders').innerHTML += list.slice(0,20).map(o=>`<div class="small log">${new Date(o.createdAt).toLocaleString()} �� ${escapeHtml(o.username)} • ${escapeHtml(o.package)} • ${formatCurrency(o.price)}đ</div>`).join('');
-  }
-}
-
 /* ---------- Small helpers ---------- */
 function escapeHtml(s){
   if(!s) return '';
@@ -487,18 +423,10 @@ function escapeHtml(s){
 
 /* ---------- Init ---------- */
 (function init(){
-  // If no user 'admin', create demo admin with default pass 'admin' (băm)
   (async()=>{
-    const users = DB.loadUsers();
-    if(!users['admin']){
-      const passHash = await sha256('admin');
-      users['admin'] = { username:'admin', passHash, balance: 0 };
-      DB.saveUsers(users);
-      console.info('Demo admin created: user=admin pass=admin');
-    }
+    // No built-in admin account anymore (removed per request).
     refreshAuthUI();
     renderOrdersList();
-    renderAdminOrders();
     openTab('account');
   })();
 })();
