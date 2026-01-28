@@ -5,187 +5,141 @@
 <title>❄️ SNOW SHOP | Cày Thuê Blox Fruits</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-:root{
---bg:#0b1220;--card:#111827;--main:#38bdf8;--vip:#facc15;
---text:#e5e7eb;--muted:#9ca3af}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial;background:var(--bg);color:var(--text)}
-header{padding:18px;text-align:center;background:linear-gradient(135deg,#0284c7,#2563eb)}
-nav{display:flex;flex-wrap:wrap;justify-content:space-around;background:#020617;padding:10px}
-nav button{background:none;border:none;color:#fff;font-weight:bold}
-.container{max-width:520px;margin:auto;padding:12px}
-.card{background:var(--card);border-radius:16px;padding:14px;margin-bottom:14px}
-h3{color:var(--main)}
-input,select,textarea,button{
-width:100%;padding:11px;margin:6px 0;border-radius:12px;border:none}
-input,select,textarea{background:#020617;color:#fff}
-button{background:var(--main);font-weight:bold;cursor:pointer}
-.hidden{display:none}
-.vip{background:linear-gradient(135deg,#facc15,#eab308);color:#000}
-.log{font-size:13px;border-bottom:1px dashed #334155;padding:6px 0}
-.small{font-size:12px;color:#9ca3af}
-.pending{background:#020617;padding:8px;border-radius:10px;margin-bottom:8px}
+body{margin:0;font-family:Arial;background:#0f172a;color:#fff}
+header{background:linear-gradient(135deg,#1e90ff,#00c6ff);padding:14px;text-align:center;font-weight:bold}
+.container{max-width:520px;margin:auto;padding:14px}
+.card{background:#020617;border-radius:14px;padding:14px;margin-bottom:12px}
+input,select,button{width:100%;padding:10px;margin:6px 0;border-radius:10px;border:none;font-size:15px}
+button{background:#38bdf8;color:#000;font-weight:bold}
+.small{font-size:13px;color:#cbd5f5}
+hr{border:0;border-top:1px solid #334155;margin:10px 0}
 </style>
 </head>
-
 <body>
 
-<header>
-<h1>❄️ SNOW SHOP</h1>
-<div>👤 <b id="userLabel">Chưa đăng nhập</b></div>
-<div>💰 Ví: <b id="sodu">0</b>đ</div>
-</header>
-
-<nav>
-<button onclick="tab('account')">👤 Tài khoản</button>
-<button onclick="tab('shop')">🛒 Thuê cày</button>
-<button onclick="tab('nap')">💳 Nạp</button>
-<button onclick="tab('gift')">🎁 Gift</button>
-<button onclick="tab('lichsu')">📜 Lịch sử</button>
-<button onclick="tab('admin')">🔐 Admin</button>
-</nav>
+<header>❄️ SNOW SHOP – CÀY THUÊ BLOX FRUITS</header>
 
 <div class="container">
 
-<!-- ACCOUNT -->
-<div id="account" class="card">
-<h3>👤 TÀI KHOẢN</h3>
-<div id="authBox">
-<input id="acc_user" placeholder="Tên đăng nhập">
-<input id="acc_pass" type="password" placeholder="Mật khẩu">
-<button onclick="loginAcc()">Đăng nhập</button>
-<button onclick="registerAcc()">Đăng ký</button>
-</div>
-<div id="logoutBox" class="hidden">
-<p>✅ Xin chào <b id="accName"></b></p>
-<button onclick="logout()">Đăng xuất</button>
-</div>
+<div class="card">
+<b>👤 Tài khoản</b>
+<input id="user" placeholder="Nhập tên user">
+<button onclick="login()">Đăng nhập</button>
+<div id="info" class="small"></div>
 </div>
 
-<!-- SHOP -->
-<div id="shop" class="card hidden">
-<h3>🛒 THUÊ CÀY BLOX FRUITS</h3>
+<div class="card">
+<b>💰 Ví tiền</b>
+<div>Số dư: <b id="money">0</b> đ</div>
+<button onclick="nap()">➕ Nạp tiền</button>
+<div id="naplog" class="small"></div>
+</div>
 
-<input id="ten" placeholder="Tên Roblox / Discord">
-<input id="login" placeholder="Login Roblox">
+<div class="card">
+<b>🛒 Đặt đơn</b>
 
 <select id="goi">
-<option value="">-- Chọn gói cày thuê --</option>
+<option value="">-- Chọn gói dịch vụ --</option>
 
 <optgroup label="🔰 LEVEL">
-<option value="Level 700|20000"
-data-info="Farm nhanh lên level 700"
-data-detail="✔ Farm quest nhanh
-✔ Không đổi trái
-✔ 3–5 giờ">
+<option value="Level 700|20000" data-info="Farm lên level 700"
+data-detail="✔ Farm nhanh\n✔ Không mất đồ\n✔ 3–5 giờ">
 Level 700 – 20.000đ</option>
 
-<option value="700 → 1500|20000"
-data-info="Farm từ Sea 2"
-data-detail="✔ Farm boss + quest
-✔ Không mất đồ
-✔ 1–2 ngày">
+<option value="700 → 1500|20000" data-info="Farm Sea 2"
+data-detail="✔ Quest + Boss\n✔ 1–2 ngày">
 700 → 1500 – 20.000đ</option>
 
-<option value="1500 → 2800|20000"
-data-info="Farm Sea 3"
-data-detail="✔ Farm full Sea 3
-✔ An toàn 100%
-✔ 2–3 ngày">
-1500 → 2800 – 20.000đ</option>
-
-<option value="0 → MAX|50000"
-data-info="Cày từ đầu tới max"
-data-detail="✔ Full Sea 1–2–3
-✔ Không mất acc
-✔ 4–6 ngày">
-0 → MAX – 50.000đ</option>
+<option value="1500 → MAX|20000" data-info="Farm Sea 3"
+data-detail="✔ Full Sea 3\n✔ 2–3 ngày">
+1500 → MAX – 20.000đ</option>
 </optgroup>
 
 <optgroup label="🎒 ITEM">
-<option value="Mỏ Neo|20000"
-data-info="Làm Mỏ Neo"
-data-detail="✔ Full quest
-✔ Không mất đồ
-✔ 1 ngày">
-Mỏ Neo – 20.000đ</option>
-
-<option value="Tushita|15000"
-data-info="Kiếm Tushita"
-data-detail="✔ Full quest
-✔ An toàn
-✔ Trong ngày">
-Tushita – 15.000đ</option>
-
-<option value="Yama|30000"
-data-info="Kiếm Yama"
-data-detail="✔ Full Yama
-✔ Không mất đồ
-✔ 1–2 ngày">
-Yama – 30.000đ</option>
-
-<option value="Tam Kiếm Full|35000"
-data-info="True Triple Katana"
-data-detail="✔ Full 3 kiếm
-✔ Không rollback
-✔ 2–3 ngày">
-Tam Kiếm Full – 35.000đ</option>
-
-<option value="CDK|30000"
-data-info="Cursed Dual Katana"
-data-detail="✔ Full CDK
-✔ Không mất item
-✔ 1–2 ngày">
+<option value="CDK|30000" data-info="Cursed Dual Katana"
+data-detail="✔ Full CDK\n✔ Không rollback">
 CDK – 30.000đ</option>
+
+<option value="True Triple Katana|35000" data-info="Tam Kiếm"
+data-detail="✔ Full 3 kiếm\n✔ An toàn">
+Tam Kiếm – 35.000đ</option>
 </optgroup>
 
 <optgroup label="💠 V4">
-<option value="Full Gear V4|30000"
-data-info="Full Gear V4"
-data-detail="✔ Full Gear
-✔ Thức tỉnh V4
-✔ 1–2 ngày">
+<option value="Full Gear V4|30000" data-info="Full Gear V4"
+data-detail="✔ Thức tỉnh V4\n✔ 1–2 ngày">
 Full Gear V4 – 30.000đ</option>
-
-<option value="1 Gear V4|5000"
-data-info="Up 1 Gear"
-data-detail="✔ 1 Gear bất kỳ
-✔ Nhanh gọn
-✔ Trong ngày">
-1 Gear V4 – 5.000đ</option>
-</optgroup>
-
-<optgroup label="🥋 MELEE">
-<option value="Godhuman|20000"
-data-info="Melee Godhuman"
-data-detail="✔ Full Godhuman
-✔ Farm nguyên liệu
-✔ 1 ngày">
-Godhuman – 20.000đ</option>
-
-<option value="Melee V2|15000"
-data-info="Up Melee V2"
-data-detail="✔ Melee V2
-✔ Nhanh
-✔ Trong ngày">
-Melee V2 – 15.000đ</option>
 </optgroup>
 </select>
 
 <div id="goiInfo" class="small"></div>
-<div id="goiDetail" class="small" style="white-space:pre-line;background:#020617;padding:10px;border-radius:10px;display:none"></div>
+<div id="goiDetail" class="small" style="white-space:pre-line;display:none"></div>
 
-<textarea id="note" placeholder="Ghi chú thêm"></textarea>
-<button onclick="datDon()">🚀 ĐẶT ĐƠN</button>
+<button onclick="order()">📦 Đặt đơn</button>
+<div id="orderlog" class="small"></div>
 </div>
 
-<!-- NẠP / GIFT / ADMIN / SCRIPT giữ nguyên -->
-<!-- (Không thay đổi gì thêm như yêu cầu của bạn) -->
+</div>
 
 <script>
-const DISCORD_WEBHOOK="DÁN_WEBHOOK_CỦA_BẠN";
+let curUser="", money=0;
 
-/* phần JS giữ nguyên logic như bản bạn gửi */
+function login(){
+curUser=user.value.trim();
+if(!curUser)return alert("Nhập user");
+money=Number(localStorage.getItem("money_"+curUser)||0);
+info.innerText="Đã đăng nhập: "+curUser;
+update();
+}
+
+function update(){
+moneyEl.innerText=money;
+}
+
+function nap(){
+let m=prompt("Nhập số tiền nạp");
+if(!m||m<=0)return;
+let logs=JSON.parse(localStorage.getItem("naplog_"+curUser)||"[]");
+logs.push("⏳ Chờ duyệt: "+m+"đ");
+localStorage.setItem("naplog_"+curUser,JSON.stringify(logs));
+naplog.innerText=logs.join("\n");
+}
+
+function order(){
+if(!goi.value)return alert("Chọn gói");
+let [name,price]=goi.value.split("|");
+price=Number(price);
+if(money<price)return alert("Không đủ tiền");
+money-=price;
+localStorage.setItem("money_"+curUser,money);
+update();
+
+let logs=JSON.parse(localStorage.getItem("order_"+curUser)||"[]");
+logs.push("📦 "+name+" – "+price+"đ");
+localStorage.setItem("order_"+curUser,JSON.stringify(logs));
+orderlog.innerText=logs.join("\n");
+
+sendDiscord(name,price);
+}
+
+goi.onchange=()=>{
+let o=goi.selectedOptions[0];
+if(!o.dataset.info){goiInfo.innerText="";goiDetail.style.display="none";return;}
+goiInfo.innerText="ℹ️ "+o.dataset.info;
+goiDetail.innerText=o.dataset.detail;
+goiDetail.style.display="block";
+}
+
+function sendDiscord(name,price){
+let url="https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+fetch(url,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+content:`🛒 ĐƠN MỚI\n👤 ${curUser}\n📦 ${name}\n💰 ${price}đ`
+})
+});
+}
 </script>
 
 </body>
