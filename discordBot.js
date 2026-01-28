@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const axios = require("axios");
 
-const BOT_TOKEN = "YOUR_BOT_TOKEN";
+const BOT_TOKEN = "MTQ2NTg1OTg2MTMyMDMwNjgxNg.GGgbkD.40ZnZh1mBpdQNvJ_cNliWWIFTUtEW5A0IK5ZYs";
 const API = "http://127.0.0.1:3000/internal";
 
 const client = new Client({intents:[GatewayIntentBits.Guilds]});
