@@ -25,3 +25,9 @@ client.on("interactionCreate", async i=>{
 });
 
 client.login(BOT_TOKEN);
+const row = new ActionRowBuilder().addComponents(
+ new ButtonBuilder().setLabel("DUYỆT").setStyle(ButtonStyle.Success).setCustomId("APPROVE_BANK:"+id),
+ new ButtonBuilder().setLabel("TỪ CHỐI").setStyle(ButtonStyle.Danger).setCustomId("REJECT_BANK:"+id)
+);
+
+channel.send({content:`💳 NẠP BANK\nUser: ${user}\n💰 ${amount}`,components:[row]});
