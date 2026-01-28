@@ -4,12 +4,16 @@
 <meta charset="UTF-8">
 <title>❄️ SNOW | Cày Thuê Blox Fruits</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:#fff}
 header{background:linear-gradient(135deg,#1e90ff,#00c6ff);padding:14px;text-align:center}
 .container{max-width:520px;margin:auto;padding:14px}
 .card{background:#fff;color:#000;border-radius:14px;padding:14px;margin-bottom:12px}
-input,select,textarea,button{width:100%;padding:10px;margin:6px 0;border-radius:10px}
+input,select,textarea,button{
+width:100%;padding:10px;margin:6px 0;border-radius:10px;
+border:1px solid #ddd;font-size:15px
+}
 button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 .price{font-size:18px;font-weight:bold;color:#1e90ff}
 .hide{display:none}
@@ -17,8 +21,6 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 </head>
 
 <body>
-
-<audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-coins-handling-1939.mp3"></audio>
 
 <header>
 <h2>❄️ SNOW CÀY THUÊ</h2>
@@ -30,6 +32,7 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 
 <div class="container">
 
+<!-- LOGIN -->
 <div class="card" id="loginBox">
 <input id="lu" placeholder="Tài khoản">
 <input id="lp" type="password" placeholder="Mật khẩu">
@@ -37,122 +40,167 @@ button{background:#1e90ff;color:#fff;border:none;font-weight:bold}
 <button onclick="register()">Đăng ký</button>
 </div>
 
+<!-- ORDER -->
 <div class="card hide" id="orderBox">
 <select id="goi">
-<option value="">-- Chọn gói cày thuê --</option>
+<option value="0">-- Chọn gói cày thuê --</option>
+
 <optgroup label="🔰 LEVEL">
-<option value="LV_700_1500">700 → 1500 (20k)</option>
-<option value="LV_1500_MAX">1500 → MAX (20k)</option>
+<option value="20000">700 → 1600 (20k)</option>
+<option value="20000">1600 → MAX (20k)</option>
 </optgroup>
+
 <optgroup label="🧰 ITEM">
-<option value="CDK">CDK (30k)</option>
-<option value="TAM_KIEM">Tam Kiếm Full (35k)</option>
-<option value="MO_NEO">Mỏ Neo (20k)</option>
+<option value="30000">CDK (30k)</option>
+<option value="35000">True Triple Katana (35k)</option>
+<option value="20000">Mỏ Neo (20k)</option>
+<option value="25000">Soul Guitar (25k)</option>
+</optgroup>
+
+<optgroup label="⚙️ UP V4">
+<option value="25000">Full Gear (25k)</option>
+<option value="10000">Bánh Răng (10k)</option>
+<option value="5000">1 Gear (5k)</option>
+</optgroup>
+
+<optgroup label="🧬 RACE">
+<option value="20000">Cyborg (20k)</option>
+<option value="20000">Ghoul (20k)</option>
+</optgroup>
+
+<optgroup label="🥋 MELEE">
+<option value="20000">Godhuman (20k)</option>
+<option value="15000">Melee V2 (15k)</option>
+</optgroup>
+
+<optgroup label="💰 BELI / FRAG">
+<option value="2000">1M Beli (2k)</option>
+<option value="5000">Fragments (5k)</option>
+</optgroup>
+
+<optgroup label="📈 MASTERY">
+<option value="45000">600 Mas (45k)</option>
+<option value="50000">600 Mas Gun (50k)</option>
 </optgroup>
 </select>
 
-<div class="price">Giá: <span id="price">—</span></div>
-<input id="rbx" placeholder="Nick Roblox">
+<div class="price">Giá: <span id="price">0đ</span></div>
+<input id="rbx" placeholder="Username Roblox">
 <textarea id="note" placeholder="Ghi chú"></textarea>
 <button onclick="buy()">🛒 ĐẶT ĐƠN</button>
 </div>
 
-<div class="card hide" id="cardBox">
-<h3>💳 Nạp thẻ cào</h3>
-<select id="cardType">
-<option>VIETTEL</option>
-<option>MOBIFONE</option>
-<option>VINAPHONE</option>
+<!-- TOPUP -->
+<div class="card hide" id="topupBox">
+<h3>💳 Nạp tiền (Chờ duyệt)</h3>
+<select id="method">
+<option>Card</option>
+<option>Bank</option>
+<option>ATM</option>
 </select>
-<input id="cardAmount" placeholder="Mệnh giá (10000)">
-<input id="cardSerial" placeholder="Serial">
-<input id="cardCode" placeholder="Mã thẻ">
-<button onclick="napCard()">NẠP THẺ</button>
-</div>
-
-<div class="card hide" id="bankBox">
-<h3>🏦 Nạp Bank</h3>
-<input id="bankAmount" placeholder="Số tiền">
-<input id="bankNote" placeholder="Nội dung CK">
-<button onclick="napBank()">GỬI DUYỆT</button>
+<input id="amount" placeholder="Số tiền">
+<button onclick="topup()">Gửi nạp</button>
 </div>
 
 </div>
 
 <script>
-const API="http://YOUR_VPS_IP:3000";
-const click=()=>document.getElementById("clickSound").play();
-let token="";
+const WEBHOOK = "PUT_WEBHOOK_DISCORD";
 
-goi.onchange=async()=>{
- if(!goi.value) return price.innerText="—";
- const r=await fetch(API+"/pack/"+goi.value);
- const d=await r.json();
- if(!d.ok) return price.innerText="Lỗi";
- price.innerText=d.price.toLocaleString()+"đ";
+/* DATA */
+let users = JSON.parse(localStorage.snow_users || "{}");
+let orders = JSON.parse(localStorage.snow_orders || "[]");
+let topups = JSON.parse(localStorage.snow_topups || "[]");
+let user = localStorage.snow_user || "";
+
+/* PRICE */
+goi.onchange = ()=> price.innerText =
+Number(goi.value).toLocaleString()+"đ";
+
+/* SAVE */
+function save(){
+localStorage.snow_users = JSON.stringify(users);
+localStorage.snow_orders = JSON.stringify(orders);
+localStorage.snow_topups = JSON.stringify(topups);
 }
 
-async function login(){
- click();
- const r=await fetch(API+"/login",{method:"POST",headers:{'Content-Type':'application/json'},
- body:JSON.stringify({u:lu.value,p:lp.value})});
- const d=await r.json();
- if(!d.ok) return alert(d.msg);
- token=d.token;
- init(d.user);
+/* AUTH */
+function login(){
+if(!users[lu.value] || users[lu.value].pass !== lp.value)
+return alert("Sai tài khoản hoặc mật khẩu");
+user = lu.value;
+localStorage.snow_user = user;
+init();
 }
 
-async function register(){
- click();
- const r=await fetch(API+"/register",{method:"POST",headers:{'Content-Type':'application/json'},
- body:JSON.stringify({u:lu.value,p:lp.value})});
- alert((await r.json()).msg);
+function register(){
+if(users[lu.value]) return alert("Tài khoản đã tồn tại");
+users[lu.value] = {pass: lp.value, wallet: 0};
+save(); alert("Đăng ký thành công");
 }
 
-function logout(){location.reload()}
-
-function init(u){
- loginBox.classList.add("hide");
- orderBox.classList.remove("hide");
- cardBox.classList.remove("hide");
- bankBox.classList.remove("hide");
- userBox.classList.remove("hide");
- uname.innerText=u.username;
- wallet.innerText=u.wallet.toLocaleString()+"đ";
+function logout(){
+localStorage.removeItem("snow_user");
+location.reload();
 }
 
-async function buy(){
- click();
- const r=await fetch(API+"/order",{method:"POST",
- headers:{'Content-Type':'application/json',Authorization:"Bearer "+token},
- body:JSON.stringify({pack:goi.value,roblox:rbx.value,note:note.value})});
- const d=await r.json();
- alert(d.msg);
- if(d.wallet!==undefined) wallet.innerText=d.wallet.toLocaleString()+"đ";
+/* INIT */
+function init(){
+loginBox.classList.add("hide");
+orderBox.classList.remove("hide");
+topupBox.classList.remove("hide");
+userBox.classList.remove("hide");
+uname.innerText = user;
+wallet.innerText = users[user].wallet.toLocaleString()+"đ";
 }
 
-async function napCard(){
- click();
- const r=await fetch(API+"/topup/card",{method:"POST",
- headers:{'Content-Type':'application/json',Authorization:"Bearer "+token},
- body:JSON.stringify({
- type:cardType.value,
- amount:+cardAmount.value,
- serial:cardSerial.value,
- code:cardCode.value
- })});
- const d=await r.json();
- alert(d.msg);
- if(d.wallet) wallet.innerText=d.wallet.toLocaleString()+"đ";
+/* BUY */
+function buy(){
+let p = Number(goi.value);
+if(p<=0) return alert("Chưa chọn gói");
+if(users[user].wallet < p) return alert("Không đủ tiền");
+
+users[user].wallet -= p;
+orders.push({
+user,
+goi: goi.options[goi.selectedIndex].text,
+price: p,
+status: "Đang làm"
+});
+save(); init();
+
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`🧊 ĐƠN MỚI\n👤 ${user}\n📦 ${goi.options[goi.selectedIndex].text}\n💰 ${p.toLocaleString()}đ\n🎮 ${rbx.value}`
+})
+});
+
+alert("✅ Đặt đơn thành công");
 }
 
-async function napBank(){
- click();
- const r=await fetch(API+"/topup/bank",{method:"POST",
- headers:{'Content-Type':'application/json',Authorization:"Bearer "+token},
- body:JSON.stringify({amount:+bankAmount.value,note:bankNote.value})});
- alert((await r.json()).msg);
+/* TOPUP */
+function topup(){
+let a = Number(amount.value);
+if(a<=0) return alert("Nhập số tiền");
+topups.push({
+user, amount:a, method:method.value, status:"Chờ duyệt"
+});
+save();
+
+fetch(WEBHOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+content:`💳 NẠP ${method.value}\n👤 ${user}\n💰 ${a.toLocaleString()}đ`
+})
+});
+
+alert("⏳ Đã gửi yêu cầu nạp");
 }
+
+if(user) init();
 </script>
 
 </body>
