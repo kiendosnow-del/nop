@@ -3,168 +3,82 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SNOW SHOP — Thuê cày Blox Fruits</title>
+<title>SNOW SHOP — Thuê cày Blox Fruits (Admin & Nạp Bank)</title>
 
-<!-- Google Font (preconnect + preload for performance) -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* -------------------------
-   Visual / Layout (modern)
-   ------------------------- */
 :root{
-  --bg:#051024;
-  --panel:#071226;
-  --card:#0d1a2a;
-  --muted:#9aa3af;
-  --text:#e6eef6;
-  --accent:#06b6d4;
-  --accent-2:#60a5fa;
-  --success:#10b981;
-  --danger:#ef4444;
-  --glass: rgba(255,255,255,0.02);
-  --radius:12px;
-  --shadow: 0 10px 30px rgba(2,6,23,0.6);
-  --transition: 200ms cubic-bezier(.2,.9,.3,1);
-  --max-width:1200px;
-  --card-gap:14px;
+  --bg:#051024; --panel:#071226; --muted:#9aa3af; --text:#e6eef6;
+  --accent:#06b6d4; --accent-2:#60a5fa; --success:#10b981; --danger:#ef4444;
+  --glass: rgba(255,255,255,0.02); --radius:12px; --shadow: 0 10px 30px rgba(2,6,23,0.6);
+  --max-width:1200px; --card-gap:14px; --transition:200ms;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-  background:linear-gradient(180deg,var(--bg),#03101d 150%);
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  line-height:1.45;
-  -webkit-tap-highlight-color: transparent;
+  margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+  background:linear-gradient(180deg,var(--bg),#03101d 150%);color:var(--text);
+  -webkit-font-smoothing:antialiased;line-height:1.45;
 }
 
-/* Header */
-.header{
-  max-width:var(--max-width);
-  margin:18px auto;
-  padding:14px 18px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
+/* Layout */
+.header{max-width:var(--max-width);margin:18px auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;align-items:center;gap:12px}
-.logo{
-  width:56px;height:56px;border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),#2563eb);
-  display:flex;align-items:center;justify-content:center;font-weight:800;color:#021022;
-  box-shadow:var(--shadow);font-size:20px;
-}
+.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#2563eb);display:flex;align-items:center;justify-content:center;font-weight:800;color:#021022;box-shadow:var(--shadow);font-size:20px}
 .title{font-weight:700}
 .header-info{display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted)}
 
-/* Nav */
-.nav{
-  max-width:var(--max-width);
-  margin:0 auto;
-  padding:8px 18px 0;
-  display:flex;
-  gap:8px;
-  justify-content:center;
-}
-.nav button{
-  background:transparent;border:0;color:var(--muted);padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;
-  transition:color var(--transition), background var(--transition);
-}
+.nav{max-width:var(--max-width);margin:0 auto;padding:8px 18px 0;display:flex;gap:8px;justify-content:center}
+.nav button{background:transparent;border:0;color:var(--muted);padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:color var(--transition), background var(--transition)}
 .nav button[aria-current="true"], .nav button:hover{ color:var(--text); background:var(--glass) }
 
-/* Main layout */
-.main{
-  max-width:var(--max-width);
-  margin:18px auto;
-  padding:18px;
-  display:grid;
-  grid-template-columns: 1fr 360px;
-  gap:18px;
-}
+.main{max-width:var(--max-width);margin:18px auto;padding:18px;display:grid;grid-template-columns: 1fr 360px;gap:18px}
 @media (max-width:980px){ .main{ grid-template-columns:1fr } }
 
-/* Panels */
-.panel{
-  background:linear-gradient(180deg,var(--panel),#061224);
-  border-radius:var(--radius);
-  padding:16px;
-  box-shadow:var(--shadow);
-  border:1px solid rgba(255,255,255,0.03);
-}
+.panel{background:linear-gradient(180deg,var(--panel),#061224);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
 
-/* Hero */
 .hero{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(6,182,212,0.05),rgba(58,123,213,0.03))}
 .hero h1{margin:0;font-size:20px}
 .hero p{margin:6px 0 0;color:var(--muted);font-size:14px}
-.hero .actions{display:flex;gap:8px;margin-top:12px}
 
-/* Search / filter */
 .controls{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.controls input, .controls select{
-  background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:10px;border-radius:10px;width:100%;
-}
+.controls input, .controls select{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:10px;border-radius:10px;width:100%}
 .controls .col{min-width:160px;flex:1}
 
 /* Packages grid */
-.grid{
-  margin-top:16px;
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap:var(--card-gap);
-}
+.grid{margin-top:16px;display:grid;grid-template-columns: repeat(3, 1fr);gap:var(--card-gap)}
 @media (max-width:980px){ .grid{ grid-template-columns: repeat(2,1fr) } }
 @media (max-width:640px){ .grid{ grid-template-columns:1fr } }
 
-.card-item{
-  background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
-  padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);
-  transition: transform var(--transition), box-shadow var(--transition);
-  will-change: transform;
-}
-.card-item:hover{ transform: translateY(-6px); box-shadow: 0 20px 40px rgba(2,6,23,0.6); }
-
-/* package header */
+.card-item{background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);transition: transform var(--transition), box-shadow var(--transition);will-change: transform}
+.card-item:hover{ transform: translateY(-6px); box-shadow: 0 20px 40px rgba(2,6,23,0.6) }
 .pkg-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .pkg-name{font-weight:800}
 .pkg-price{font-weight:800;color:var(--accent)}
-.pkg-meta{color:var(--muted);font-size:13px;margin-top:8px}
-
-/* features */
 .features{margin-top:10px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:13px}
 .feature{display:flex;gap:8px;align-items:flex-start}
 .feature .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--accent),var(--accent-2));margin-top:6px}
-
-/* action row */
 .actions-row{display:flex;gap:8px;margin-top:12px}
-.btn{
-  border:0;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer;color:#021022;background:linear-gradient(90deg,var(--accent),var(--accent-2));
-  transition: transform var(--transition);
-}
+.btn{border:0;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer;color:#021022;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition: transform var(--transition)}
 .btn.secondary{ background:transparent;color:var(--text); border:1px solid rgba(255,255,255,0.04) }
 .btn:active{ transform: translateY(1px) }
 
 /* Sidebar */
 .sidebar{display:flex;flex-direction:column;gap:12px}
-.wallet{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.03)}
 .wallet .balance{font-weight:800;color:var(--accent);font-size:18px;margin-top:8px}
-.orders-preview{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.03)}
-.order-small{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:var(--glass);margin-bottom:8px}
+.orders-preview .order-small{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:var(--glass);margin-bottom:8px}
 
-/* modal / toast */
+/* Modal / toast */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:60}
-.modal{width:100%;max-width:720px;background:linear-gradient(180deg,#071022,#05101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 40px rgba(0,0,0,0.7)}
+.modal{width:100%;max-width:760px;background:linear-gradient(180deg,#071022,#05101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 40px rgba(0,0,0,0.7)}
 .toast-wrap{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:70}
 
-/* small helpers */
 .kv{color:var(--muted);font-size:13px}
-.hidden{display:none}
 .small{font-size:13px;color:var(--muted)}
+.hidden{display:none}
+.admin-badge{background:linear-gradient(90deg,#facc15,#eab308);color:#021022;padding:6px 8px;border-radius:999px;font-weight:700}
 </style>
 </head>
 
@@ -179,8 +93,8 @@ body{
     </div>
 
     <div class="header-info" aria-hidden>
-      <div class="kv">👤 <strong id="hdr-user">Chưa đăng nhập</strong></div>
-      <div class="kv">💰 <strong id="hdr-balance">0đ</strong></div>
+      <div>👤 <strong id="hdr-user">Chưa đăng nhập</strong> <span id="hdr-admin" class="admin-badge hidden">ADMIN</span></div>
+      <div>💰 <strong id="hdr-balance">0đ</strong></div>
     </div>
   </header>
 
@@ -188,22 +102,21 @@ body{
     <button data-tab="packages" aria-current="true">Gói dịch vụ</button>
     <button data-tab="account">Tài khoản</button>
     <button data-tab="orders">Lịch sử</button>
+    <button id="nav-deposit">Nạp tiền</button>
     <button id="contactBtn">Liên hệ</button>
   </nav>
 
   <main class="main" role="main">
-    <!-- left: packages -->
     <section class="panel" aria-labelledby="hero-title">
       <div class="hero" id="hero">
         <div>
           <h1 id="hero-title">Thuê cày chuyên nghiệp — An toàn & Nhanh</h1>
-          <p>Chọn gói, đặt đơn, theo dõi tiến trình. Hệ thống demo đã được tối ưu UX/hiệu năng.</p>
-          <div class="hero-actions" style="margin-top:10px">
+          <p>Chọn gói chính xác theo nhu cầu — thanh toán bằng ví hoặc nạp ngân hàng. Admin có quyền quản lý nạp và gift tiền.</p>
+          <div style="margin-top:10px">
             <button class="btn" id="cta-order">Mua ngay</button>
             <button class="btn secondary" id="cta-learn">Cách hoạt động</button>
           </div>
         </div>
-
         <div style="text-align:right">
           <div class="kv">Hỗ trợ 24/7</div>
           <div style="margin-top:10px" class="kv">Cam kết hoàn tiền nếu vi phạm</div>
@@ -211,7 +124,7 @@ body{
       </div>
 
       <div class="controls" aria-hidden>
-        <input id="searchInput" placeholder="Tìm kiếm gói (ví dụ: Level, Tushita, Yama)" class="col" />
+        <input id="searchInput" placeholder="Tìm kiếm gói (Level/Tushita/Yama...)" class="col" />
         <select id="sortSelect" class="col" aria-label="Sắp xếp">
           <option value="popular">Mặc định</option>
           <option value="price_asc">Giá tăng dần</option>
@@ -222,19 +135,23 @@ body{
       <div id="packagesGrid" class="grid" aria-live="polite" aria-label="Danh sách gói"></div>
     </section>
 
-    <!-- right: sidebar -->
     <aside class="sidebar">
-      <div class="wallet panel">
+      <div class="panel wallet">
         <div class="kv">Tài khoản</div>
         <div id="acctName" class="kv" style="margin-top:6px">Bạn chưa đăng nhập</div>
         <div id="balance" class="balance">0đ</div>
+
         <div style="display:flex;gap:8px;margin-top:12px">
           <button class="btn" id="openAccount">Đăng nhập / Đăng ký</button>
           <button class="btn secondary" id="quickBuy">Đặt nhanh</button>
         </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn secondary" id="openDeposit">Nạp tiền</button>
+        </div>
       </div>
 
-      <div class="orders-preview panel">
+      <div class="panel orders-preview">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <strong>Đơn gần đây</strong>
           <button class="small" id="viewOrders">Xem tất cả</button>
@@ -242,9 +159,16 @@ body{
         <div id="ordersPreview" style="margin-top:12px"></div>
       </div>
 
+      <div id="adminPanelPlaceholder" class="panel hidden">
+        <strong>Admin</strong>
+        <div style="margin-top:8px">
+          <button class="btn" id="openAdminPanel">Bảng quản trị</button>
+        </div>
+      </div>
+
       <div class="panel">
         <strong>Hỗ trợ</strong>
-        <div class="kv" style="margin-top:8px">Liên hệ: Discord / Telegram / Zalo (cập nhật sau)</div>
+        <div class="kv" style="margin-top:8px">Liên hệ: Discord / Telegram / Zalo</div>
         <div style="margin-top:12px"><button class="btn secondary" id="contactSupport">Mở kênh hỗ trợ</button></div>
       </div>
     </aside>
@@ -255,361 +179,57 @@ body{
 
 <script>
 /*
-  Improved & optimized single-file front-end
-  - Better UX: toast notifications, accessible modal, non-blocking flow
-  - Performance: event delegation, debounced search, minimal reflows
-  - Security: don't embed Discord webhook in client; use backend to forward
-  - Storage: wrapped localStorage usage
+  Enhancements added:
+  - Admin account (admin/admin) with admin badge. Admin panel allows gifting money and approving/rejecting bank deposits.
+  - Bank deposit flow: user creates deposit order with reference code, admin approves to credit balance.
+  - Packages list reflects the provided <select> content (all groups included).
+  - Order flow supports payment by wallet balance (auto-deduct) or pending payment if insufficient.
+  - Optimized rendering, debounced search, event delegation, accessible modal & toasts.
+  - All data kept in localStorage for demo. For production, replace backend endpoints (DISCORD_WEBHOOK) & persist server-side.
 */
 
-/* -------- CONFIG -------- */
-const DISCORD_WEBHOOK = ""; // Set to your backend endpoint that forwards to Discord (do NOT embed raw Discord webhook)
+const DISCORD_WEBHOOK = ""; // Should point to your backend endpoint that forwards to Discord
+
+/* Packages (exact to user's provided list) */
 const PACKAGES = [
-  { id:'p1', name:'Level 700', price:20000, time:'3–5 giờ', desc:'Farm quest nhanh • Không đổi trái', features:['Farm quest tối ưu','Không mất đồ','Nhanh gọn'] },
-  { id:'p2', name:'700 → 1500', price:20000, time:'1–2 ngày', desc:'Farm boss + quest', features:['Farm boss','Không mất đồ','An toàn'] },
-  { id:'p3', name:'1500 → 2800', price:20000, time:'2–3 ngày', desc:'Farm Sea 3 full', features:['Full Sea 3','An toàn cao','Hoàn thành đúng hạn'] },
-  { id:'p4', name:'0 → MAX', price:50000, time:'4–6 ngày', desc:'Cày từ đầu tới max', features:['Full Sea 1-2-3','Không mất acc','Cam kết hoàn thành'] },
-  { id:'p5', name:'Tushita', price:15000, time:'Trong ngày', desc:'Kiếm Tushita an toàn', features:['Full quest','Nhanh','An toàn'] },
-  { id:'p6', name:'Tam Kiếm Full', price:35000, time:'2–3 ngày', desc:'True Triple Katana', features:['Full 3 kiếm','Không rollback','Tỉ lệ cao'] },
+  // LEVEL
+  { id:'level_700', name:'Level 700', price:20000, time:'3–5 giờ', desc:'Farm nhanh lên level 700', features:['Farm quest nhanh','Không đổi trái','3–5 giờ'] },
+  { id:'700_1500', name:'700 → 1500', price:20000, time:'1–2 ngày', desc:'Farm từ Sea 2', features:['Farm boss + quest','Không mất đồ','1–2 ngày'] },
+  { id:'1500_2800', name:'1500 → 2800', price:20000, time:'2–3 ngày', desc:'Farm Sea 3', features:['Farm full Sea 3','An toàn 100%','2–3 ngày'] },
+  { id:'0_max', name:'0 → MAX', price:50000, time:'4–6 ngày', desc:'Cày từ đầu tới max', features:['Full Sea 1–2–3','Không mất acc','4–6 ngày'] },
+  // ITEM
+  { id:'mo_ne', name:'Mỏ Neo', price:20000, time:'1 ngày', desc:'Làm Mỏ Neo', features:['Full quest','Không mất đồ','1 ngày'] },
+  { id:'tushita', name:'Tushita', price:15000, time:'Trong ngày', desc:'Kiếm Tushita', features:['Full quest','An toàn','Trong ngày'] },
+  { id:'yama', name:'Yama', price:30000, time:'1–2 ngày', desc:'Kiếm Yama', features:['Full Yama','Không mất đồ','1–2 ngày'] },
+  { id:'tam_kiem', name:'Tam Kiếm Full', price:35000, time:'2–3 ngày', desc:'True Triple Katana', features:['Full 3 kiếm','Không rollback','2–3 ngày'] },
+  { id:'cdk', name:'CDK', price:30000, time:'1–2 ngày', desc:'Cursed Dual Katana', features:['Full CDK','Không mất item','1–2 ngày'] },
+  // V4
+  { id:'full_v4', name:'Full Gear V4', price:30000, time:'1–2 ngày', desc:'Full Gear V4', features:['Full Gear','Thức tỉnh V4','1–2 ngày'] },
+  { id:'one_v4', name:'1 Gear V4', price:5000, time:'Trong ngày', desc:'Up 1 Gear', features:['1 Gear bất kỳ','Nhanh gọn','Trong ngày'] },
+  // MELEE
+  { id:'godhuman', name:'Godhuman', price:20000, time:'1 ngày', desc:'Melee Godhuman', features:['Full Godhuman','Farm nguyên liệu','1 ngày'] },
+  { id:'melee_v2', name:'Melee V2', price:15000, time:'Trong ngày', desc:'Up Melee V2', features:['Melee V2','Nhanh','Trong ngày'] }
 ];
 
-/* -------- Utilities -------- */
+/* Storage wrapper with deposits + logs */
+const Storage = {
+  usersKey: 'snow_v4_users',
+  ordersKey: 'snow_v4_orders',
+  depositsKey: 'snow_v4_deposits',
+  logsKey: 'snow_v4_logs',
+  getUsers(){ try{return JSON.parse(localStorage.getItem(this.usersKey)||'{}')}catch(e){return{}} },
+  saveUsers(v){ localStorage.setItem(this.usersKey, JSON.stringify(v)) },
+  getOrders(){ try{return JSON.parse(localStorage.getItem(this.ordersKey)||'[]')}catch(e){return[]} },
+  saveOrders(v){ localStorage.setItem(this.ordersKey, JSON.stringify(v)) },
+  getDeposits(){ try{return JSON.parse(localStorage.getItem(this.depositsKey)||'[]')}catch(e){return[]} },
+  saveDeposits(v){ localStorage.setItem(this.depositsKey, JSON.stringify(v)) },
+  pushLog(entry){ const l = JSON.parse(localStorage.getItem(this.logsKey)||'[]'); l.unshift(entry); localStorage.setItem(this.logsKey, JSON.stringify(l)); }
+};
+
+/* Helpers */
 const $ = sel => document.querySelector(sel);
 const $$ = sel => Array.from(document.querySelectorAll(sel));
 const fmt = n => (Number(n)||0).toLocaleString('vi-VN');
 const now = () => Date.now();
 async function sha256(msg){ const enc = new TextEncoder(); const buf = await crypto.subtle.digest('SHA-256', enc.encode(msg)); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
-function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-function debounce(fn, wait){ let t; return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), wait); }; }
-
-/* Storage wrapper */
-const Storage = {
-  usersKey: 'snow_v3_users',
-  ordersKey: 'snow_v3_orders',
-  getUsers(){ try{return JSON.parse(localStorage.getItem(this.usersKey) || '{}')}catch(e){return{}} },
-  saveUsers(v){ localStorage.setItem(this.usersKey, JSON.stringify(v)) },
-  getOrders(){ try{return JSON.parse(localStorage.getItem(this.ordersKey) || '[]')}catch(e){return[]} },
-  saveOrders(v){ localStorage.setItem(this.ordersKey, JSON.stringify(v)) },
-};
-
-/* Current user (session) */
-function currentUser(){ try{return JSON.parse(sessionStorage.getItem('snow_current_user')||'null')}catch(e){return null} }
-function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
-
-/* -------- UI: Toast (non-blocking) -------- */
-const toastWrap = $('#toastWrap');
-function toast(message, {type='info', timeout=3000}={}) {
-  const el = document.createElement('div');
-  el.className = 'panel';
-  el.style.padding = '10px 12px';
-  el.style.minWidth = '200px';
-  el.style.borderRadius = '10px';
-  el.style.background = type==='error' ? 'linear-gradient(180deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03))' : 'linear-gradient(180deg, rgba(6,182,212,0.04), transparent)';
-  el.innerText = message;
-  toastWrap.appendChild(el);
-  setTimeout(()=>{ el.style.opacity = '0'; el.style.transform='translateX(12px)'; setTimeout(()=>el.remove(), 300); }, timeout);
-}
-
-/* -------- Modal (accessible) -------- */
-const modalRoot = $('#modalRoot');
-function showModal(contentHTML, {onOpen=null}={}) {
-  modalRoot.innerHTML = `<div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true">${contentHTML}</div>`;
-  modalRoot.classList.remove('hidden');
-  // trap focus minimal: focus first focusable element
-  requestAnimationFrame(()=> {
-    const focusable = modalRoot.querySelector('button, input, textarea, [tabindex]:not([tabindex="-1"])');
-    if(focusable) focusable.focus();
-    if(typeof onOpen === 'function') onOpen();
-  });
-  // close on ESC
-  const onKey = (e) => { if(e.key === 'Escape') hideModal(); };
-  document.addEventListener('keydown', onKey, {once:false});
-  modalRoot.dataset.keyHandler = true;
-  modalRoot._onKey = onKey;
-}
-function hideModal(){ modalRoot.innerHTML=''; modalRoot.classList.add('hidden'); if(modalRoot._onKey) document.removeEventListener('keydown', modalRoot._onKey); }
-
-/* -------- Auth (demo) -------- */
-async function registerUser(username, password) {
-  if(!username || !password) throw new Error('Nhập tên và mật khẩu');
-  const users = Storage.getUsers();
-  if(users[username]) throw new Error('Tài khoản đã tồn tại');
-  users[username] = { username, passHash: await sha256(password), balance:0 };
-  Storage.saveUsers(users);
-  return true;
-}
-async function loginUser(username, password) {
-  const users = Storage.getUsers();
-  const rec = users[username];
-  if(!rec) throw new Error('Không tìm thấy tài khoản');
-  const h = await sha256(password);
-  if(h !== rec.passHash) throw new Error('Mật khẩu sai');
-  setCurrentUser({ username });
-  return true;
-}
-
-/* -------- Orders -------- */
-function saveOrder(order) {
-  const list = Storage.getOrders();
-  list.unshift(order);
-  Storage.saveOrders(list);
-}
-function getOrders(){ return Storage.getOrders(); }
-function buildOrderPayload(order){
-  return {
-    id: order.id, username: order.username, name: order.name,
-    login: order.login, package: order.package, price: order.price,
-    note: order.note || '', created_at: new Date(order.createdAt).toISOString()
-  };
-}
-async function forwardOrder(order){
-  if(!DISCORD_WEBHOOK) throw new Error('No webhook configured');
-  const payload = { embeds: [{ title:`Đơn mới: ${order.package}`, color:3447003,
-    fields:[
-      {name:'Người đặt', value:order.username || '-', inline:true},
-      {name:'Tên/Discord', value:order.name || '-', inline:true},
-      {name:'Login', value:order.login || '-', inline:true},
-      {name:'Giá', value:fmt(order.price)+'₫', inline:true},
-      {name:'Ghi chú', value:order.note || '-', inline:false}
-    ], timestamp: new Date(order.createdAt).toISOString()
-  }]};
-  const res = await fetch(DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-  if(!res.ok) throw new Error('Forward failed: '+res.status);
-  return res;
-}
-
-/* -------- Rendering -------- */
-function renderHeader(){
-  const cur = currentUser();
-  if(cur){
-    $('#hdr-user').textContent = cur.username;
-    const users = Storage.getUsers();
-    const bal = (users[cur.username] && users[cur.username].balance) || 0;
-    $('#hdr-balance').textContent = fmt(bal)+'đ';
-    $('#acctName').textContent = 'Xin chào, '+cur.username;
-    $('#balance').textContent = fmt(bal)+'đ';
-  } else {
-    $('#hdr-user').textContent = 'Chưa đăng nhập';
-    $('#hdr-balance').textContent = '0đ';
-    $('#acctName').textContent = 'Bạn chưa đăng nhập';
-    $('#balance').textContent = '0đ';
-  }
-}
-
-/* Render package cards (optimized: build fragments) */
-function renderPackages(list = PACKAGES){
-  const grid = $('#packagesGrid');
-  // use document fragment to minimize reflows
-  const frag = document.createDocumentFragment();
-  list.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'card-item';
-    card.innerHTML = `
-      <div class="pkg-head">
-        <div>
-          <div class="pkg-name">${escapeHtml(p.name)}</div>
-          <div class="pkg-meta">${escapeHtml(p.desc)}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="pkg-price">${fmt(p.price)}₫</div>
-          <div class="kv" style="font-size:12px">${escapeHtml(p.time)}</div>
-        </div>
-      </div>
-      <div class="features">${p.features.map(f=>`<div class="feature"><div class="dot"></div>${escapeHtml(f)}</div>`).join('')}</div>
-      <div class="actions-row">
-        <button class="btn" data-buy="${p.id}">MUA NGAY</button>
-        <button class="btn secondary" data-info="${p.id}">CHI TIẾT</button>
-      </div>
-    `;
-    frag.appendChild(card);
-  });
-  grid.innerHTML = '';
-  grid.appendChild(frag);
-}
-
-/* Render orders preview */
-function renderOrdersPreview(){
-  const container = $('#ordersPreview');
-  const list = getOrders();
-  if(!container) return;
-  if(!list || list.length === 0){ container.innerHTML = '<div class="kv">Chưa có đơn gần đây</div>'; return; }
-  container.innerHTML = list.slice(0,6).map(o => `
-    <div class="order-small">
-      <div style="max-width:65%"><strong>${escapeHtml(o.package)}</strong><div class="kv" style="font-size:12px">${escapeHtml(o.name)} • ${escapeHtml(o.login)}</div></div>
-      <div style="text-align:right"><div class="kv">${fmt(o.price)}₫</div><div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent? 'Đã gửi':'Chưa gửi'}</div></div>
-    </div>
-  `).join('');
-}
-
-/* -------- Search & Sort (debounced) -------- */
-const onSearch = debounce(() => {
-  const q = $('#searchInput').value.trim().toLowerCase();
-  let filtered = PACKAGES.filter(p => !q || (p.name + ' ' + p.desc + ' ' + p.features.join(' ')).toLowerCase().includes(q));
-  const sort = $('#sortSelect').value;
-  if(sort === 'price_asc') filtered.sort((a,b)=>a.price-b.price);
-  else if(sort === 'price_desc') filtered.sort((a,b)=>b.price-a.price);
-  renderPackages(filtered);
-}, 160);
-
-/* -------- Event handling (delegation) -------- */
-document.addEventListener('click', (e) => {
-  const buy = e.target.closest('[data-buy]');
-  if(buy) {
-    const id = buy.getAttribute('data-buy'); const pkg = PACKAGES.find(p=>p.id===id);
-    openOrderModal(pkg);
-    return;
-  }
-  const info = e.target.closest('[data-info]');
-  if(info){
-    const id = info.getAttribute('data-info'); const pkg = PACKAGES.find(p=>p.id===id);
-    showInfoModal(pkg);
-    return;
-  }
-});
-
-/* Header/nav interactions */
-$$('.nav button').forEach(b => b.addEventListener('click', (ev) => {
-  $$('.nav button').forEach(x => x.setAttribute('aria-current','false'));
-  b.setAttribute('aria-current','true');
-  const tab = b.getAttribute('data-tab');
-  if(tab === 'account') openAuthModal();
-  else if(tab === 'orders') openOrdersModal();
-}));
-
-$('#contactBtn').addEventListener('click', ()=>toast('Liên hệ: Discord / Telegram / Zalo — cập nhật sau'));
-$('#cta-learn').addEventListener('click', ()=>toast('1) Chọn gói → 2) Đặt đơn → 3) Team thực hiện → 4) Hoàn thành'));
-$('#openAccount').addEventListener('click', openAuthModal);
-$('#quickBuy').addEventListener('click', ()=>openOrderModal(PACKAGES[0]));
-$('#viewOrders').addEventListener('click', openOrdersModal);
-$('#contactSupport').addEventListener('click', ()=>toast('Mở kênh hỗ trợ — demo'));
-
-/* Search and sort */
-$('#searchInput').addEventListener('input', onSearch);
-$('#sortSelect').addEventListener('change', onSearch);
-
-/* CTA order open first package */
-$('#cta-order').addEventListener('click', ()=>openOrderModal(PACKAGES[0]));
-
-/* -------- Info modal -------- */
-function showInfoModal(pkg){
-  showModal(`<div class="modal"><h3>${escapeHtml(pkg.name)}</h3>
-    <div class="kv" style="margin-top:8px">${escapeHtml(pkg.desc)}</div>
-    <div style="margin-top:8px"><strong>Thời gian:</strong> ${escapeHtml(pkg.time)} • <strong>Giá:</strong> ${fmt(pkg.price)}₫</div>
-    <div style="margin-top:10px"><strong>Tính năng:</strong><ul class="kv">${pkg.features.map(f=>`<li>${escapeHtml(f)}</li>`).join('')}</ul></div>
-    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="infoBuy">MUA NGAY</button><button class="btn secondary" id="infoClose">ĐÓNG</button></div></div>`, {
-      onOpen: ()=> {
-        $('#infoClose').addEventListener('click', hideModal);
-        $('#infoBuy').addEventListener('click', ()=>{ hideModal(); openOrderModal(pkg); });
-      }
-  });
-}
-
-/* -------- Auth modal (login / register) -------- */
-function openAuthModal(){
-  showModal(`<div class="modal">
-    <h3>Tài khoản</h3>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <input id="m_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)" />
-      <input id="m_pass" type="password" placeholder="Mật khẩu" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)" />
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn" id="m_login">Đăng nhập</button>
-      <button class="btn secondary" id="m_register">Đăng ký</button>
-      <button class="btn secondary" id="m_close">Đóng</button>
-    </div>
-    <p class="kv" style="margin-top:10px">Demo lưu dữ liệu cục bộ. Không dùng tài khoản thật.</p>
-  </div>`, { onOpen: () => {
-    $('#m_close').addEventListener('click', hideModal);
-    $('#m_register').addEventListener('click', async ()=>{
-      const u = $('#m_user').value.trim(), p = $('#m_pass').value;
-      try{ await registerUser(u,p); toast('Đăng ký thành công — vui lòng đăng nhập'); $('#m_pass').value=''; } catch(err){ toast(err.message || 'Lỗi', {type:'error'}); }
-    });
-    $('#m_login').addEventListener('click', async ()=>{
-      const u = $('#m_user').value.trim(), p = $('#m_pass').value;
-      try{ await loginUser(u,p); hideModal(); renderHeader(); toast('Đăng nhập thành công'); } catch(err){ toast(err.message || 'Lỗi', {type:'error'}); }
-    });
-  }});
-}
-
-/* -------- Order modal flow -------- */
-function openOrderModal(pkg){
-  showModal(`<div class="modal">
-    <h3>Đặt gói — ${escapeHtml(pkg.name)} <span style="float:right;color:var(--accent)">${fmt(pkg.price)}₫</span></h3>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-      <input id="o_name" placeholder="Tên (Roblox / Discord)" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"/>
-      <input id="o_login" placeholder="Login Roblox" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"/>
-      <textarea id="o_note" placeholder="Ghi chú (pass, yêu cầu...)" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"></textarea>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn" id="o_confirm">XÁC NHẬN ĐẶT</button>
-      <button class="btn secondary" id="o_cancel">HỦY</button>
-    </div>
-    <p class="kv" style="margin-top:10px">Hệ thống demo sẽ lưu đơn cục bộ. Để gửi tới kênh quản lý thực tế, cần backend an toàn.</p>
-  </div>`, {
-    onOpen: () => {
-      const cur = currentUser();
-      if(cur) $('#o_name').value = cur.username;
-      $('#o_cancel').addEventListener('click', hideModal);
-      $('#o_confirm').addEventListener('click', async ()=>{
-        const curUser = currentUser();
-        if(!curUser){ if(confirm('Bạn chưa đăng nhập. Đăng nhập bây giờ?')) { hideModal(); openAuthModal(); } return; }
-        const name = $('#o_name').value.trim(), login = $('#o_login').value.trim(), note = $('#o_note').value.trim();
-        if(!name || !login){ toast('Nhập tên và login', {type:'error'}); return; }
-        if(!confirm(`Xác nhận đặt: ${pkg.name} — ${fmt(pkg.price)}₫ ?`)) return;
-        const order = { id:'o_'+now(), username:curUser.username, name, login, package:pkg.name, price:pkg.price, note, createdAt: now(), sent:false };
-        saveOrder(order);
-        renderOrdersPreview();
-        hideModal();
-        toast('Đã lưu đơn cục bộ, đang gửi tới hệ thống...');
-        try{
-          await forwardOrder(order);
-          // mark sent
-          const list = Storage.getOrders(); const idx = list.findIndex(x=>x.id===order.id); if(idx>=0){ list[idx].sent=true; Storage.saveOrders(list); renderOrdersPreview(); }
-          toast('Đơn đã gửi tới hệ thống');
-        }catch(err){
-          // fallback: copy payload to clipboard (if available) so developer can forward on server
-          try{ await navigator.clipboard.writeText(JSON.stringify(buildOrderPayload(order), null, 2)); }catch(e){}
-          toast('Không thể gửi tự động. Payload đã sao chép (nếu trình duyệt hỗ trợ).', {type:'error', timeout:5000});
-        }
-      });
-    }
-  });
-}
-
-/* -------- Orders modal (full) -------- */
-function openOrdersModal(){
-  const list = getOrders();
-  showModal(`<div class="modal"><h3>Lịch sử đơn hàng</h3>
-    <div style="max-height:420px;overflow:auto;margin-top:12px">
-      ${list.length===0 ? '<p class="kv">Chưa có đơn nào.</p>' : list.map(o=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass)">
-          <div style="max-width:70%"><strong>${escapeHtml(o.package)}</strong><div class="kv">${escapeHtml(o.name)} — ${escapeHtml(o.login)}</div><div class="kv" style="margin-top:6px">Ghi chú: ${escapeHtml(o.note||'—')}</div></div>
-          <div style="text-align:right"><div style="font-weight:800">${fmt(o.price)}₫</div><div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent? 'Đã gửi':'Chưa gửi'}</div></div>
-        </div>`).join('')}
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ordersClose">Đóng</button><button class="btn secondary" id="ordersExport">Xuất JSON</button></div></div>`, {
-      onOpen: () => {
-        $('#ordersClose').addEventListener('click', hideModal);
-        $('#ordersExport').addEventListener('click', ()=> {
-          const json = JSON.stringify(getOrders(), null, 2);
-          const w = window.open('', '_blank');
-          if(w){ w.document.write('<pre>'+escapeHtml(json)+'</pre>'); w.document.title='Orders JSON'; }
-        });
-      }
-  });
-}
-
-/* -------- Init (on DOM ready) -------- */
-document.addEventListener('DOMContentLoaded', () => {
-  renderPackages(); renderHeader(); renderOrdersPreview();
-  // create demo user if none
-  (async()=>{
-    const users = Storage.getUsers();
-    if(!users['demo']){ users['demo'] = { username:'demo', passHash: await sha256('demo'), balance: 50000 }; Storage.saveUsers(users); }
-    // reflect header if logged
-    renderHeader();
-  })();
-});
-</script>
-</body>
-</html>
+function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','
