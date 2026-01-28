@@ -174,7 +174,7 @@ button{background:var(--main);font-weight:700;cursor:pointer;color:#04263b}
     </div>
 
     <div id="adminPanel" class="hidden">
-      <p class="small">Webhook hiện tại: <b id="webhookLabel">DÁN_WEBHOOK_CỦA_BẠN</b></p>
+      <p class="small">Webhook hiện tại: <b id="webhookLabel">https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm</b></p>
       <input id="webhookInput" placeholder="Dán Discord webhook URL ở đây">
       <div class="row">
         <div class="col"><button id="btnSaveWebhook">Lưu webhook</button></div>
@@ -210,7 +210,7 @@ function saveJSON(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
 /* default stores */
 if (!localStorage.getItem('sn_users')) saveJSON('sn_users', []);
 if (!localStorage.getItem('sn_orders')) saveJSON('sn_orders', []);
-if (!localStorage.getItem('sn_webhook')) localStorage.setItem('sn_webhook', 'DÁN_WEBHOOK_CỦA_BẠN');
+if (!localStorage.getItem('sn_webhook')) localStorage.setItem('sn_webhook', 'https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm');
 
 /* ========== Auth / Account logic ========== */
 let currentUser = loadJSON('sn_currentUser', null);
