@@ -2,24 +2,27 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>❄️ SNOW SHOP — Cày Thuê Blox Fruits</title>
+    <title>❄️ SNOW SHOP — Quản Trị Hệ Thống</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
-        body{font-family:Segoe UI,Tahoma,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
+        body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
         .box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
         button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.3s;color:#fff}
         button:hover{opacity:0.8}
         button.red{background:#ef4444}
         button.green{background:#22c55e}
-        button.orange{background:#f59e0b}
+        button.purple{background:#a855f7}
         input,select,textarea{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
         .info{background:#f8fafc;border:1px dashed #38bdf8;border-radius:10px;padding:10px;margin-top:10px;line-height:1.6;font-size:14px}
         .qr-box{text-align:center;padding:15px;background:#f1f5f9;border-radius:10px}
-        .history-item{padding:10px;border-bottom:1px solid #eee;font-size:13px}
+        .item-list{padding:10px;border-bottom:1px solid #eee;font-size:13px; position: relative;}
         .status-pending{color:#f59e0b;font-weight:bold}
         .status-done{color:#22c55e;font-weight:bold}
         #modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:99}
-        .badge{padding:2px 6px;border-radius:4px;font-size:10px;color:#fff;background:#94a3b8}
+        .tab-btn{padding:8px 15px; border-radius:8px; background:#e2e8f0; color:#475569; margin-right:5px; border:none; cursor:pointer}
+        .tab-btn.active{background:#38bdf8; color:#fff}
+        .admin-section{display:none}
+        .admin-section.active{display:block}
     </style>
 </head>
 <body>
@@ -31,79 +34,91 @@
     <button class="red" onclick="logout()" style="float:right;padding:5px 10px;margin:0">Thoát</button>
 </div>
 
-<div class="box" id="auth_section" style="display:none">
-    <button onclick="showAuth()" style="width:100%">🔑 Đăng nhập / Đăng ký</button>
-</div>
+<div id="client_view">
+    <div class="box" id="auth_section" style="display:none">
+        <button onclick="showAuth()" style="width:100%; background:#6366f1">🔑 Đăng nhập / Đăng ký</button>
+    </div>
 
-<div class="box" id="user_actions" style="display:none">
-    <div style="display:flex; gap:10px">
-        <button class="orange" onclick="showDeposit()" style="flex:1">💳 Nạp tiền</button>
-        <button id="adminBtn" class="red" style="display:none; flex:1" onclick="showAdmin()">🛠 Quản trị</button>
+    <div class="box" id="user_actions" style="display:none">
+        <button class="purple" onclick="showDeposit()" style="width:100%">💳 Nạp tiền vào tài khoản</button>
+    </div>
+
+    <div class="box">
+        <h3>🛒 Dịch vụ Cày Thuê</h3>
+        <select id="goi" onchange="showInfo()">
+            <option value="">-- Chọn gói cày thuê --</option>
+            <optgroup label="🔰 LEVEL">
+                <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh<br>✔ Không đổi trái<br>✔ 3–5 giờ">Level 700 – 20.000đ</option>
+                <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest<br>✔ Không mất đồ<br>✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
+                <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3<br>✔ An toàn 100%<br>✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
+                <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3<br>✔ Không mất acc<br>✔ 4–6 ngày">0 → MAX – 50.000đ</option>
+            </optgroup>
+            <optgroup label="🎒 ITEM">
+                <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest<br>✔ Không mất đồ<br>✔ 1 ngày">Mỏ Neo – 20.000đ</option>
+                <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest<br>✔ An toàn<br>✔ Trong ngày">Tushita – 15.000đ</option>
+                <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama<br>✔ Không mất đồ<br>✔ 1–2 ngày">Yama – 30.000đ</option>
+                <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm<br>✔ Không rollback<br>✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
+                <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK<br>✔ Không mất item<br>✔ 1–2 ngày">CDK – 30.000đ</option>
+            </optgroup>
+            <optgroup label="💠 V4">
+                <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear<br>✔ Thức tỉnh V4<br>✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
+                <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ<br>✔ Nhanh gọn<br>✔ Trong ngày">1 Gear V4 – 5.000đ</option>
+            </optgroup>
+            <optgroup label="🥋 MELEE">
+                <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman<br>✔ Farm nguyên liệu<br>✔ 1 ngày">Godhuman – 20.000đ</option>
+                <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2<br>✔ Nhanh<br>✔ Trong ngày">Melee V2 – 15.000đ</option>
+            </optgroup>
+        </select>
+
+        <div id="acc_box" style="display:none">
+            <input type="text" id="game_user" placeholder="Tài khoản Roblox">
+            <input type="text" id="game_pass" placeholder="Mật khẩu Roblox">
+        </div>
+        <div id="goiInfo" class="info" style="display:none"></div>
+        <button class="green" style="width:100%; margin-top:10px; font-size: 16px;" onclick="order()">XÁC NHẬN MUA</button>
+    </div>
+
+    <div class="box">
+        <h3>📜 Lịch sử của bạn</h3>
+        <div id="his">Đang tải...</div>
     </div>
 </div>
 
-<div class="box">
-    <h3>🛒 Dịch vụ Cày Thuê</h3>
-    <select id="goi" onchange="showInfo()">
-        <option value="">-- Chọn gói cày thuê --</option>
-        <optgroup label="🔰 LEVEL">
-            <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh<br>✔ Không đổi trái<br>✔ 3–5 giờ">Level 700 – 20.000đ</option>
-            <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest<br>✔ Không mất đồ<br>✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
-            <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3<br>✔ An toàn 100%<br>✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
-            <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3<br>✔ Không mất acc<br>✔ 4–6 ngày">0 → MAX – 50.000đ</option>
-        </optgroup>
-        <optgroup label="🎒 ITEM">
-            <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest<br>✔ Không mất đồ<br>✔ 1 ngày">Mỏ Neo – 20.000đ</option>
-            <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest<br>✔ An toàn<br>✔ Trong ngày">Tushita – 15.000đ</option>
-            <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama<br>✔ Không mất đồ<br>✔ 1–2 ngày">Yama – 30.000đ</option>
-            <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm<br>✔ Không rollback<br>✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
-            <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK<br>✔ Không mất item<br>✔ 1–2 ngày">CDK – 30.000đ</option>
-        </optgroup>
-        <optgroup label="💠 V4">
-            <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear<br>✔ Thức tỉnh V4<br>✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
-            <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ<br>✔ Nhanh gọn<br>✔ Trong ngày">1 Gear V4 – 5.000đ</option>
-        </optgroup>
-        <optgroup label="🥋 MELEE">
-            <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman<br>✔ Farm nguyên liệu<br>✔ 1 ngày">Godhuman – 20.000đ</option>
-            <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2<br>✔ Nhanh<br>✔ Trong ngày">Melee V2 – 15.000đ</option>
-        </optgroup>
-    </select>
+<div id="admin_view" style="display:none">
+    <div class="box" style="border: 2px solid #ef4444;">
+        <h2 style="color:#ef4444; margin:0 0 10px 0">🛠 HỆ THỐNG QUẢN TRỊ</h2>
+        <div style="margin-bottom:10px">
+            <button class="tab-btn active" onclick="openTab(event, 'tab_orders')">Đơn hàng</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab_users')">Thành viên</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab_gift')">Gift/Nạp</button>
+        </div>
 
-    <div id="acc_box" style="display:none; background:#fff3cd; padding:10px; border-radius:8px; margin-top:10px">
-        <small><b>Thông tin tài khoản Roblox:</b></small>
-        <input type="text" id="game_user" placeholder="Tên đăng nhập Roblox">
-        <input type="text" id="game_pass" placeholder="Mật khẩu Roblox">
+        <div id="tab_orders" class="admin-section active">
+            <h4>📦 Danh sách đơn cày thuê</h4>
+            <div id="admin_all_orders"></div>
+        </div>
+
+        <div id="tab_users" class="admin-section">
+            <h4>👥 Quản lý người dùng</h4>
+            <div id="admin_user_list"></div>
+        </div>
+
+        <div id="tab_gift" class="admin-section">
+            <h4>🎁 Tặng tiền / Duyệt nạp</h4>
+            <input id="ad_target" placeholder="Tên tài khoản nhận">
+            <input type="number" id="ad_amt" placeholder="Số tiền">
+            <input type="password" id="ad_key" placeholder="Admin Key xác nhận">
+            <button class="red" onclick="adminAddMoney()" style="width:100%">XÁC NHẬN CỘNG TIỀN</button>
+        </div>
     </div>
-
-    <div id="goiInfo" class="info" style="display:none"></div>
-    <button id="btnOrder" class="green" style="width:100%;font-size:16px;margin-top:10px" onclick="order()">MUA NGAY</button>
-</div>
-
-<div class="box">
-    <h3>📜 Lịch sử đơn hàng</h3>
-    <div id="his">Đang tải...</div>
-</div>
-
-<div id="adminPanel" class="box" style="display:none; border:2px solid red">
-    <h2 style="color:red">🛠 ADMIN CONTROL</h2>
-    
-    <div style="background:#fef2f2; padding:10px; border-radius:8px; margin-bottom:15px">
-        <h4>Cộng tiền thành viên</h4>
-        <input id="ad_target" placeholder="Username khách">
-        <input type="number" id="ad_amt" placeholder="Số tiền">
-        <input type="password" id="ad_key" placeholder="Admin Key">
-        <button class="red" onclick="adminAddMoney()" style="width:100%">CỘNG TIỀN</button>
-    </div>
-
-    <h4>Quản lý đơn hàng (Toàn hệ thống)</h4>
-    <div id="admin_orders_list"></div>
 </div>
 
 <div id="modal_content"></div>
 
 <script>
-const ADMIN_KEY = "SNOW_ADMIN_123";
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+const ADMIN_ID = "admin"; 
+const ADMIN_PASS = "123456"; 
+const ADMIN_KEY = "SNOW_SECRET"; 
 
 let cur = null;
 let allOrders = JSON.parse(localStorage.getItem('snow_orders') || "[]");
@@ -120,140 +135,126 @@ function loadUser(username) {
     render();
 }
 
-function saveUser() {
-    if(cur) localStorage.setItem('user_' + cur.username, JSON.stringify(cur));
-}
-
-function saveOrders() {
-    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
-}
-
 function render() {
     if(!cur) {
         document.getElementById('u').innerText = "Khách";
         document.getElementById('b').innerText = "0";
         document.getElementById('auth_section').style.display = "block";
         document.getElementById('user_actions').style.display = "none";
-        document.getElementById('his').innerHTML = "<i>Vui lòng đăng nhập</i>";
+        document.getElementById('admin_view').style.display = "none";
         return;
     }
     document.getElementById('u').innerText = cur.username;
     document.getElementById('b').innerText = cur.balance.toLocaleString();
     document.getElementById('auth_section').style.display = "none";
     document.getElementById('user_actions').style.display = "block";
-    document.getElementById('adminBtn').style.display = cur.username === 'admin' ? 'block' : 'none';
 
-    // Lịch sử cá nhân
     const myOrders = allOrders.filter(o => o.buyer === cur.username);
-    const hisBox = document.getElementById('his');
-    if(myOrders.length === 0) hisBox.innerHTML = "<i>Chưa có đơn hàng nào</i>";
-    else {
-        hisBox.innerHTML = myOrders.reverse().map(o => `
-            <div class="history-item">
-                <b>${o.goi}</b> <span class="badge">${o.time}</span><br>
-                Trạng thái: <span class="${o.status === 'Đã xong' ? 'status-done' : 'status-pending'}">${o.status}</span>
-            </div>
-        `).join('');
-    }
+    document.getElementById('his').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
+        <div class="item-list"><b>${o.goi}</b> - <span class="${o.status==='Đã xong'?'status-done':'status-pending'}">${o.status}</span><br><small>${o.time}</small></div>
+    `).join('') : "<i>Chưa có đơn hàng.</i>";
 
-    if(cur.username === 'admin') renderAdminOrders();
+    if(cur.username === ADMIN_ID) {
+        document.getElementById('admin_view').style.display = "block";
+        renderAdminData();
+    } else {
+        document.getElementById('admin_view').style.display = "none";
+    }
 }
 
-function renderAdminOrders() {
-    const box = document.getElementById('admin_orders_list');
-    if(allOrders.length === 0) box.innerHTML = "Chưa có đơn";
-    else {
-        box.innerHTML = allOrders.slice().reverse().map((o, idx) => `
-            <div class="history-item" style="background:#f9fafb; margin-bottom:5px; border:1px solid #ddd">
-                <b>Khách: ${o.buyer}</b> | Gói: ${o.goi}<br>
-                TK: <code style="color:blue">${o.acc}</code> | MK: <code style="color:blue">${o.pass}</code><br>
-                TT: <b class="${o.status==='Đã xong'?'status-done':'status-pending'}">${o.status}</b>
-                ${o.status === 'Đang chờ' ? `<button onclick="completeOrder(${allOrders.length - 1 - idx})" class="green" style="padding:2px 5px; font-size:11px">Xong</button>` : ''}
-            </div>
-        `).join('');
+function renderAdminData() {
+    document.getElementById('admin_all_orders').innerHTML = allOrders.slice().reverse().map((o, idx) => `
+        <div class="item-list" style="background:#f8fafc; border:1px solid #e2e8f0; margin-bottom:5px">
+            <b>${o.buyer}</b> mua <b>${o.goi}</b><br>
+            Roblox: <code style="color:blue">${o.acc}</code> | Pass: <code style="color:red">${o.pass}</code><br>
+            TT: <b class="${o.status==='Đã xong'?'status-done':'status-pending'}">${o.status}</b>
+            ${o.status === 'Đang chờ' ? `<button onclick="completeOrder(${allOrders.length-1-idx})" style="font-size:10px; padding:2px 8px" class="green">Xong</button>` : ''}
+        </div>
+    `).join('') || "Chưa có đơn hàng nào.";
+
+    let users = [];
+    for(let i=0; i<localStorage.length; i++){
+        let key = localStorage.key(i);
+        if(key.startsWith('user_')) users.push(JSON.parse(localStorage.getItem(key)));
     }
+    document.getElementById('admin_user_list').innerHTML = users.map(u => `
+        <div class="item-list">
+            👤 <b>${u.username}</b> | 💰 ${u.balance.toLocaleString()}đ
+            <button onclick="viewUserHistory('${u.username}')" style="font-size:10px; background:#94a3b8; padding:2px 5px">Xem LS</button>
+        </div>
+    `).join('');
+}
+
+function completeOrder(idx) {
+    allOrders[idx].status = "Đã xong";
+    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
+    render();
+    alert("Đã cập nhật đơn hàng thành công!");
+}
+
+function adminAddMoney() {
+    const target = document.getElementById('ad_target').value.trim().toLowerCase();
+    const amt = parseInt(document.getElementById('ad_amt').value);
+    const key = document.getElementById('ad_key').value;
+    if(key !== ADMIN_KEY) return alert("Sai Admin Key!");
+    const data = localStorage.getItem('user_' + target);
+    if(!data) return alert("Không tìm thấy người dùng!");
+    let user = JSON.parse(data);
+    user.balance += amt;
+    localStorage.setItem('user_' + target, JSON.stringify(user));
+    if(cur.username === target) cur = user;
+    render();
+    alert(`Đã nạp ${amt}đ cho ${target}!`);
+}
+
+function viewUserHistory(username) {
+    const userOrders = allOrders.filter(o => o.buyer === username);
+    let html = `<h4>Lịch sử: ${username}</h4>`;
+    html += userOrders.map(o => `<div style="font-size:12px; border-bottom:1px solid #eee; padding:5px">● ${o.goi} (${o.status})</div>`).join('') || "Không có dữ liệu.";
+    openModal(html);
 }
 
 function showInfo(){
     let s = document.getElementById('goi').options[document.getElementById('goi').selectedIndex];
     const info = document.getElementById('goiInfo');
-    const accBox = document.getElementById('acc_box');
-    if(!s.value) { info.style.display="none"; accBox.style.display="none"; return; }
+    const acc = document.getElementById('acc_box');
+    if(!s.value) { info.style.display="none"; acc.style.display="none"; return; }
     info.style.display="block";
-    accBox.style.display="block";
-    info.innerHTML=`<b>📌 ${s.dataset.info}</b><br>${s.dataset.detail}`;
+    acc.style.display="block";
+    info.innerHTML = `<b>📌 ${s.dataset.info}</b><br><small>${s.dataset.detail}</small>`;
 }
 
-async function order() {
-    if(!cur) return alert("Hãy đăng nhập!");
-    const select = document.getElementById('goi');
-    const gUser = document.getElementById('game_user').value.trim();
-    const gPass = document.getElementById('game_pass').value.trim();
-
-    if(!select.value) return alert("Hãy chọn gói!");
-    if(!gUser || !gPass) return alert("Vui lòng nhập tài khoản/mật khẩu Roblox!");
-
-    const [name, price] = select.value.split('|');
-    const cost = parseInt(price);
-
-    if(cur.balance < cost) return alert("Số dư không đủ! Vui lòng nạp thêm.");
-
-    cur.balance -= cost;
-    const newOrder = {
-        buyer: cur.username,
-        goi: name,
-        acc: gUser,
-        pass: gPass,
-        time: new Date().toLocaleString('vi-VN'),
-        status: "Đang chờ"
-    };
-    
-    allOrders.push(newOrder);
-    saveOrders();
-    saveUser();
-    render();
-    
-    alert("Đặt đơn thành công!");
-
-    // Webhook Discord
-    fetch(DISCORD_WEBHOOK, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            content: `🔔 **ĐƠN MỚI**\n👤 Khách: ${cur.username}\n📦 Gói: ${name}\n🎮 TK: ${gUser} | MK: ${gPass}`
-        })
+function order() {
+    if(!cur) return alert("Vui lòng đăng nhập!");
+    const s = document.getElementById('goi');
+    const u = document.getElementById('game_user').value.trim();
+    const p = document.getElementById('game_pass').value.trim();
+    if(!s.value || !u || !p) return alert("Vui lòng nhập tài khoản Roblox!");
+    const [name, price] = s.value.split('|');
+    if(cur.balance < parseInt(price)) return alert("Bạn không đủ tiền!");
+    cur.balance -= parseInt(price);
+    allOrders.push({
+        buyer: cur.username, goi: name, acc: u, pass: p,
+        status: "Đang chờ", time: new Date().toLocaleString()
     });
-}
-
-function completeOrder(index) {
-    allOrders[index].status = "Đã xong";
-    saveOrders();
+    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
+    localStorage.setItem('user_' + cur.username, JSON.stringify(cur));
     render();
-    alert("Đã duyệt hoàn thành đơn hàng!");
+    alert("Mua thành công! Chờ Admin cày.");
 }
 
-function adminAddMoney() {
-    const target = document.getElementById('ad_target').value.trim();
-    const amount = parseInt(document.getElementById('ad_amt').value);
-    const key = document.getElementById('ad_key').value;
-
-    if(key !== ADMIN_KEY) return alert("Sai mã Admin!");
-    
-    const targetData = localStorage.getItem('user_' + target);
-    if(!targetData) return alert("Không tìm thấy người dùng!");
-
-    let userObj = JSON.parse(targetData);
-    userObj.balance += amount;
-    localStorage.setItem('user_' + target, JSON.stringify(userObj));
-    
-    if(cur.username === target) { cur = userObj; render(); }
-    alert(`Đã cộng ${amount}đ cho ${target}`);
+function openTab(evt, tabId) {
+    let contents = document.getElementsByClassName("admin-section");
+    for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+    let btns = document.getElementsByClassName("tab-btn");
+    for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+    document.getElementById(tabId).classList.add("active");
+    evt.currentTarget.classList.add("active");
 }
 
-// Các hàm Auth & UI cơ bản
 function showAuth() {
     openModal(`
-        <h3>🔑 Đăng nhập / Đăng ký</h3>
+        <h3>🔐 Đăng nhập / Đăng ký</h3>
         <input id="au" placeholder="Tên tài khoản...">
         <input id="ap" type="password" placeholder="Mật khẩu...">
         <button onclick="handleAuth()" style="width:100%">XÁC NHẬN</button>
@@ -263,38 +264,18 @@ function showAuth() {
 function handleAuth() {
     const user = document.getElementById('au').value.trim().toLowerCase();
     const pass = document.getElementById('ap').value.trim();
-    if(user.length < 3) return alert("Tên quá ngắn");
-
+    if(user.length < 3) return alert("Tên quá ngắn!");
     const existing = localStorage.getItem('user_' + user);
     if(existing) {
-        const parsed = JSON.parse(existing);
-        if(parsed.password !== pass) return alert("Sai mật khẩu!");
-        cur = parsed;
+        if(JSON.parse(existing).password !== pass) return alert("Sai mật khẩu!");
+        cur = JSON.parse(existing);
     } else {
         cur = { username: user, password: pass, balance: 0 };
-        saveUser();
+        localStorage.setItem('user_' + user, JSON.stringify(cur));
     }
     localStorage.setItem('snow_session', cur.username);
     closeModal();
     render();
-}
-
-function showDeposit() {
-    const content = `NAP ${cur.username}`;
-    openModal(`
-        <h3>💳 Nạp tiền Techcombank</h3>
-        <div class="qr-box">
-            <img src="https://img.vietqr.io/image/TCB-1373727384-compact.png" style="width:200px"><br>
-            STK: <b>1373 7273 84</b><br>
-            Nội dung: <b style="color:red; font-size:18px">${content}</b>
-        </div>
-        <p style="font-size:12px">Chuyển xong vui lòng đợi admin cộng tiền.</p>
-    `);
-}
-
-function showAdmin() {
-    const p = document.getElementById('adminPanel');
-    p.style.display = p.style.display === 'none' ? 'block' : 'none';
 }
 
 function logout() {
@@ -303,20 +284,22 @@ function logout() {
 }
 
 function openModal(html) {
-    const m = document.getElementById('modal_content');
-    const o = document.getElementById('modal-overlay');
-    m.innerHTML = `<div class="box" style="position:fixed;top:10%;left:5%;right:5%;z-index:100;border:2px solid #38bdf8">
-        ${html}
-        <button class="red" onclick="closeModal()" style="width:100%">ĐÓNG</button>
-    </div>`;
-    o.style.display = "block";
+    document.getElementById('modal_content').innerHTML = `<div class="box" style="position:fixed;top:10%;left:5%;right:5%;z-index:100;border:2px solid #38bdf8">${html}<button class="red" onclick="closeModal()" style="width:100%">ĐÓNG</button></div>`;
+    document.getElementById('modal-overlay').style.display = "block";
 }
 
 function closeModal() {
-    document.getElementById('modal_content').innerHTML = "";
     document.getElementById('modal-overlay').style.display = "none";
+    document.getElementById('modal_content').innerHTML = "";
+}
+
+function showDeposit() {
+    openModal(`
+        <h3>💳 Nạp tiền</h3>
+        <p>Quét mã và nhập nội dung: <b>NAP ${cur.username}</b></p>
+        <div class="qr-box"><img src="https://img.vietqr.io/image/TCB-1373727384-compact.png" style="width:180px"></div>
+    `);
 }
 </script>
-
 </body>
 </html>
