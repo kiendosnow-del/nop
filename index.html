@@ -101,7 +101,6 @@
 <div id="modalOverlay"><div class="modal" id="modalContent"></div></div>
 
 <script>
-/* ----- CONFIG ----- */
 const ADMIN_CONFIG = { user: "admin", pass: "admin123" };
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
@@ -129,18 +128,15 @@ window.onload = () => {
 
 function render() {
     if(!cur) {
-        el.uName.innerText = "Khách";
-        el.uBalance.innerText = "0";
-        el.authBtns.style.display = "block";
-        el.userBtns.style.display = "none";
+        el.uName.innerText = "Khách"; el.uBalance.innerText = "0";
+        el.authBtns.style.display = "block"; el.userBtns.style.display = "none";
         el.adminView.style.display = "none";
         el.history.innerHTML = "<center>Đăng nhập để xem đơn</center>";
     } else {
         cur = db_users[cur.username];
         el.uName.innerText = cur.username;
         el.uBalance.innerText = cur.balance.toLocaleString();
-        el.authBtns.style.display = "none";
-        el.userBtns.style.display = "block";
+        el.authBtns.style.display = "none"; el.userBtns.style.display = "block";
         el.adminView.style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
 
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
@@ -153,7 +149,6 @@ function render() {
                 <small style="color:#94a3b8">${o.time}</small>
             </div>
         `).reverse().join('') : "Chưa có đơn hàng nào.";
-
         if(cur.username === ADMIN_CONFIG.user) renderAdmin();
     }
 }
@@ -192,35 +187,32 @@ function handleBuy() {
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
     if(!góiVal || !acc || !pass) return alert("Vui lòng nhập đủ thông tin!");
+    
     const [name, price] = góiVal.split('|');
     if(cur.balance < parseInt(price)) return alert("Số dư không đủ!");
+
     cur.balance -= parseInt(price);
     db_users[cur.username] = cur;
     db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() });
+    
     save(); render();
     alert("Đặt đơn thành công!");
-    sendWebhook("🛒 ĐƠN MỚI", `Khách: ${cur.username}\nGói: ${name}`, 3447003);
+
+    // Thông báo Discord chi tiết
+    sendWebhook("🛒 CÓ ĐƠN THUÊ MỚI!", 
+        `**Khách hàng:** ${cur.username}\n**Gói:** ${name}\n**Giá:** ${parseInt(price).toLocaleString()}đ\n**TK Roblox:** \`${acc}\`\n**MK Roblox:** \`${pass}\``, 
+        3447003
+    );
 }
 
-function adminAddMoney() {
-    const target = document.getElementById('adTargetUser').value.trim();
-    const amt = parseInt(document.getElementById('adAmount').value);
-    if(db_users[target]) {
-        db_users[target].balance += amt;
-        save(); render();
-        alert(`Đã cấp ${amt.toLocaleString()}đ cho ${target}`);
-    } else alert("Người dùng không tồn tại!");
-}
-
-/* DUYỆT NẠP TỰ CỘNG TIỀN */
 function approveNap(i) {
     const req = db_naps[i];
     if(db_users[req.username]) {
-        db_users[req.username].balance += req.amount; // Tự động cộng tiền vào ví người dùng
+        db_users[req.username].balance += req.amount;
         db_naps[i].status = "Đã duyệt";
         save(); render();
-        alert(`Đã duyệt nạp và cộng ${req.amount.toLocaleString()}đ vào tài khoản ${req.username}`);
-    } else alert("Tài khoản này không còn tồn tại!");
+        alert(`Đã cộng ${req.amount.toLocaleString()}đ cho ${req.username}`);
+    }
 }
 
 function showNapBank() {
@@ -238,6 +230,17 @@ function submitNap() {
     db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt", time: new Date().toLocaleString() });
     save(); closeModal(); render();
     alert("Đã gửi yêu cầu nạp!");
+    sendWebhook("💰 YÊU CẦU NẠP", `Khách: ${cur.username}\nSố tiền: ${amt.toLocaleString()}đ`, 15105570);
+}
+
+function adminAddMoney() {
+    const target = document.getElementById('adTargetUser').value.trim();
+    const amt = parseInt(document.getElementById('adAmount').value);
+    if(db_users[target]) {
+        db_users[target].balance += amt;
+        save(); render();
+        alert("Thành công!");
+    } else alert("Không thấy user!");
 }
 
 function save() {
@@ -245,18 +248,19 @@ function save() {
     localStorage.setItem('snow_orders', JSON.stringify(db_orders));
     localStorage.setItem('snow_naps', JSON.stringify(db_naps));
 }
-
 function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { if(confirm("Xoá đơn?")) { db_orders.splice(i,1); save(); render(); } }
+function deleteOrder(i) { if(confirm("Xoá?")) { db_orders.splice(i,1); save(); render(); } }
 function deleteNap(i) { db_naps.splice(i,1); save(); render(); }
 
 async function sendWebhook(title, desc, color) {
     if(DISCORD_WEBHOOK.length < 10) return;
-    await fetch(DISCORD_WEBHOOK, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ embeds: [{ title, description: desc, color, timestamp: new Date() }] })
-    });
+    try {
+        await fetch(DISCORD_WEBHOOK, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ embeds: [{ title, description: desc, color, timestamp: new Date() }] })
+        });
+    } catch(e) { console.error(e); }
 }
 
 function showLogin() {
@@ -267,20 +271,13 @@ function showLogin() {
         <button class="green" style="width:100%" onclick="handleAuth()">VÀO SHOP</button>
     `);
 }
-
 function handleAuth() {
-    const u = document.getElementById('au').value.trim();
-    const p = document.getElementById('ap').value;
+    const u = document.getElementById('au').value.trim(), p = document.getElementById('ap').value;
     if(!u || !p) return alert("Nhập đủ thông tin!");
-    if(!db_users[u]) {
-        db_users[u] = { username: u, password: p, balance: 0 };
-        alert("Đăng ký thành công!");
-    } else if(db_users[u].password !== p) return alert("Sai mật khẩu!");
-    cur = db_users[u];
-    localStorage.setItem('snow_session', u);
-    save(); closeModal(); render();
+    if(!db_users[u]) { db_users[u] = { username: u, password: p, balance: 0 }; alert("Đăng ký xong!"); }
+    else if(db_users[u].password !== p) return alert("Sai pass!");
+    cur = db_users[u]; localStorage.setItem('snow_session', u); save(); closeModal(); render();
 }
-
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
 function openModal(h) { el.modalIn.innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; el.modal.style.display = "block"; }
 function closeModal() { el.modal.style.display = "none"; }
