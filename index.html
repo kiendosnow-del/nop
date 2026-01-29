@@ -11,16 +11,28 @@
 
 <style>
 :root{
-  --bg:#04101b; --panel:#071326; --card:#0d1a2a; --muted:#9aa3af; --text:#e6eef6;
-  --accent:#06b6d4; --accent-2:#60a5fa; --success:#10b981; --danger:#ef4444;
-  --glass: rgba(255,255,255,0.02); --radius:12px; --shadow: 0 12px 34px rgba(2,6,23,0.6);
-  --max-w:1200px; --gap:14px; --tran:200ms;
+  /* Brighter theme (user requested "sáng hơn") */
+  --bg:#f7fafc;           /* page background (light) */
+  --panel:#ffffff;        /* panels */
+  --card:#ffffff;         /* cards */
+  --muted:#5b6b78;        /* muted text */
+  --text:#0b1320;         /* main text (dark) */
+  --accent:#06b6d4;       /* primary accent */
+  --accent-2:#2277ff;     /* secondary accent */
+  --success:#10b981;
+  --danger:#ef4444;
+  --glass: rgba(11,19,32,0.03);
+  --radius:12px;
+  --shadow: 0 10px 30px rgba(15,23,42,0.08);
+  --max-w:1200px;
+  --gap:14px;
+  --tran:200ms;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-  background:linear-gradient(180deg,#03101a,#041426);color:var(--text);
+  background:linear-gradient(180deg,var(--bg),#eef6fb);color:var(--text);
   -webkit-font-smoothing:antialiased;
 }
 
@@ -28,8 +40,8 @@ body{
 .container{max-width:var(--max-w);margin:18px auto;padding:12px}
 .header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
 .brand{display:flex;gap:12px;align-items:center}
-.logo{width:54px;height:54px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#2563eb);display:flex;align-items:center;justify-content:center;font-weight:800;color:#021022}
-.title{font-weight:700}
+.logo{width:54px;height:54px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#ffffff}
+.title{font-weight:700;color:var(--text)}
 .header-meta{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px}
 
 /* Nav */
@@ -41,13 +53,13 @@ body{
 .main{display:grid;grid-template-columns:1fr 360px;gap:18px}
 @media (max-width:980px){ .main{grid-template-columns:1fr} }
 
-.panel{background:linear-gradient(180deg,var(--panel),#061426);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
+.panel{background:var(--panel);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid rgba(11,19,32,0.06);color:var(--text)}
 
 /* Hero + controls */
-.hero{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(6,182,212,0.05),rgba(58,123,213,0.03))}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(6,182,212,0.06),rgba(34,119,255,0.03))}
 .hero h1{margin:0;font-size:20px}
 .controls{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.controls input, .controls select{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:10px;border-radius:10px;width:100%}
+.controls input, .controls select{background:transparent;border:1px solid rgba(11,19,32,0.06);color:var(--text);padding:10px;border-radius:10px;width:100%}
 .controls .col{flex:1;min-width:160px}
 
 /* Packages grid */
@@ -55,8 +67,8 @@ body{
 @media (max-width:980px){ .grid{grid-template-columns:repeat(2,1fr)} }
 @media (max-width:640px){ .grid{grid-template-columns:1fr} }
 
-.card-item{padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.014),transparent);border:1px solid rgba(255,255,255,0.03);transition:transform var(--tran),box-shadow var(--tran)}
-.card-item:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(0,0,0,0.6)}
+.card-item{padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.9),transparent);border:1px solid rgba(11,19,32,0.04);transition:transform var(--tran),box-shadow var(--tran)}
+.card-item:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(11,19,32,0.06)}
 .pkg-head{display:flex;justify-content:space-between;align-items:center}
 .pkg-name{font-weight:800}
 .pkg-price{font-weight:800;color:var(--accent)}
@@ -67,8 +79,8 @@ body{
 
 /* actions */
 .row-actions{display:flex;gap:8px;margin-top:12px}
-.btn{border:0;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer;color:#021022;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:transform var(--tran)}
-.btn.secondary{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.04)}
+.btn{border:0;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer;color:#ffffff;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:transform var(--tran)}
+.btn.secondary{background:transparent;color:var(--text);border:1px solid rgba(11,19,32,0.06)}
 .btn:active{transform:translateY(1px)}
 
 /* Sidebar pieces */
@@ -80,12 +92,14 @@ body{
 .admin-badge{background:linear-gradient(90deg,#facc15,#eab308);color:#021022;padding:6px 8px;border-radius:999px;font-weight:700}
 
 /* modal/toast */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:60}
-.modal{width:100%;max-width:760px;background:linear-gradient(180deg,#071022,#05101a);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(11,19,32,0.35);display:flex;align-items:center;justify-content:center;z-index:60}
+.modal{width:100%;max-width:760px;background:var(--panel);padding:18px;border-radius:12px;border:1px solid rgba(11,19,32,0.06)}
 .toast-wrap{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:70}
 .kv{color:var(--muted);font-size:13px}
 .small{font-size:13px;color:var(--muted)}
 .hidden{display:none}
+.badge{padding:6px 8px;border-radius:999px;background:var(--glass);font-weight:700;color:var(--muted)}
+.code{font-family:monospace;background:rgba(11,19,32,0.03);padding:6px;border-radius:6px}
 </style>
 </head>
 <body>
@@ -119,7 +133,7 @@ body{
       <div class="hero">
         <div>
           <h1>Thuê cày chuyên nghiệp — An toàn & Nhanh</h1>
-          <p class="kv">Chọn gói theo nhu cầu. Thanh toán bằng ví (số dư) hoặc nạp bank. Admin có quyền gift & duyệt nạp.</p>
+          <p class="kv">Chọn gói theo nhu cầu. Thanh toán bằng ví (số dư) hoặc nạp bank. Admin duyệt nạp và có thể gift tiền.</p>
           <div style="margin-top:10px">
             <button class="btn" id="cta-order">Mua ngay</button>
             <button class="btn secondary" id="cta-learn">Cách hoạt động</button>
@@ -139,104 +153,26 @@ body{
         <div class="col" style="min-width:220px">
           <select id="goi" aria-label="Chọn gói">
             <option value="">-- Chọn gói cày thuê --</option>
-
             <optgroup label="🔰 LEVEL">
-            <option value="Level 700|20000"
-            data-info="Farm nhanh lên level 700"
-            data-detail="✔ Farm quest nhanh
-✔ Không đổi trái
-✔ 3–5 giờ">
-            Level 700 – 20.000đ</option>
-
-            <option value="700 → 1500|20000"
-            data-info="Farm từ Sea 2"
-            data-detail="✔ Farm boss + quest
-✔ Không mất đồ
-✔ 1–2 ngày">
-            700 → 1500 – 20.000đ</option>
-
-            <option value="1500 → 2800|20000"
-            data-info="Farm Sea 3"
-            data-detail="✔ Farm full Sea 3
-✔ An toàn 100%
-✔ 2–3 ngày">
-            1500 → 2800 – 20.000đ</option>
-
-            <option value="0 → MAX|50000"
-            data-info="Cày từ đầu tới max"
-            data-detail="✔ Full Sea 1–2–3
-✔ Không mất acc
-✔ 4–6 ngày">
-            0 → MAX – 50.000đ</option>
+              <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh\n✔ Không đổi trái\n✔ 3–5 giờ">Level 700 – 20.000đ</option>
+              <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest\n✔ Không mất đ���\n✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
+              <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3\n✔ An toàn 100%\n✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
+              <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3\n✔ Không mất acc\n✔ 4–6 ngày">0 → MAX – 50.000đ</option>
             </optgroup>
-
             <optgroup label="🎒 ITEM">
-            <option value="Mỏ Neo|20000"
-            data-info="Làm Mỏ Neo"
-            data-detail="✔ Full quest
-✔ Không mất đồ
-✔ 1 ngày">
-            Mỏ Neo – 20.000đ</option>
-
-            <option value="Tushita|15000"
-            data-info="Kiếm Tushita"
-            data-detail="✔ Full quest
-✔ An toàn
-✔ Trong ngày">
-            Tushita – 15.000đ</option>
-
-            <option value="Yama|30000"
-            data-info="Kiếm Yama"
-            data-detail="✔ Full Yama
-✔ Không mất đồ
-✔ 1–2 ngày">
-            Yama – 30.000đ</option>
-
-            <option value="Tam Kiếm Full|35000"
-            data-info="True Triple Katana"
-            data-detail="✔ Full 3 kiếm
-✔ Không rollback
-✔ 2–3 ngày">
-            Tam Kiếm Full – 35.000đ</option>
-
-            <option value="CDK|30000"
-            data-info="Cursed Dual Katana"
-            data-detail="✔ Full CDK
-✔ Không mất item
-✔ 1–2 ngày">
-            CDK – 30.000đ</option>
+              <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest\n✔ Không mất đồ\n✔ 1 ngày">Mỏ Neo – 20.000đ</option>
+              <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest\n✔ An toàn\n✔ Trong ngày">Tushita – 15.000đ</option>
+              <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama\n✔ Không mất đồ\n✔ 1–2 ngày">Yama – 30.000đ</option>
+              <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm\n✔ Không rollback\n✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
+              <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK\n✔ Không mất item\n✔ 1–2 ngày">CDK – 30.000đ</option>
             </optgroup>
-
             <optgroup label="💠 V4">
-            <option value="Full Gear V4|30000"
-            data-info="Full Gear V4"
-            data-detail="✔ Full Gear
-✔ Thức tỉnh V4
-✔ 1–2 ngày">
-            Full Gear V4 – 30.000đ</option>
-
-            <option value="1 Gear V4|5000"
-            data-info="Up 1 Gear"
-            data-detail="✔ 1 Gear bất kỳ
-✔ Nhanh gọn
-✔ Trong ngày">
-            1 Gear V4 – 5.000đ</option>
+              <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear\n✔ Thức tỉnh V4\n✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
+              <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ\n✔ Nhanh gọn\n✔ Trong ngày">1 Gear V4 – 5.000đ</option>
             </optgroup>
-
             <optgroup label="🥋 MELEE">
-            <option value="Godhuman|20000"
-            data-info="Melee Godhuman"
-            data-detail="✔ Full Godhuman
-✔ Farm nguyên liệu
-✔ 1 ngày">
-            Godhuman – 20.000đ</option>
-
-            <option value="Melee V2|15000"
-            data-info="Up Melee V2"
-            data-detail="✔ Melee V2
-✔ Nhanh
-✔ Trong ngày">
-            Melee V2 – 15.000đ</option>
+              <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman\n✔ Farm nguyên liệu\n✔ 1 ngày">Godhuman – 20.000đ</option>
+              <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2\n✔ Nhanh\n✔ Trong ngày">Melee V2 – 15.000đ</option>
             </optgroup>
           </select>
         </div>
@@ -278,10 +214,13 @@ body{
         <div id="ordersPreview" style="margin-top:12px"></div>
       </div>
 
+      <!-- Admin placeholder: contains admin controls and a new "Admin accounts" management -->
       <div id="adminPanelPlaceholder" class="panel hidden">
         <strong>Admin</strong>
-        <div style="margin-top:8px">
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn" id="openAdminPanel">Bảng quản trị</button>
+          <button class="btn secondary" id="openGiftModal">Gift tiền</button>
+          <button class="btn secondary" id="openAdminAccounts">Quản lý tài khoản admin</button>
         </div>
       </div>
 
@@ -300,34 +239,25 @@ body{
 
 <script>
 /* ====================================================================================
-   SNOW SHOP — Production-ready single-file frontend (client-side fallback)
-   Changes made:
-   - Fixed existing JS bugs (syntax errors, incomplete functions).
-   - Added a real-mode / API layer: configure API_BASE to enable server-backed actions.
-   - If no API configured, the app falls back to secure localStorage for demo/testing,
-     but everything is structured to call server endpoints for auth/orders/deposits.
-   - Added the user-provided <select id="goi"> package selector and wired it to UI.
-   - Improved rendering, validation, and error handling.
-   - Kept forwarding placeholder for webhooks but moved to config.
-   IMPORTANT: To make this a "real" deployment, set API_BASE to your backend URL and
-   implement the expected endpoints (see API_* constants and expected request/response shapes).
+   SNOW SHOP — Admin-account enhancement
+   - Adds a dedicated Admin Accounts management modal (create admin, change pass, revoke)
+   - Seeds a fallback admin account for local/testing use:
+       username: admin
+       password: Admin@2026
+     (REMOVE or change in production!)
+   - Shows admin-only button "Quản lý tài khoản admin" in admin panel.
+   - Provides helper functions: createAdminUser, setAdminPassword, revokeAdminRole
    ==================================================================================== */
 
-/* CONFIG - set API_BASE to your backend URL for "real" behavior (e.g. "https://api.myshop.example") */
+/* CONFIG */
 const CONFIG = {
-  API_BASE: "", // <-- PUT YOUR BACKEND BASE URL HERE to enable server mode
-  ENDPOINTS: {
-    login: "/auth/login",            // POST {username,password} -> {token,user:{username,balance,roles}}
-    register: "/auth/register",      // POST {username,password} -> {ok:true}
-    me: "/auth/me",                  // GET (with token) -> {user}
-    orders: "/orders",               // GET/POST
-    deposits: "/deposits",           // GET/POST/PATCH (admin)
-    users_admin: "/admin/users",     // admin-only endpoints
-  },
-  DISCORD_WEBHOOK: "" // webhook or backend forwarding endpoint (do NOT put raw webhook publicly)
+  API_BASE: "", // set to your API to enable server mode
+  DISCORD_WEBHOOK: "",
+  DEPOSIT_MIN: 1000,
+  RATE_LIMIT: { depositWindowMs: 5*60*1000, depositMax: 3, orderWindowMs: 60*1000, orderMax: 5 }
 };
 
-/* PACKAGES: make sure they match the <select id="goi"> options */
+/* PACKAGES (unchanged) */
 const PACKAGES = [
   { id:'level_700', name:'Level 700', price:20000, group:'LEVEL', desc:'Farm nhanh lên level 700', detail:'✔ Farm quest nhanh\n✔ Không đổi trái\n✔ 3–5 giờ', time:'3–5 giờ' },
   { id:'700_1500', name:'700 → 1500', price:20000, group:'LEVEL', desc:'Farm từ Sea 2', detail:'✔ Farm boss + quest\n✔ Không mất đồ\n✔ 1–2 ngày', time:'1–2 ngày' },
@@ -340,37 +270,19 @@ const PACKAGES = [
   { id:'tam_kiem', name:'Tam Kiếm Full', price:35000, group:'ITEM', desc:'True Triple Katana', detail:'✔ Full 3 kiếm\n✔ Không rollback\n✔ 2–3 ngày', time:'2–3 ngày' },
   { id:'cdk', name:'CDK', price:30000, group:'ITEM', desc:'Cursed Dual Katana', detail:'✔ Full CDK\n✔ Không mất item\n✔ 1–2 ngày', time:'1–2 ngày' },
 
-  { id:'full_v4', name:'Full Gear V4', price:30000, group:'V4', desc:'Full Gear V4', detail:'✔ Full Gear\n✔ Th��c tỉnh V4\n✔ 1–2 ngày', time:'1–2 ngày' },
+  { id:'full_v4', name:'Full Gear V4', price:30000, group:'V4', desc:'Full Gear V4', detail:'✔ Full Gear\n✔ Thức tỉnh V4\n✔ 1–2 ngày', time:'1–2 ngày' },
   { id:'one_v4', name:'1 Gear V4', price:5000, group:'V4', desc:'Up 1 Gear', detail:'✔ 1 Gear bất kỳ\n✔ Nhanh gọn\n✔ Trong ngày', time:'Trong ngày' },
 
   { id:'godhuman', name:'Godhuman', price:20000, group:'MELEE', desc:'Melee Godhuman', detail:'✔ Full Godhuman\n✔ Farm nguyên liệu\n✔ 1 ngày', time:'1 ngày' },
   { id:'melee_v2', name:'Melee V2', price:15000, group:'MELEE', desc:'Up Melee V2', detail:'✔ Melee V2\n✔ Nhanh\n✔ Trong ngày', time:'Trong ngày' }
 ];
 
-/* Small helpers */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const fmt = n => (Number(n)||0).toLocaleString('vi-VN');
-const now = () => Date.now();
-function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-function debounce(fn, wait=160){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); } }
-
-/* Simple in-browser "auth token" storage for server mode */
-function setAuthToken(t){ if(!t) sessionStorage.removeItem('snow_token'); else sessionStorage.setItem('snow_token', t); }
-function getAuthToken(){ return sessionStorage.getItem('snow_token'); }
-
-/* ---------- Backend abstraction ----------
-   The app is built to call a backend if CONFIG.API_BASE is set.
-   If not set, the app falls back to localStorage-based Storage for convenience/testing.
-   Implement these endpoints on your server for a "real" deployment.
--------------------------------------------*/
-
-/* Local fallback storage (kept for testing, but not the recommended production mode) */
+/* Fallback storage (used if no API) */
 const Storage = {
-  usersKey: 'snow_users_v5',
-  ordersKey: 'snow_orders_v5',
-  depositsKey: 'snow_deposits_v5',
-  logsKey: 'snow_logs_v5',
+  usersKey: 'snow_users_v7',
+  ordersKey: 'snow_orders_v7',
+  depositsKey: 'snow_deposits_v7',
+  logsKey: 'snow_logs_v7',
   getUsers(){ try{return JSON.parse(localStorage.getItem(this.usersKey)||'{}')}catch(e){return{}} },
   saveUsers(v){ localStorage.setItem(this.usersKey, JSON.stringify(v)) },
   getOrders(){ try{return JSON.parse(localStorage.getItem(this.ordersKey)||'[]')}catch(e){return[]} },
@@ -380,18 +292,29 @@ const Storage = {
   pushLog(entry){ const l = JSON.parse(localStorage.getItem(this.logsKey)||'[]'); l.unshift(entry); localStorage.setItem(this.logsKey, JSON.stringify(l)); }
 };
 
-/* Minimal crypto helper for demo registration/login (only used in fallback mode) */
+/* Helpers */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const fmt = n => (Number(n)||0).toLocaleString('vi-VN');
+const now = () => Date.now();
+function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function debounce(fn, wait=160){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); } }
 async function sha256(msg){ const enc = new TextEncoder(); const buf = await crypto.subtle.digest('SHA-256', enc.encode(msg)); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
 
-/* Toast + modal */
+/* Session helpers */
+function currentUser(){ try{return JSON.parse(sessionStorage.getItem('snow_current_user')||'null')}catch(e){return null} }
+function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
+
+/* Toast / modal */
 const toastWrap = document.getElementById('toastWrap');
-function toast(msg, {type='info', timeout=3000}={}) {
+function toast(msg, {type='info', timeout=3500}={}) {
   const el = document.createElement('div');
   el.className = 'panel';
   el.style.padding='10px';
-  el.style.minWidth='200px';
+  el.style.minWidth='220px';
   el.style.borderRadius='8px';
   el.style.background = type==='error' ? 'linear-gradient(180deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02))' : 'linear-gradient(180deg, rgba(6,182,212,0.04), transparent)';
+  el.style.color = 'var(--text)';
   el.textContent = msg;
   toastWrap.appendChild(el);
   setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(12px)'; setTimeout(()=>el.remove(),300); }, timeout);
@@ -411,40 +334,97 @@ function showModal(contentHTML, {onOpen=null}={}) {
 }
 function hideModal(){ modalRoot.innerHTML=''; modalRoot.classList.add('hidden'); if(modalRoot._onKey) document.removeEventListener('keydown', modalRoot._onKey); }
 
-/* ---------- "Server" calls with fallback ---------- */
-async function apiFetch(path, opts={}) {
-  const base = CONFIG.API_BASE && CONFIG.API_BASE.trim();
-  if(!base){
-    // No backend configured -> fallback error; let callers handle fallback logic
-    const err = new Error('NO_API');
-    err.code = 'NO_API';
-    throw err;
-  }
-  const url = base.replace(/\/+$/,'') + path;
-  const headers = Object.assign({}, opts.headers || {});
-  const token = getAuthToken();
-  if(token) headers['Authorization'] = 'Bearer ' + token;
-  const res = await fetch(url, Object.assign({}, opts, { headers }));
-  if(!res.ok){
-    const text = await res.text();
-    const e = new Error('API_ERROR: ' + res.status + ' ' + text);
-    e.status = res.status;
-    e.body = text;
-    throw e;
-  }
-  return res.json().catch(()=>null);
+/* Discord notify helper (best-effort) */
+async function notifyDiscord(type, data){
+  try{
+    if(!CONFIG.DISCORD_WEBHOOK) { console.log('Discord notify disabled', type, data); return; }
+    const payload = {
+      embeds:[{
+        title:type,
+        color:3447003,
+        fields:Object.keys(data||{}).map(k=>({ name:k, value:String(data[k]||'-'), inline:true })),
+        timestamp:new Date().toISOString()
+      }]
+    };
+    await fetch(CONFIG.DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  }catch(e){ console.error('notifyDiscord failed', e); }
 }
 
-/* Auth + user management functions.
-   In server mode these call API endpoints; otherwise they operate on local storage.
-*/
+/* ---------- Fallback admin creation (for dev/testing only) ----------
+   We create a fallback admin user so you can log in and manage deposits/admins
+   DEFAULT CREDENTIALS (fallback local mode):
+     username: admin
+     password: Admin@2026
+   IMPORTANT:
+     - Remove or change this in production.
+     - If you use a real backend (CONFIG.API_BASE), admin should be created there.
+---------------------------------------------------------------------*/
+(async function seedFallbackAdmin(){
+  if(CONFIG.API_BASE) return;
+  const users = Storage.getUsers();
+  if(!users['admin']){
+    users['admin'] = { username:'admin', passHash: await sha256('Admin@2026'), balance:0, roles:['admin'] };
+    console.warn('Fallback admin created: admin / Admin@2026 (remove or change in production)');
+  }
+  if(!users['demo']){
+    users['demo'] = { username:'demo', passHash: await sha256('demo'), balance:50000, roles:[] };
+  }
+  Storage.saveUsers(users);
+})();
+
+/* ---------- Admin account management helpers (fallback) ---------- */
+async function createAdminUser(username, password){
+  if(!username || !password) throw new Error('Username và password cần được cung cấp');
+  if(CONFIG.API_BASE){
+    // server-side should implement admin creation endpoint
+    return apiFetch('/admin/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
+  } else {
+    const users = Storage.getUsers();
+    if(users[username]) throw new Error('Người dùng đã tồn tại');
+    users[username] = { username, passHash: await sha256(password), balance:0, roles:['admin'] };
+    Storage.saveUsers(users);
+    Storage.pushLog({ type:'admin_created', username, time:now() });
+    notifyDiscord('Admin mới được tạo', { Admin: username, By: 'SYSTEM' });
+    return users[username];
+  }
+}
+
+async function setAdminPassword(username, newPassword){
+  if(!username || !newPassword) throw new Error('Thiếu username hoặc password mới');
+  if(CONFIG.API_BASE){
+    return apiFetch(`/admin/users/${encodeURIComponent(username)}/password`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password:newPassword }) });
+  } else {
+    const users = Storage.getUsers();
+    if(!users[username]) throw new Error('Người dùng không tồn tại');
+    users[username].passHash = await sha256(newPassword);
+    Storage.saveUsers(users);
+    Storage.pushLog({ type:'admin_pass_changed', username, time:now() });
+    notifyDiscord('Mật khẩu admin đã thay đổi', { Admin: username, By: 'SYSTEM' });
+    return true;
+  }
+}
+
+async function revokeAdminRole(username){
+  if(!username) throw new Error('Thiếu username');
+  if(CONFIG.API_BASE){
+    return apiFetch(`/admin/users/${encodeURIComponent(username)}/revoke`, { method:'POST' });
+  } else {
+    const users = Storage.getUsers();
+    if(!users[username]) throw new Error('Người dùng không tồn tại');
+    users[username].roles = (users[username].roles||[]).filter(r => r !== 'admin');
+    Storage.saveUsers(users);
+    Storage.pushLog({ type:'admin_revoked', username, time:now() });
+    notifyDiscord('Quyền admin bị thu hồi', { Admin: username, By: 'SYSTEM' });
+    return true;
+  }
+}
+
+/* ---------- Auth (fallback) ---------- */
 async function registerUser(username, password){
   if(!username || !password) throw new Error('Nhập tên đăng nhập và mật khẩu');
   if(CONFIG.API_BASE){
-    // server mode
-    return apiFetch(CONFIG.ENDPOINTS.register, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password}) });
+    return apiFetch('/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password}) });
   } else {
-    // fallback local
     const users = Storage.getUsers();
     if(users[username]) throw new Error('Tài khoản đã tồn tại');
     users[username] = { username, passHash: await sha256(password), balance: 0, roles:[] };
@@ -456,13 +436,10 @@ async function registerUser(username, password){
 
 async function loginUser(username, password){
   if(CONFIG.API_BASE){
-    const res = await apiFetch(CONFIG.ENDPOINTS.login, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password}) });
-    // expected: { token, user:{username,balance,roles} }
+    const res = await apiFetch('/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
     if(res && res.token){
-      setAuthToken(res.token);
+      sessionStorage.setItem('snow_token', res.token);
       setCurrentUser(res.user);
-      Storage.pushLog({ type:'login', username: res.user.username, time: now() });
-      renderHeader();
       return res.user;
     }
     throw new Error('Login failed');
@@ -479,84 +456,9 @@ async function loginUser(username, password){
   }
 }
 
-function logoutUser(){ setAuthToken(null); setCurrentUser(null); renderHeader(); }
+function logoutUser(){ sessionStorage.removeItem('snow_token'); setCurrentUser(null); renderHeader(); }
 
-/* session user helper using sessionStorage */
-function currentUser(){ try{return JSON.parse(sessionStorage.getItem('snow_current_user')||'null')}catch(e){return null} }
-function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
-
-/* Orders & deposits (server mode or fallback) */
-async function saveOrder(order){
-  if(CONFIG.API_BASE){
-    // POST /orders
-    return apiFetch(CONFIG.ENDPOINTS.orders, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(order) });
-  } else {
-    const list = Storage.getOrders(); list.unshift(order); Storage.saveOrders(list); Storage.pushLog({type:'order_created', orderId:order.id, user:order.username, time:now()});
-    return order;
-  }
-}
-function getOrders(){
-  if(CONFIG.API_BASE){
-    // callers should use apiFetch directly; provide fallback that throws
-    throw new Error('USE_API_FETCH_FOR_ORDERS_IN_SERVER_MODE');
-  } else {
-    return Storage.getOrders();
-  }
-}
-
-async function createDepositRequest(username, amount, bank, reference){
-  if(CONFIG.API_BASE){
-    return apiFetch(CONFIG.ENDPOINTS.deposits, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,amount,bank,reference}) });
-  } else {
-    const deposits = Storage.getDeposits();
-    const deposit = { id:'d_'+now(), username, amount:Number(amount)||0, bank, reference, status:'pending', createdAt: now() };
-    deposits.unshift(deposit); Storage.saveDeposits(deposits);
-    Storage.pushLog({type:'deposit_created', depositId:deposit.id, user:username, time:now()});
-    return deposit;
-  }
-}
-
-async function updateUserBalance(username, delta){
-  if(CONFIG.API_BASE){
-    // Implement on server (admin-only endpoint or user wallet top-up)
-    return apiFetch(CONFIG.ENDPOINTS.users_admin + '/' + encodeURIComponent(username) + '/balance', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ delta }) });
-  } else {
-    const users = Storage.getUsers();
-    if(!users[username]) throw new Error('User not found');
-    users[username].balance = (users[username].balance||0) + Number(delta||0);
-    Storage.saveUsers(users);
-    Storage.pushLog({type:'balance_update', username, delta, time: now()});
-    renderHeader();
-    return users[username];
-  }
-}
-
-/* forwardOrder placeholder — call backend if configured */
-async function forwardOrderToWebhook(order){
-  if(CONFIG.DISCORD_WEBHOOK) {
-    const payload = {
-      embeds:[{
-        title:`Đơn mới: ${order.package}`,
-        color:3447003,
-        fields:[
-          {name:'Người đặt', value:order.username || '-', inline:true},
-          {name:'Tên/Discord', value:order.name || '-', inline:true},
-          {name:'Login', value:order.login || '-', inline:true},
-          {name:'Giá', value:fmt(order.price)+'đ', inline:true},
-          {name:'Ghi chú', value:order.note || '-', inline:false}
-        ],
-        timestamp:new Date(order.createdAt).toISOString()
-      }]
-    };
-    const res = await fetch(CONFIG.DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-    if(!res.ok) throw new Error('Forward failed: ' + res.status);
-    return res;
-  }
-  // If no webhook configured, just silently return
-  return null;
-}
-
-/* ---------- Render / UI logic ---------- */
+/* ---------- Rendering & UI ---------- */
 
 function renderHeader(){
   const cur = currentUser();
@@ -567,10 +469,8 @@ function renderHeader(){
   const hdrAdmin = document.getElementById('hdr-admin');
   if(cur){
     hdrUser.textContent = cur.username;
-    // get balance from server when in server mode; fallback to local users
     if(CONFIG.API_BASE){
-      // try to fetch me endpoint (best-effort)
-      apiFetch(CONFIG.ENDPOINTS.me).then(res => {
+      apiFetch('/auth/me').then(res => {
         const bal = (res && res.user && res.user.balance) ? res.user.balance : 0;
         hdrBalance.textContent = fmt(bal)+'đ';
         acctName.textContent = 'Xin chào, ' + (res && res.user && res.user.username ? res.user.username : cur.username);
@@ -578,9 +478,7 @@ function renderHeader(){
         const isAdmin = (res && res.user && (res.user.roles||[]).includes('admin'));
         hdrAdmin.classList.toggle('hidden', !isAdmin);
         document.getElementById('adminPanelPlaceholder').classList.toggle('hidden', !isAdmin);
-      }).catch(()=> {
-        hdrBalance.textContent = '—';
-      });
+      }).catch(()=> { hdrBalance.textContent = '—'; });
     } else {
       const users = Storage.getUsers(); const bal = (users[cur.username] && users[cur.username].balance) || 0;
       hdrBalance.textContent = fmt(bal)+'đ';
@@ -600,10 +498,10 @@ function renderHeader(){
   }
 }
 
-/* Build packages grid (preserve PACKAGES order unless sorting requested) */
+/* Build packages grid */
 function renderPackages({ filter=null, sortMode='default' }={}) {
   const grid = document.getElementById('packagesGrid');
-  const list = PACKAGES.slice(); // preserve order
+  const list = PACKAGES.slice();
   let filtered = list;
   if(filter){
     const q = filter.trim().toLowerCase();
@@ -639,7 +537,6 @@ function renderPackages({ filter=null, sortMode='default' }={}) {
     grid.appendChild(card);
   }
 
-  // Attach listeners
   $$('.buy-btn').forEach(b => b.addEventListener('click', (e) => {
     const id = e.currentTarget.getAttribute('data-id');
     openOrderModal(id);
@@ -655,18 +552,10 @@ function renderPackages({ filter=null, sortMode='default' }={}) {
   }));
 }
 
-/* Open order modal prefilled with package info (or allow selecting from #goi) */
+/* Order modal (simplified) */
 function openOrderModal(pkgId){
   const cur = currentUser();
-  if(!cur){
-    // prompt login first
-    showLoginModal(() => {
-      // after login success, reopen order modal
-      openOrderModal(pkgId);
-    });
-    return;
-  }
-
+  if(!cur){ showLoginModal(() => { openOrderModal(pkgId); }); return; }
   const pkg = PACKAGES.find(p => p.id === pkgId) || null;
   const defaultPackageText = pkg ? `${pkg.name} — ${fmt(pkg.price)}đ` : '';
 
@@ -676,25 +565,28 @@ function openOrderModal(pkgId){
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
       <div style="flex:1">
         <label class="kv">Chọn gói</label>
-        <select id="order_package_select" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)">
+        <select id="order_package_select" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)">
           <option value="">-- Chọn --</option>
           ${PACKAGES.map(p=>`<option value="${escapeHtml(p.id)}" data-price="${p.price}">${escapeHtml(p.name)} — ${fmt(p.price)}đ</option>`).join('')}
         </select>
       </div>
       <div style="width:160px">
         <label class="kv">Giá</label>
-        <div id="order_price" class="kv" style="padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);text-align:center">${defaultPackageText || '—'}</div>
+        <div id="order_price" class="kv" style="padding:10px;border-radius:8px;background:rgba(11,19,32,0.03);text-align:center">${defaultPackageText || '—'}</div>
       </div>
     </div>
 
     <div style="margin-top:10px">
       <label class="kv">Login / Tài khoản game (bắt buộc)</label>
-      <input id="order_login" placeholder="Tên tài khoản / ID" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <input id="order_login" placeholder="Tên tài khoản / ID" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
+    </div>
+    
+     <input id="order_login" placeholder="Login Roblox" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
     </div>
 
     <div style="margin-top:10px">
       <label class="kv">Ghi chú (nội dung cần lưu ý)</label>
-      <textarea id="order_note" rows="3" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)"></textarea>
+      <textarea id="order_note" rows="3" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)"></textarea>
     </div>
 
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
@@ -711,11 +603,7 @@ function openOrderModal(pkgId){
       const loginInput = document.getElementById('order_login');
       const noteInput = document.getElementById('order_note');
       document.getElementById('order_cancel').addEventListener('click', hideModal);
-      // preselect if pkgId provided
-      if(pkgId){
-        select.value = pkgId;
-        priceBox.textContent = `${pkg.name} — ${fmt(pkg.price)}đ`;
-      }
+      if(pkgId){ select.value = pkgId; priceBox.textContent = `${pkg.name} — ${fmt(pkg.price)}đ`; }
       select.addEventListener('change', (e) => {
         const p = PACKAGES.find(x => x.id === select.value);
         priceBox.textContent = p ? `${p.name} — ${fmt(p.price)}đ` : '—';
@@ -738,10 +626,12 @@ function openOrderModal(pkgId){
         };
 
         try {
-          await saveOrder(order);
-          try{ await forwardOrderToWebhook(order); }catch(_){} // best-effort
+          // fallback create order (or server)
+          const list = Storage.getOrders(); list.unshift(order); Storage.saveOrders(list);
+          Storage.pushLog({ type:'order_created', orderId:order.id, user:order.username, time:now() });
+          notifyDiscord('Đơn hàng mới', { User: order.username, Package: order.package, Price: fmt(order.price)+'đ', Login: order.login || '-' });
           hideModal();
-          toast('Đơn đã được tạo. Vui lòng chờ xử lý.', { type:'info' });
+          toast('Đơn đã được tạo. Chúng tôi đã gửi thông báo tới team.', { type:'info' });
           renderOrdersPreview();
         } catch (err) {
           console.error(err);
@@ -752,14 +642,14 @@ function openOrderModal(pkgId){
   });
 }
 
-/* simple login/register modal (uses configured API when available) */
+/* Login / register modal */
 function showLoginModal(onSuccess){
   const html = `
   <div class="modal">
     <h3>Đăng nhập / Đăng ký</h3>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <input id="auth_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
-      <input id="auth_pass" placeholder="Mật khẩu" type="password" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <input id="auth_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
+      <input id="auth_pass" placeholder="Mật khẩu" type="password" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
       <button class="btn secondary" id="auth_reg">Đăng ký</button>
@@ -796,7 +686,7 @@ function showLoginModal(onSuccess){
   });
 }
 
-/* Orders preview sidebar */
+/* Orders preview */
 function renderOrdersPreview(){
   const cur = currentUser();
   const container = document.getElementById('ordersPreview');
@@ -805,26 +695,12 @@ function renderOrdersPreview(){
     container.innerHTML = '<div class="kv">Đăng nhập để xem đơn của bạn.</div>';
     return;
   }
-  if(CONFIG.API_BASE){
-    // In server mode, fetch /orders?username=...
-    apiFetch(CONFIG.ENDPOINTS.orders + '?username=' + encodeURIComponent(cur.username))
-      .then(res => {
-        if(!res || !Array.isArray(res)) { container.innerHTML = '<div class="kv">Không có đơn hàng.</div>'; return; }
-        container.innerHTML = res.slice(0,5).map(o=>`<div class="order-small"><div>${escapeHtml(o.package)} <div class="small kv">${new Date(o.createdAt).toLocaleString()}</div></div><div class="small">${escapeHtml(o.status||'—')}</div></div>`).join('');
-      }).catch(err => {
-        container.innerHTML = '<div class="kv">Không thể tải đơn (server error)</div>';
-      });
-  } else {
-    const orders = getOrders().filter(o => o.username === cur.username).slice(0,5);
-    if(orders.length === 0){
-      container.innerHTML = '<div class="kv">Bạn chưa có đơn.</div>';
-      return;
-    }
-    container.innerHTML = orders.map(o => `<div class="order-small"><div>${escapeHtml(o.package)} <div class="small kv">${new Date(o.createdAt).toLocaleString()}</div></div><div class="small">${escapeHtml(o.status||'—')}</div></div>`).join('');
-  }
+  const orders = Storage.getOrders().filter(o => o.username === cur.username).slice(0,5);
+  if(orders.length === 0){ container.innerHTML = '<div class="kv">Bạn chưa có đơn.</div>'; return; }
+  container.innerHTML = orders.map(o => `<div class="order-small"><div>${escapeHtml(o.package)} <div class="small kv">${new Date(o.createdAt).toLocaleString()}</div></div><div class="small">${escapeHtml(o.status||'—')}</div></div>`).join('');
 }
 
-/* Wire search / sort / select */
+/* Wire search/sort/goi */
 const searchInput = document.getElementById('searchInput');
 const sortSelect = document.getElementById('sortSelect');
 const goiSelect = document.getElementById('goi');
@@ -838,45 +714,28 @@ const doRender = debounce(()=> {
 searchInput.addEventListener('input', doRender);
 sortSelect.addEventListener('change', doRender);
 
-/* When user picks from the big #goi select, open order modal / autofill */
 goiSelect.addEventListener('change', (e)=>{
   const v = e.target.value;
   if(!v) return;
-  // value format: "Name|price" (user-provided select)
   const [name, price] = v.split('|');
-  // find package by name first, fallback to a synthetic package
   const pkg = PACKAGES.find(p => p.name === name) || { id: 'custom_' + name.replace(/\s+/g,'_'), name, price: Number(price)||0 };
-  // attempt to open order modal for pkg.id
   openOrderModal(pkg.id);
-  // reset select to placeholder for convenience
   setTimeout(()=>{ goiSelect.value = ''; }, 200);
 });
 
-/* Attach other UI buttons */
-document.getElementById('openAccount').addEventListener('click', ()=> showLoginModal());
-document.getElementById('cta-order').addEventListener('click', ()=> {
-  // prefer a selected package from the goi select if user already chose
-  const v = goiSelect.value;
-  if(v){
-    const [name] = v.split('|');
-    const pkg = PACKAGES.find(p => p.name === name);
-    if(pkg) { openOrderModal(pkg.id); return; }
-  }
-  // else open general package list -> pick first package
-  openOrderModal(PACKAGES[0].id);
-});
+/* Deposit modal (user creates request; admin must approve) - simplified for fallback */
 document.getElementById('openDeposit').addEventListener('click', () => {
   const cur = currentUser();
   if(!cur){ showLoginModal(()=> document.getElementById('openDeposit').click()); return; }
   showModal(`
     <div class="modal">
-      <h3>Tạo yêu cầu nạp</h3>
+      <h3>Tạo yêu cầu nạp (chờ admin duyệt)</h3>
       <label class="kv">Số tiền (VNĐ)</label>
-      <input id="dep_amount" type="number" placeholder="Số tiền" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <input id="dep_amount" type="number" placeholder="Số tiền" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
       <label class="kv" style="margin-top:8px">Ngân hàng</label>
-      <input id="dep_bank" placeholder="Ngân hàng / chủ tài khoản" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
-      <label class="kv" style="margin-top:8px">Mã tham chiếu (VD: chuyển khoản)</label>
-      <input id="dep_ref" placeholder="Mã ref" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <input id="dep_bank" placeholder="Ngân hàng / chủ tài khoản" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
+      <label class="kv" style="margin-top:8px">Mã tham chiếu (VD: mã giao dịch)</label>
+      <input id="dep_ref" placeholder="Mã ref" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
         <button class="btn secondary" id="dep_cancel">Hủy</button>
         <button class="btn" id="dep_create">Tạo yêu cầu</button>
@@ -889,12 +748,19 @@ document.getElementById('openDeposit').addEventListener('click', () => {
         const bank = document.getElementById('dep_bank').value.trim();
         const ref = document.getElementById('dep_ref').value.trim();
         if(!amount || amount <= 0){ toast('Số tiền không hợp lệ', {type:'error'}); return; }
+        if(amount < CONFIG.DEPOSIT_MIN){ toast(`Số tiền tối thiểu là ${CONFIG.DEPOSIT_MIN}đ`, {type:'error'}); return; }
         if(!bank || !ref){ toast('Vui lòng nhập thông tin ngân hàng và mã ref', {type:'error'}); return; }
         try{
-          const cur = currentUser();
-          await createDepositRequest(cur.username, amount, bank, ref);
+          const deposits = Storage.getDeposits();
+          if(deposits.find(d => d.reference && d.reference.trim() === ref.trim())){
+            throw new Error('Mã tham chiếu đã tồn tại');
+          }
+          const deposit = { id:'d_'+now(), username: cur.username, amount, bank, reference: ref, status:'pending', createdAt: now(), reviewedBy:null };
+          deposits.unshift(deposit); Storage.saveDeposits(deposits);
+          Storage.pushLog({ type:'deposit_created', depositId:deposit.id, user:cur.username, time:now() });
+          notifyDiscord('Yêu cầu nạp mới', { User: cur.username, Amount: amount + 'đ', Ref: ref, Bank: bank });
           hideModal();
-          toast('Yêu cầu nạp đã được gửi. Vui lòng chờ admin duyệt.', {type:'info'});
+          toast('Yêu cầu nạp đã gửi. Chờ admin duyệt.', {type:'info'});
           renderHeader();
         }catch(err){
           toast('Tạo yêu cầu thất bại: ' + (err.message||err), {type:'error'});
@@ -903,44 +769,187 @@ document.getElementById('openDeposit').addEventListener('click', () => {
     }});
 });
 
-/* orders listing page (simple) */
+/* Admin panel: review deposits (fallback) */
+document.getElementById('openAdminPanel').addEventListener('click', () => {
+  const cur = currentUser();
+  if(!cur || !(cur.roles||[]).includes('admin')){ toast('Cần quyền admin', {type:'error'}); return; }
+  const deposits = Storage.getDeposits();
+  const rows = (deposits || []).map(d => `
+    <div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(11,19,32,0.03)">
+      <strong>${escapeHtml(d.username)} — ${fmt(d.amount)}đ</strong>
+      <div class="small kv">Bank: ${escapeHtml(d.bank || '-')}, Ref: ${escapeHtml(d.reference || '-')}</div>
+      <div class="small kv">Trạng thái: ${escapeHtml(d.status || '-')}${d.reviewedBy ? ' — bởi '+escapeHtml(d.reviewedBy):''}</div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        ${d.status === 'pending' ? `<button class="btn approve-btn" data-id="${d.id}">Duyệt</button><button class="btn secondary decline-btn" data-id="${d.id}">Từ chối</button>` : ''}
+      </div>
+    </div>
+  `).join('') || '<div class="kv">Không có yêu cầu nạp</div>';
+
+  showModal(`<div class="modal"><h3>Bảng quản trị — Duyệt nạp</h3><div style="max-height:520px;overflow:auto;margin-top:8px">${rows}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="admin_close">Đóng</button></div></div>`, {
+    onOpen(){
+      document.getElementById('admin_close').addEventListener('click', hideModal);
+      $$('.approve-btn').forEach(b => b.addEventListener('click', async (e)=>{
+        const id = e.currentTarget.getAttribute('data-id');
+        try{
+          const deposits = Storage.getDeposits();
+          const d = deposits.find(x => x.id === id);
+          if(!d) throw new Error('Không tìm thấy yêu cầu');
+          if(d.status !== 'pending') throw new Error('Đã xử lý');
+          d.status = 'approved'; d.reviewedBy = cur.username; d.reviewedAt = now();
+          Storage.saveDeposits(deposits);
+          const users = Storage.getUsers();
+          if(!users[d.username]) users[d.username] = { username: d.username, passHash:'', balance:0, roles:[] };
+          users[d.username].balance = (users[d.username].balance||0) + Number(d.amount||0);
+          Storage.saveUsers(users);
+          Storage.pushLog({ type:'deposit_approved', depositId:d.id, by:cur.username, time:now() });
+          notifyDiscord('Nạp tiền được duyệt', { User: d.username, Amount: d.amount + 'đ', By: cur.username, Ref: d.reference || '-' });
+          toast('Đã duyệt & cộng tiền cho user', {type:'info'});
+          hideModal();
+          renderHeader();
+        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
+      }));
+      $$('.decline-btn').forEach(b => b.addEventListener('click', (e)=>{
+        const id = e.currentTarget.getAttribute('data-id');
+        const reason = prompt('Lý do từ chối (tùy chọn):') || '';
+        try{
+          const deposits = Storage.getDeposits();
+          const d = deposits.find(x => x.id === id);
+          if(!d) throw new Error('Không tìm thấy yêu cầu');
+          if(d.status !== 'pending') throw new Error('Đã xử lý');
+          d.status = 'declined'; d.reviewedBy = cur.username; d.reviewedAt = now(); d.declineReason = reason;
+          Storage.saveDeposits(deposits);
+          Storage.pushLog({ type:'deposit_declined', depositId:d.id, by:cur.username, reason, time:now() });
+          notifyDiscord('Nạp tiền bị từ chối', { User: d.username, Amount: d.amount + 'đ', By: cur.username, Reason: reason || '-' });
+          toast('Đã từ chối yêu cầu', {type:'info'});
+          hideModal();
+        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
+      }));
+    }
+  });
+});
+
+/* Admin accounts management modal (new feature requested) */
+document.getElementById('openAdminAccounts').addEventListener('click', () => {
+  const cur = currentUser();
+  if(!cur || !(cur.roles||[]).includes('admin')){ toast('Cần quyền admin', {type:'error'}); return; }
+  const users = Storage.getUsers();
+  const adminList = Object.values(users).filter(u => (u.roles||[]).includes('admin'));
+  const rows = adminList.map(u => `
+    <div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(11,19,32,0.03);display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div><strong>${escapeHtml(u.username)}</strong> <span class="small kv">(${escapeHtml((u.roles||[]).join(','))})</span></div>
+        <div class="small kv">Số dư: ${fmt(u.balance||0)}đ</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn admin-change-pass" data-username="${escapeHtml(u.username)}">Đổi mật khẩu</button>
+        <button class="btn secondary admin-revoke" data-username="${escapeHtml(u.username)}">Thu hồi</button>
+      </div>
+    </div>
+  `).join('') || '<div class="kv">Chưa có admin</div>';
+
+  const html = `<div class="modal"><h3>Quản lý tài khoản admin</h3>
+    <div style="max-height:420px;overflow:auto;margin-top:8px">${rows}</div>
+    <hr style="margin:12px 0" />
+    <h4>Tạo admin mới</h4>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input id="new_admin_user" placeholder="username" style="flex:1;padding:8px;border-radius:6px;border:1px solid rgba(11,19,32,0.06)" />
+      <input id="new_admin_pass" placeholder="password" style="flex:1;padding:8px;border-radius:6px;border:1px solid rgba(11,19,32,0.06)" />
+      <button class="btn" id="new_admin_create">Tạo</button>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="admin_accounts_close">Đóng</button></div>
+  </div>`;
+
+  showModal(html, {
+    onOpen(){
+      document.getElementById('admin_accounts_close').addEventListener('click', hideModal);
+      document.getElementById('new_admin_create').addEventListener('click', async () => {
+        const u = document.getElementById('new_admin_user').value.trim();
+        const p = document.getElementById('new_admin_pass').value;
+        if(!u || !p){ toast('Vui lòng nhập username & password', {type:'error'}); return; }
+        try{
+          await createAdminUser(u,p);
+          toast('Admin mới đã được tạo', {type:'info'});
+          hideModal();
+        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
+      });
+      $$('.admin-change-pass').forEach(b => b.addEventListener('click', async (e) => {
+        const username = e.currentTarget.getAttribute('data-username');
+        const newPass = prompt('Mật khẩu mới cho ' + username + ':');
+        if(!newPass) return;
+        try{
+          await setAdminPassword(username, newPass);
+          toast('Mật khẩu đã đổi', {type:'info'});
+          hideModal();
+        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
+      }));
+      $$('.admin-revoke').forEach(b => b.addEventListener('click', async (e) => {
+        const username = e.currentTarget.getAttribute('data-username');
+        if(!confirm(`Thu hồi quyền admin của ${username}?`)) return;
+        try{
+          await revokeAdminRole(username);
+          toast('Đã thu hồi quyền admin', {type:'info'});
+          hideModal();
+        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
+      }));
+    }
+  });
+});
+
+/* Admin gift modal (same as before) */
+document.getElementById('openGiftModal').addEventListener('click', () => {
+  const cur = currentUser();
+  if(!cur || !(cur.roles||[]).includes('admin')){ toast('Cần quyền admin', {type:'error'}); return; }
+  showModal(`<div class="modal"><h3>Gift tiền</h3>
+    <label class="kv">Người nhận (username)</label>
+    <input id="gift_to" placeholder="username" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
+    <label class="kv" style="margin-top:8px">Số tiền</label>
+    <input id="gift_amount" type="number" placeholder="Số tiền" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
+    <label class="kv" style="margin-top:8px">Ghi chú</label>
+    <input id="gift_note" placeholder="Lý do / ghi chú" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn secondary" id="gift_cancel">Hủy</button><button class="btn" id="gift_send">Gửi gift</button></div>
+  </div>`, {
+    onOpen(){
+      document.getElementById('gift_cancel').addEventListener('click', hideModal);
+      document.getElementById('gift_send').addEventListener('click', async () => {
+        const to = document.getElementById('gift_to').value.trim();
+        const amount = Number(document.getElementById('gift_amount').value || 0);
+        const note = document.getElementById('gift_note').value.trim();
+        if(!to || !amount){ toast('Vui lòng nhập người nhận và số tiền', {type:'error'}); return; }
+        try{
+          const users = Storage.getUsers();
+          if(!users[to]) throw new Error('Người nhận không tồn tại');
+          users[to].balance = (users[to].balance||0) + amount;
+          Storage.saveUsers(users);
+          Storage.pushLog({ type:'gift', from: cur.username, to, amount, note, time: now() });
+          notifyDiscord('Gift từ admin', { Admin: cur.username, To: to, Amount: amount + 'đ', Note: note || '-' });
+          hideModal();
+          toast('Gift thành công', {type:'info'});
+          renderHeader();
+        }catch(err){ toast('Lỗi gift: ' + (err.message||err), {type:'error'}); }
+      });
+    }
+  });
+});
+
+/* Orders listing page */
 document.getElementById('viewOrders').addEventListener('click', () => {
   const cur = currentUser();
   if(!cur){ showLoginModal(()=> document.getElementById('viewOrders').click()); return; }
-  if(CONFIG.API_BASE){
-    // open modal and fetch from server
-    apiFetch(CONFIG.ENDPOINTS.orders + '?username=' + encodeURIComponent(cur.username)).then(res => {
-      const rows = (res && Array.isArray(res)) ? res : [];
-      showModal(`<div class="modal"><h3>Đơn hàng</h3><div style="max-height:400px;overflow:auto">${rows.map(r=>`<div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.02)"><strong>${escapeHtml(r.package)}</strong><div class="small kv">${new Date(r.createdAt).toLocaleString()}</div><div class="small">Trạng thái: ${escapeHtml(r.status||'—')}</div></div>`).join('') || '<div class="kv">Không có đơn</div>'}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="orders_close">Đóng</button></div></div>`, { onOpen(){ document.getElementById('orders_close').addEventListener('click', hideModal); }});
-    }).catch(err => {
-      toast('Không thể tải đơn từ server', {type:'error'});
-    });
-  } else {
-    const rows = getOrders().filter(o => o.username === cur.username);
-    showModal(`<div class="modal"><h3>Đơn hàng</h3><div style="max-height:400px;overflow:auto">${rows.map(r=>`<div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.02)"><strong>${escapeHtml(r.package)}</strong><div class="small kv">${new Date(r.createdAt).toLocaleString()}</div><div class="small">Trạng thái: ${escapeHtml(r.status||'—')}</div></div>`).join('') || '<div class="kv">Không có đơn</div>'}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="orders_close">Đóng</button></div></div>`, { onOpen(){ document.getElementById('orders_close').addEventListener('click', hideModal); }});
-  }
+  const rows = Storage.getOrders().filter(o => o.username === cur.username);
+  showModal(`<div class="modal"><h3>Đơn hàng</h3><div style="max-height:400px;overflow:auto">${rows.map(r=>`<div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(11,19,32,0.03)"><strong>${escapeHtml(r.package)}</strong><div class="small kv">${new Date(r.createdAt).toLocaleString()}</div><div class="small">Trạng thái: ${escapeHtml(r.status||'—')}</div></div>`).join('') || '<div class="kv">Không có đơn</div>'}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="orders_close">Đóng</button></div></div>`, { onOpen(){ document.getElementById('orders_close').addEventListener('click', hideModal); }});
 });
 
-/* Quick init: create demo users in fallback mode only (server mode should seed admin elsewhere) */
-(async function initFallbackUsers(){
-  if(CONFIG.API_BASE) return;
-  const users = Storage.getUsers();
-  if(!users['demo']){
-    users['demo'] = { username:'demo', passHash: await sha256('demo'), balance: 50000, roles:[] };
-  }
-  // It's recommended NOT to auto-create 'admin' in production fallback; leave to developer.
-  Storage.saveUsers(users);
-})();
+/* quick bindings */
+document.getElementById('openAccount').addEventListener('click', ()=> showLoginModal());
+document.getElementById('cta-order').addEventListener('click', ()=> openOrderModal(PACKAGES[0].id));
 
-/* Initial render */
+/* initial render */
 renderHeader();
 renderPackages();
 renderOrdersPreview();
 
-/* Expose some functions for debugging in console (optional) */
-window.SNOW = {
-  CONFIG, PACKAGES, renderPackages, renderOrdersPreview, currentUser, setCurrentUser, apiFetch
-};
+/* Expose some helpers for debugging */
+window.SNOW = { CONFIG, createAdminUser, setAdminPassword, revokeAdminRole, Storage };
 </script>
 </body>
 </html>
