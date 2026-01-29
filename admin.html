@@ -2,45 +2,164 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>SNOW SHOP — Admin</title>
+<title>👑 SNOW SHOP — ADMIN</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <style>
-body{font-family:Arial;background:#020617;color:#fff;margin:0}
-.box{background:#0f172a;margin:12px;border-radius:12px;padding:14px}
-button{background:#22c55e;border:0;padding:6px 10px;border-radius:8px}
+body{font-family:Arial;background:#0f172a;margin:0;color:#fff}
+.box{background:#020617;margin:14px;border-radius:14px;padding:16px}
+h3{margin:0 0 10px}
+button{
+ background:#38bdf8;border:0;padding:8px 12px;
+ border-radius:8px;font-weight:bold;cursor:pointer
+}
+button.red{background:#ef4444;color:#fff}
+button.green{background:#22c55e;color:#000}
+input,select{
+ width:100%;padding:8px;margin:6px 0;
+ border-radius:8px;border:0
+}
+hr{border:none;border-top:1px solid #334155;margin:10px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.card{
+ background:#020617;border:1px solid #1e293b;
+ padding:10px;border-radius:10px;margin:6px 0
+}
+small{color:#94a3b8}
 </style>
 </head>
+
 <body>
 
 <div class="box">
-<h3>ADMIN – DUYỆT NẠP</h3>
-<div id="list"></div>
+👑 <b>ADMIN PANEL</b>
+<button onclick="logout()" class="red" style="float:right">Đăng xuất</button>
+</div>
+
+<div class="box" id="loginBox">
+<h3>🔐 Đăng nhập Admin</h3>
+<input id="u" placeholder="Admin user">
+<input id="p" type="password" placeholder="Password">
+<button onclick="login()">Đăng nhập</button>
+</div>
+
+<div id="main" style="display:none">
+
+<div class="box">
+<h3>💸 Duyệt nạp tiền</h3>
+<div id="deps"></div>
+</div>
+
+<div class="box">
+<h3>📦 Quản lý đơn thuê</h3>
+<div id="orders"></div>
+</div>
+
+<div class="box">
+<h3>👤 Danh sách User</h3>
+<div id="users"></div>
+</div>
+
 </div>
 
 <script>
-const K={u:"users",d:"deposits"};
-const load=k=>JSON.parse(localStorage.getItem(k)||"[]");
-const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const API="/api";
+let token=null;
 
-function render(){
- let d=load(K.d),u=load(K.u);
- list.innerHTML=d.filter(x=>!x.ok).map((x,i)=>`
- <div>
- 👤 ${x.user} — 💰 ${x.amt}
- <button onclick="ok(${i})">DUYỆT</button>
- </div>`).join("");
+/* ===== AUTH ===== */
+async function login(){
+ const res=await fetch(API+"/auth/login",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({username:u.value,password:p.value})
+ });
+ const data=await res.json();
+ if(!data.token) return alert("Sai tài khoản");
+ token=data.token;
+ loginBox.style.display="none";
+ main.style.display="block";
+ loadAll();
 }
 
-function ok(i){
- let d=load(K.d),u=load(K.u);
- d[i].ok=true;
- let user=u.find(x=>x.user==d[i].user);
- user.bal+=d[i].amt;
- save(K.d,d);save(K.u,u);
- render();
+function logout(){
+ token=null;
+ main.style.display="none";
+ loginBox.style.display="block";
 }
 
-render();
+/* ===== LOAD ===== */
+async function loadAll(){
+ loadDeposits();
+ loadOrders();
+ loadUsers();
+}
+
+/* ===== DEPOSITS ===== */
+async function loadDeposits(){
+ const res=await fetch(API+"/admin/deposits",{headers:{Authorization:"Bearer "+token}});
+ const d=await res.json();
+ deps.innerHTML=d.length?d.map(x=>`
+  <div class="card">
+  👤 ${x.username}<br>
+  💰 ${x.amount}đ<br>
+  <small>${new Date(x.time).toLocaleString()}</small><br><br>
+  <button class="green" onclick="approveDep(${x.id})">Duyệt + Cộng tiền</button>
+  </div>
+ `).join(""):"<small>Không có</small>";
+}
+
+async function approveDep(id){
+ if(!confirm("Xác nhận duyệt nạp?"))return;
+ await fetch(API+"/admin/deposits/"+id,{
+  method:"POST",
+  headers:{Authorization:"Bearer "+token}
+ });
+ loadDeposits();
+ loadUsers();
+}
+
+/* ===== ORDERS ===== */
+async function loadOrders(){
+ const res=await fetch(API+"/admin/orders",{headers:{Authorization:"Bearer "+token}});
+ const o=await res.json();
+ orders.innerHTML=o.map(x=>`
+  <div class="card">
+  👤 ${x.username}<br>
+  📦 ${x.service}<br>
+  💰 ${x.price}đ<br>
+  <small>${new Date(x.time).toLocaleString()}</small><br><br>
+  <select onchange="setStatus(${x.id},this.value)">
+   <option ${x.status=="Đang chờ"?"selected":""}>Đang chờ</option>
+   <option ${x.status=="Đang làm"?"selected":""}>Đang làm</option>
+   <option ${x.status=="Hoàn thành"?"selected":""}>Hoàn thành</option>
+  </select>
+  </div>
+ `).join("");
+}
+
+async function setStatus(id,s){
+ await fetch(API+"/admin/orders/"+id,{
+  method:"POST",
+  headers:{
+   "Content-Type":"application/json",
+   Authorization:"Bearer "+token
+  },
+  body:JSON.stringify({status:s})
+ });
+}
+
+/* ===== USERS ===== */
+async function loadUsers(){
+ const res=await fetch(API+"/admin/users",{headers:{Authorization:"Bearer "+token}});
+ const u=await res.json();
+ users.innerHTML=u.map(x=>`
+  <div class="card">
+  👤 ${x.username}<br>
+  💰 ${x.balance}đ
+  </div>
+ `).join("");
+}
 </script>
+
 </body>
 </html>
