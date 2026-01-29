@@ -18,7 +18,6 @@
         .info b{color:#0ea5e9}
         .qr-box{text-align:center;padding:15px;background:#fff;border-radius:10px;margin-top:10px}
         .admin-section{border-top:4px solid #ef4444}
-        .badge{padding:2px 8px;border-radius:5px;font-size:12px;background:#e2e8f0}
     </style>
 </head>
 <body>
@@ -41,24 +40,10 @@
         <option value="">-- Chọn gói cày thuê --</option>
         <optgroup label="🔰 LEVEL">
             <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh<br>✔ Không đổi trái<br>✔ 3–5 giờ">Level 700 – 20.000đ</option>
-            <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest<br>✔ Không mất đồ<br>✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
-            <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3<br>✔ An toàn 100%<br>✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
             <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3<br>✔ Không mất acc<br>✔ 4–6 ngày">0 → MAX – 50.000đ</option>
         </optgroup>
         <optgroup label="🎒 ITEM">
-            <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest<br>✔ Không mất đồ<br>✔ 1 ngày">Mỏ Neo – 20.000đ</option>
-            <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest<br>✔ An toàn<br>✔ Trong ngày">Tushita – 15.000đ</option>
-            <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama<br>✔ Không mất đồ<br>✔ 1–2 ngày">Yama – 30.000đ</option>
-            <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm<br>✔ Không rollback<br>✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
             <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK<br>✔ Không mất item<br>✔ 1–2 ngày">CDK – 30.000đ</option>
-        </optgroup>
-        <optgroup label="💠 V4">
-            <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear<br>✔ Thức tỉnh V4<br>✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
-            <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ<br>✔ Nhanh gọn<br>✔ Trong ngày">1 Gear V4 – 5.000đ</option>
-        </optgroup>
-        <optgroup label="🥋 MELEE">
-            <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman<br>✔ Farm nguyên liệu<br>✔ 1 ngày">Godhuman – 20.000đ</option>
-            <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2<br>✔ Nhanh<br>✔ Trong ngày">Melee V2 – 15.000đ</option>
         </optgroup>
     </select>
     <div id="goiInfo" class="info" style="display:none"></div>
@@ -79,20 +64,28 @@
 <div id="modal"></div>
 
 <script>
-const API = "/api"; 
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"; // Thay link webhook của bạn vào đây
-
+// Cấu hình
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 let cur = null;
 
-/* ===== HIỂN THỊ THÔNG TIN GÓI ===== */
+const u = document.getElementById('u');
+const b = document.getElementById('b');
+const goi = document.getElementById('goi');
+const goiInfo = document.getElementById('goiInfo');
+const modal = document.getElementById('modal');
+
+/* HIỂN THỊ THÔNG TIN GÓI */
 function showInfo(){
-    let s=goi.options[goi.selectedIndex];
-    if(!s.dataset.info){goiInfo.style.display="none";return;}
+    let s = goi.options[goi.selectedIndex];
+    if(!s || !s.dataset.info){
+        goiInfo.style.display="none";
+        return;
+    }
     goiInfo.style.display="block";
     goiInfo.innerHTML=`<b>📌 ${s.dataset.info}</b><br>${s.dataset.detail}`;
 }
 
-/* ===== THANH TOÁN QR ===== */
+/* NẠP TIỀN */
 function showDeposit(){
     modal.innerHTML = `
     <div class="box" style="position:fixed;top:10%;left:5%;right:5%;z-index:100;background:#fff;border:2px solid #38bdf8">
@@ -101,11 +94,9 @@ function showDeposit(){
             <option value="MBBANK">MB Bank (Quân Đội)</option>
             <option value="MOMO">Ví MoMo</option>
         </select>
-        <input type="number" id="napAmount" placeholder="Nhập số tiền muốn nạp (vnđ)" oninput="updateQR()">
-        <div class="qr-box" id="qrArea">
-            <p>Vui lòng chọn ngân hàng và nhập số tiền</p>
-        </div>
-        <button onclick="modal.innerHTML=''">Đóng</button>
+        <input type="number" id="napAmount" placeholder="Nhập số tiền muốn nạp" oninput="updateQR()">
+        <div class="qr-box" id="qrArea"><p>Nhập số tiền để hiện mã QR</p></div>
+        <button onclick="modal.innerHTML=''" style="width:100%">Đóng</button>
     </div>`;
 }
 
@@ -116,19 +107,16 @@ function updateQR(){
     const content = `NAP ${user}`;
     
     if(amount > 0) {
-        // Sử dụng API VietQR để tạo mã tự động
         const qrUrl = `https://img.vietqr.io/image/${bank}-123456789-compact2.png?amount=${amount}&addInfo=${content}`;
         document.getElementById('qrArea').innerHTML = `
             <img src="${qrUrl}" style="width:200px;border:1px solid #ddd">
-            <p>Nội dung CK: <b>${content}</b></p>
-            <small>(Hệ thống tự động duyệt sau 1-3 phút)</small>
+            <p>Nội dung: <b>${content}</b></p>
         `;
     }
 }
 
-/* ===== GỬI DISCORD WEBHOOK ===== */
+/* GỬI DISCORD */
 async function sendDiscord(service, price) {
-    if(!)
     const msg = {
         embeds: [{
             title: "🔥 ĐƠN CÀY THUÊ MỚI",
@@ -138,81 +126,78 @@ async function sendDiscord(service, price) {
                 { name: "Dịch vụ", value: service, inline: true },
                 { name: "Giá tiền", value: price + "đ", inline: true }
             ],
-            footer: { text: "Snow Shop System" },
             timestamp: new Date()
         }]
     };
-    await fetch(DISCORD_WEBHOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg)});
+    try {
+        await fetch(DISCORD_WEBHOOK, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(msg)
+        });
+    } catch (e) { console.error("Discord error:", e); }
 }
 
-/* ===== ADMIN LOGIC (SIMULATED) ===== */
-function showAdmin() {
-    const p = document.getElementById('adminPanel');
-    p.style.display = p.style.display === 'none' ? 'block' : 'none';
-    // Giả lập danh sách chờ duyệt
-    document.getElementById('adminList').innerHTML = `
-        <div class="info">
-            <b>User: tung99</b> - Nạp 50,000đ 
-            <button class="green" onclick="approve(50000)">Duyệt 1-Click</button>
-        </div>
-    `;
+/* LOGIN GIẢ LẬP */
+function auth(){
+    modal.innerHTML=`<div class="box" style="position:fixed;top:20%;left:10%;right:10%;z-index:100;background:#fff;border:2px solid #38bdf8">
+        <h3>🔐 Đăng nhập</h3>
+        <input id="au" placeholder="Tên tài khoản">
+        <input id="ap" type="password" placeholder="Mật khẩu">
+        <button onclick="login()" style="width:100%">Vào cửa hàng</button>
+        <button onclick="modal.innerHTML=''" class="red" style="width:100%">Hủy</button>
+    </div>`;
 }
 
-async function approve(amt) {
-    alert("Đã cộng " + amt + "đ vào tài khoản khách!");
-    // Logic thực tế: fetch(API + "/admin/approve", ...)
-}
-
-/* ===== CÁC HÀM CŨ (ĐÃ TỐI ƯU) ===== */
-async function login(){
-    // Giả lập login thành công để bạn test giao diện
+function login(){
     const userVal = document.getElementById('au').value;
     if(!userVal) return alert("Nhập tên");
     cur = { username: userVal, balance: 100000, role: 'admin' };
-    localStorage.token = "fake-token";
     modal.innerHTML="";
     if(cur.role === 'admin') document.getElementById('adminBtn').style.display = 'inline-block';
     render();
 }
 
+/* ĐẶT ĐƠN */
 async function order(){
-    if(!cur) return alert("Vui lòng đăng nhập trước!");
-    if(!goi.value) return alert("Vui lòng chọn gói cày!");
+    if(!cur) return alert("Vui lòng đăng nhập!");
+    if(!goi.value) return alert("Chọn gói!");
+    
     let [name, price] = goi.value.split("|");
-    if(cur.balance < price) return alert("Bạn không đủ tiền!");
+    price = parseInt(price);
 
-    // Giả lập trừ tiền
+    if(cur.balance < price) return alert("Không đủ tiền!");
+
     cur.balance -= price;
     render();
     await sendDiscord(name, price);
-    alert("Đặt đơn thành công! Admin đã nhận được thông báo.");
+    alert("Thành công! Đơn đã gửi tới Admin.");
     
     const h = document.getElementById('his');
     h.innerHTML = `<div>📦 ${name} — <b style="color:orange">Đang xử lý</b></div>` + h.innerHTML;
 }
 
-function auth(){
-    modal.innerHTML=`<div class="box" style="position:fixed;top:20%;left:10%;right:10%;z-index:100;background:#fff;border:2px solid #38bdf8">
-        <h3>🔐 Đăng nhập hệ thống</h3>
-        <input id="au" placeholder="Tên tài khoản">
-        <input id="ap" type="password" placeholder="Mật khẩu">
-        <button onclick="login()" style="width:100%">Vào cửa hàng</button>
-        <button onclick="modal.innerHTML=''" class="red">Hủy</button>
-    </div>`;
-}
-
 function render(){
-    if(!cur){u.innerText="Chưa đăng nhập";b.innerText=0;return;}
+    if(!cur){
+        u.innerText="Chưa đăng nhập";
+        b.innerText="0";
+        return;
+    }
     u.innerText=cur.username;
     b.innerText=cur.balance.toLocaleString();
 }
 
 function logout(){
-    localStorage.removeItem("token");
     cur=null;
     document.getElementById('adminBtn').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'none';
     render();
+}
+
+function showAdmin() {
+    const p = document.getElementById('adminPanel');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    document.getElementById('adminList').innerHTML = `<div class="info">Sẵn sàng nhận đơn!</div>`;
 }
 </script>
 
