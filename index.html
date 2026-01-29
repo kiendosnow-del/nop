@@ -14,6 +14,7 @@
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
         .bg-wait{background:#fef3c7;color:#d97706} .bg-process{background:#f3e8ff;color:#7c3aed} .bg-done{background:#dcfce7;color:#16a34a}
         
+        /* FIX: Tối ưu thanh điều hướng Tab */
         .tab-container { display: flex; gap: 8px; padding: 0 12px; margin-top: 10px; }
         .tab-btn {
             background: #fff;
@@ -31,18 +32,7 @@
         
         #modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);display:none;z-index:1000;backdrop-filter:blur(3px)}
         .modal{background:#fff;width:90%;max-width:450px;margin:50px auto;border-radius:16px;padding:20px;position:relative}
-        
-        .detail-box { 
-            background: #f8fafc; 
-            border-left: 4px solid #38bdf8; 
-            padding: 12px; 
-            margin: 10px 0; 
-            font-size: 13px; 
-            display: none; 
-            white-space: pre-line;
-            line-height: 1.5;
-            color: #1e293b;
-        }
+        .detail-box { background: #f8fafc; border-left: 4px solid #38bdf8; padding: 10px; margin: 10px 0; font-size: 13px; display: none; white-space: pre-line; }
     </style>
 </head>
 <body>
@@ -68,25 +58,25 @@
         <select id="goi" onchange="updateServiceDetail()">
             <option value="">-- Chọn gói dịch vụ --</option>
             <optgroup label="🔰 LEVEL">
-                <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh&#10;✔ Không đổi trái&#10;✔ Thời gian: 3–5 giờ">Level 700 – 20.000đ</option>
-                <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest&#10;✔ Không mất đồ&#10;✔ Thời gian: 1–2 ngày">700 → 1500 – 20.000đ</option>
-                <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3&#10;✔ An toàn 100%&#10;✔ Thời gian: 2–3 ngày">1500 → 2800 – 20.000đ</option>
-                <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3&#10;✔ Không mất acc&#10;✔ Thời gian: 4–6 ngày">0 → MAX – 50.000đ</option>
+                <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh&#10;✔ Không đổi trái&#10;✔ 3–5 giờ">Level 700 – 20.000đ</option>
+                <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest&#10;✔ Không mất đồ&#10;✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
+                <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3&#10;✔ An toàn 100%&#10;✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
+                <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3&#10;✔ Không mất acc&#10;✔ 4–6 ngày">0 → MAX – 50.000đ</option>
             </optgroup>
             <optgroup label="🎒 ITEM">
-                <option value="Mỏ Neo|20000" data-info="Lấy trang bị Mỏ Neo" data-detail="✔ Full quest lấy mỏ neo&#10;✔ Không mất đồ&#10;✔ Thời gian: 1 ngày">Mỏ Neo – 20.000đ</option>
-                <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest giải đố&#10;✔ An toàn 100%&#10;✔ Thời gian: Trong ngày">Tushita – 15.000đ</option>
-                <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama&#10;✔ Không mất đồ&#10;✔ Thời gian: 1–2 ngày">Yama – 30.000đ</option>
-                <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Lấy đủ 3 kiếm huyền thoại&#10;✔ Không rollback&#10;✔ Thời gian: 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
-                <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full nhiệm vụ CDK&#10;✔ Không mất item&#10;✔ Thời gian: 1–2 ngày">CDK – 30.000đ</option>
+                <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest&#10;✔ Không mất đồ&#10;✔ 1 ngày">Mỏ Neo – 20.000đ</option>
+                <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest&#10;✔ An toàn&#10;✔ Trong ngày">Tushita – 15.000đ</option>
+                <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama&#10;✔ Không mất đồ&#10;✔ 1–2 ngày">Yama – 30.000đ</option>
+                <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm&#10;✔ Không rollback&#10;✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
+                <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK&#10;✔ Không mất item&#10;✔ 1–2 ngày">CDK – 30.000đ</option>
             </optgroup>
             <optgroup label="💠 V4">
-                <option value="Full Gear V4|30000" data-info="Nâng cấp Full Gear V4" data-detail="✔ Full Gear&#10;✔ Thức tỉnh V4 hoàn thiện&#10;✔ Thời gian: 1–2 ngày">Full Gear V4 – 30.000đ</option>
-                <option value="1 Gear V4|5000" data-info="Nâng cấp 1 Gear" data-detail="✔ 1 Gear bất kỳ khách chọn&#10;✔ Nhanh gọn&#10;✔ Thời gian: Trong ngày">1 Gear V4 – 5.000đ</option>
+                <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear&#10;✔ Thức tỉnh V4&#10;✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
+                <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ&#10;✔ Nhanh gọn&#10;✔ Trong ngày">1 Gear V4 – 5.000đ</option>
             </optgroup>
             <optgroup label="🥋 MELEE">
-                <option value="Godhuman|20000" data-info="Võ Godhuman" data-detail="✔ Full Melee Godhuman&#10;✔ Đã bao gồm farm nguyên liệu&#10;✔ Thời gian: 1 ngày">Godhuman – 20.000đ</option>
-                <option value="Melee V2|15000" data-info="Nâng cấp Melee V2" data-detail="✔ Lấy Melee V2 nhanh&#10;✔ Uy tín&#10;✔ Thời gian: Trong ngày">Melee V2 – 15.000đ</option>
+                <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman&#10;✔ Farm nguyên liệu&#10;✔ 1 ngày">Godhuman – 20.000đ</option>
+                <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2&#10;✔ Nhanh&#10;✔ Trong ngày">Melee V2 – 15.000đ</option>
             </optgroup>
         </select>
 
@@ -102,7 +92,7 @@
 
 <div id="tabLichSu" class="main-tab" style="display:none">
     <div class="box">
-        <h3>📜 Lịch sử đơn của bạn</h3>
+        <h3>📜 Trạng thái đơn cày</h3>
         <div id="historyService"></div>
     </div>
 </div>
@@ -154,7 +144,6 @@ function render() {
         document.getElementById('authButtons').style.display = "block";
         document.getElementById('userButtons').style.display = "none";
         document.getElementById('adminTabBtn').style.display = "none";
-        document.getElementById('historyService').innerHTML = "Vui lòng đăng nhập để xem lịch sử.";
     } else {
         cur = db_users[cur.username];
         document.getElementById('uName').innerText = cur.username;
@@ -163,15 +152,12 @@ function render() {
         document.getElementById('userButtons').style.display = "block";
         document.getElementById('adminTabBtn').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
         
-        // Sửa lỗi: Lọc đơn hàng theo người dùng hiện tại
+        // FIX: Lọc lịch sử đơn cho riêng mỗi tài khoản
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
-        document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.slice().reverse().map(o => `
-            <div style="border-bottom:1px solid #eee; padding:12px 0">
-                <div style="display:flex; justify-content:space-between">
-                    <b>${o.goi}</b>
-                    <span class="badge ${getStatusClass(o.status)}">${o.status}</span>
-                </div>
-                <small style="color:#64748b">Ngày đặt: ${o.time}</small>
+        document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
+            <div style="border-bottom:1px solid #eee; padding:10px 0">
+                <b>${o.goi}</b> - <span class="badge ${getStatusClass(o.status)}">${o.status}</span><br>
+                <small style="color:#64748b">${o.time}</small>
             </div>
         `).join('') : "Bạn chưa có đơn hàng nào.";
     }
@@ -180,21 +166,10 @@ function render() {
 
 function getStatusClass(s){ return s==='Xong'?'bg-done':(s==='Đang cày'?'bg-process':'bg-wait'); }
 
-function updateServiceDetail() {
-    const select = document.getElementById('goi');
-    const option = select.options[select.selectedIndex];
-    const detailBox = document.getElementById('serviceDetail');
-    if (option.value) {
-        detailBox.innerHTML = `<strong style="color:#38bdf8">📌 Thông tin:</strong> ${option.getAttribute('data-info')}\n${option.getAttribute('data-detail')}`;
-        detailBox.style.display = 'block';
-    } else { detailBox.style.display = 'none'; }
-}
-
-// Hàm thông báo Discord chung
 async function sendToDiscord(title, fields, color) {
     const payload = {
         username: "SNOW SHOP NOTIFIER",
-        embeds: [{ title, color, fields, footer: { text: "Hệ thống SNOW SHOP" } }]
+        embeds: [{ title, color, fields, footer: { text: "SNOW SHOP AUTO" } }]
     };
     try { await fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (e) {}
 }
@@ -206,7 +181,7 @@ function handleBuyService() {
     const [name, price] = g.split('|');
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
-    if(!acc || !pass) return alert("Vui lòng nhập tài khoản & mật khẩu!");
+    if(!acc || !pass) return alert("Nhập đủ tài khoản/mật khẩu!");
     
     const cost = parseInt(price);
     if(cur.balance < cost) return alert("Số dư không đủ!");
@@ -216,7 +191,7 @@ function handleBuyService() {
     db_orders.push(newOrder);
     save(); render();
     
-    sendToDiscord("🚨 ĐƠN CÀY MỚI", [
+    sendToDiscord("🚨 CÓ ĐƠN CÀY MỚI", [
         { name: "👤 Khách", value: cur.username, inline: true },
         { name: "📦 Gói", value: name, inline: true },
         { name: "🔑 TK/MK", value: `${acc} / ${pass}` }
@@ -234,27 +209,24 @@ function showNapBank() {
 
 function confirmNapBank() {
     const amt = parseInt(document.getElementById('na').value);
-    if(!amt || amt < 1000) return alert("Số tiền không hợp lệ!");
-    
-    db_naps.push({username: cur.username, amount: amt, status: 'Chờ duyệt', time: new Date().toLocaleString()});
+    if(!amt || amt < 1000) return alert("Tiền không hợp lệ!");
+    db_naps.push({username:cur.username, amount:amt, status:'Chờ duyệt'});
     save(); closeModal(); render();
     
-    // Gửi thông báo Discord khi khách nạp tiền
     sendToDiscord("💰 YÊU CẦU NẠP TIỀN", [
         { name: "👤 Khách", value: cur.username, inline: true },
-        { name: "💵 Số tiền", value: amt.toLocaleString() + "đ", inline: true },
-        { name: "📝 Nội dung", value: "NAP " + cur.username }
+        { name: "💵 Số tiền", value: amt.toLocaleString() + "đ", inline: true }
     ], 3066993);
     
-    alert("Đã gửi yêu cầu nạp! Vui lòng chờ Admin duyệt.");
+    alert('Đã gửi yêu cầu nạp!');
 }
 
 function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
         <div class="box" style="font-size:12px; border-left:4px solid #38bdf8; margin: 10px 0">
-            <b>Khách: ${o.buyer}</b> | Đặt: ${o.goi}<br>
+            <b>${o.buyer}</b>: ${o.goi} [${o.status}]<br>
             TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code><br>
-            <div style="margin-top:8px">
+            <div style="margin-top:5px">
                 <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:10px; padding:5px">Cày</button>
                 <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:10px; padding:5px">Xong</button>
                 <button onclick="deleteOrder(${i})" class="red" style="font-size:10px; padding:5px">Xoá</button>
@@ -271,13 +243,13 @@ function renderAdmin() {
 }
 
 function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { if(confirm("Xoá đơn này?")) { db_orders.splice(i,1); save(); render(); } }
+function deleteOrder(i) { if(confirm("Xoá đơn?")) { db_orders.splice(i,1); save(); render(); } }
 function approveNap(i) {
     const n = db_naps[i];
     if(db_users[n.username]) {
         db_users[n.username].balance += n.amount;
         db_naps[i].status = "Xong";
-        save(); render(); alert("Đã duyệt tiền!");
+        save(); render(); alert("Đã duyệt!");
     }
 }
 function adminGiftMoney() {
@@ -296,6 +268,16 @@ function showMainTab(id, btn) {
 function showAdminTab(id) {
     document.querySelectorAll('.adm-tab').forEach(t => t.style.display = 'none');
     document.getElementById('adm' + id.charAt(0).toUpperCase() + id.slice(1)).style.display = 'block';
+}
+
+function updateServiceDetail() {
+    const select = document.getElementById('goi');
+    const option = select.options[select.selectedIndex];
+    const detailBox = document.getElementById('serviceDetail');
+    if (option.value) {
+        detailBox.innerHTML = `<b>${option.getAttribute('data-info')}</b>\n${option.getAttribute('data-detail')}`;
+        detailBox.style.display = 'block';
+    } else { detailBox.style.display = 'none'; }
 }
 
 function showLogin() { openModal(`<h3>🔑 Đăng nhập</h3><input id="au" placeholder="Tên đăng nhập"><input id="ap" type="password" placeholder="Mật khẩu"><button class="green" style="width:100%" onclick="handleAuth()">VÀO CỬA HÀNG</button>`); }
