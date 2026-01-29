@@ -323,7 +323,32 @@ function showDeposit() {
         <p>Quét mã và nhập nội dung: <b>NAP ${cur.username}</b></p>
         <div class="qr-box"><img src="https://img.vietqr.io/image/TCB-1373727384-compact.png" style="width:180px"></div>
     `);
+
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+
+async function sendDiscordNotify(title, description, color = 382230) {
+    const params = {
+        embeds: [{
+            title: title,
+            description: description,
+            color: color, // Mã màu Decimal (382230 là màu xanh dương)
+            timestamp: new Date().toISOString(),
+            footer: { text: "❄️ SNOW SHOP SYSTEM" }
+        }]
+    };
+
+    try {
+        await fetch(DISCORD_WEBHOOK_URL, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(params)
+        });
+    } catch (e) {
+        console.error("Lỗi gửi Webhook:", e);
+    }
 }
+    
+    
 </script>
 </body>
 </html>
