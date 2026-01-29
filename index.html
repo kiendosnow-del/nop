@@ -138,9 +138,10 @@ function render() {
     document.getElementById('user_actions').style.display = "block";
 
     const myOrders = allOrders.filter(o => o.buyer === cur.username);
-    document.getElementById('his').innerHTML = myOrders.length ? myOrders.slice().reverse().map(o => `
-        <div class="item-list"><b>${o.goi}</b> - <span class="${o.status==='Đã xong'?'status-done':'status-pending'}">${o.status}</span><br><small>${o.time}</small></div>
-    `).join('') : "<i>Chưa có đơn hàng.</i>";
+    document.getElementById('his').innerHTML = myOrders.length ? myOrders.slice().reverse().map(o => {
+    let cls = o.status === 'Đã xong' ? 'status-done' : (o.status === 'Đang cày' ? 'status-working' : 'status-pending');
+    return `<div class="item-list"><b>${o.goi}</b> - <span class="${cls}">${o.status}</span><br><small>${o.time}</small></div>`;
+}).join('') : "<i>Chưa có đơn hàng.</i>";
 
     if(cur.username === ADMIN_ID) {
         document.getElementById('admin_view').style.display = "block";
@@ -151,14 +152,22 @@ function render() {
 }
 
 function renderAdminData() {
-    document.getElementById('admin_all_orders').innerHTML = allOrders.slice().reverse().map((o, idx) => `
-        <div class="item-list" style="background:#f8fafc; border:1px solid #e2e8f0; margin-bottom:5px">
-            <b>${o.buyer}</b> mua <b>${o.goi}</b><br>
-            Roblox: <code style="color:blue">${o.acc}</code> | Pass: <code style="color:red">${o.pass}</code><br>
-            TT: <b class="${o.status==='Đã xong'?'status-done':'status-pending'}">${o.status}</b>
-            ${o.status === 'Đang chờ' ? `<button onclick="completeOrder(${allOrders.length-1-idx})" style="font-size:10px; padding:2px 8px" class="green">Xong</button>` : ''}
-        </div>
-    `).join('') || "Chưa có đơn hàng nào.";
+    document.getElementById('admin_all_orders').innerHTML = allOrders.slice().reverse().map((o, idx) => {
+        const id = allOrders.length - 1 - idx;
+        return `<div class="item-list">
+            <b>${o.buyer}</b>: ${o.goi} <br>
+            <code>${o.acc}</code> | <code>${o.pass}</code> <br>
+            TT: <b>${o.status}</b> <br>
+            <button onclick="upSt(${id},'Đang cày')" class="purple" style="padding:2px 5px">Cày</button>
+            <button onclick="upSt(${id},'Đã xong')" class="green" style="padding:2px 5px">Xong</button>
+        </div>`}).join('');
+}
+
+// Hàm bổ trợ đổi trạng thái
+function upSt(i, s) { 
+    allOrders[i].status = s; 
+    localStorage.setItem('snow_orders', JSON.stringify(allOrders)); 
+    render(); 
 }
 
 function order() {
