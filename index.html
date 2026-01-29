@@ -2,190 +2,341 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>❄️ SNOW SHOP — Đã Fix Toàn Bộ Lỗi</title>
+    <title>❄️ SNOW SHOP — Quản Trị Hệ Thống</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
-        body{font-family:'Segoe UI',sans-serif;background:#f1f5f9;margin:0;padding-bottom:100px;color:#334155}
-        .box{background:#fff;margin:12px;border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-        button{border:0;padding:12px;border-radius:8px;font-weight:600;margin:5px 0;cursor:pointer;color:#fff;transition:0.2s}
-        button:active{transform:scale(0.98)}
-        .blue{background:#38bdf8} .red{background:#ef4444} .green{background:#22c55e} .purple{background:#8b5cf6}
-        input,select{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
-        .item-list{padding:10px;border-bottom:1px solid #f1f5f9;font-size:14px}
-        .status{font-weight:bold;padding:2px 6px;border-radius:4px;font-size:12px}
-        .wait{color:#f59e0b;background:#fffbeb}
-        .done{color:#22c55e;background:#dcfce7}
+        body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
+        .box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
+        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.18s;color:#fff}
+        button:hover{opacity:0.9}
+        button.red{background:#ef4444}
+        button.green{background:#22c55e}
+        button.purple{background:#a855f7}
+        input,select,textarea{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
+        .info{background:#f8fafc;border:1px dashed #38bdf8;border-radius:10px;padding:10px;margin-top:10px;line-height:1.5}
+        .badge{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:bold}
+        .bg-wait{background:#fef3c7;color:#d97706}
+        .bg-done{background:#dcfce7;color:#16a34a}
+        .tab-btn{background:none;color:#64748b;border:1px solid #e2e8f0;margin-right:5px}
+        .tab-btn.active{background:#38bdf8;color:#fff;border-color:#38bdf8}
+        #modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:1000}
+        .modal{background:#fff;width:90%;max-width:400px;margin:100px auto;border-radius:15px;padding:20px;position:relative}
     </style>
 </head>
 <body>
 
 <div class="box" style="display:flex; justify-content:space-between; align-items:center">
     <div>
-        👤 <b id="u">Khách</b> <br>
-        💰 <b id="b" style="color:#22c55e">0</b> <span style="font-size:12px">VNĐ</span>
+        <div style="font-size:12px; color:#64748b">Tài khoản: <b id="uName" style="color:#0f172a">Khách</b></div>
+        <div style="font-size:18px; font-weight:bold; color:#22c55e">💰 <span id="uBalance">0</span> đ</div>
     </div>
-    <button class="red" id="btnLogout" style="display:none; padding:6px 10px">Thoát</button>
+    <div id="authButtons">
+        <button onclick="showLogin()" style="padding:6px 12px">🔑 Vào Shop</button>
+    </div>
+    <div id="userButtons" style="display:none">
+        <button onclick="logout()" class="red" style="padding:6px 12px">Thoát</button>
+    </div>
 </div>
 
-<div id="auth_sec" class="box">
-    <h3 style="margin-top:0">🔐 Đăng nhập / Đăng ký</h3>
-    <input id="au" placeholder="Tên tài khoản...">
-    <input id="ap" type="password" placeholder="Mật khẩu...">
-    <button class="blue" id="btnLogin" style="width:100%">VÀO HỆ THỐNG</button>
-</div>
-
-<div id="main_sec" style="display:none">
+<div id="clientView">
     <div class="box">
-        <h3 style="margin-top:0">🛒 Dịch vụ Cày Thuê</h3>
+        <h3 style="margin:0 0 10px 0">🛒 Dịch vụ Cày Thuê</h3>
         <select id="goi">
-            <option value="">-- Chọn gói dịch vụ --</option>
-            <option value="Level 700|20000">Gói Level 700 - 20,000đ</option>
-            <option value="700-1500|40000">Gói 700 → 1500 - 40,000đ</option>
-            <option value="1500-Max|60000">Gói 1500 → Max - 60,000đ</option>
-            <option value="CDK|30000">Lấy kiếm CDK - 30,000đ</option>
+            <option value="">-- Chọn gói cày --</option>
+            <option value="Level 700|20000">Gói Sea 1 (Level 700) - 20,000đ</option>
+            <option value="Level 1500|40000">Gói Sea 2 (Level 1500) - 40,000đ</option>
+            <option value="Max Level|60000">Gói Max Level 2550+ - 60,000đ</option>
         </select>
-        <input type="text" id="g_u" placeholder="Tài khoản Roblox">
-        <input type="text" id="g_p" placeholder="Mật khẩu Roblox">
-        <button class="green" id="btnOrder" style="width:100%; margin-top:10px">XÁC NHẬN MUA NGAY</button>
+        <input id="accRoblox" placeholder="Tên đăng nhập Roblox">
+        <input id="passRoblox" type="password" placeholder="Mật khẩu Roblox">
+        <button class="green" style="width:100%" onclick="handleBuy()">XÁC NHẬN MUA NGAY</button>
+        <button class="purple" style="width:100%" onclick="showNapBank()">💳 NẠP TIỀN QUA NGÂN HÀNG</button>
     </div>
 
     <div class="box">
-        <h3 style="margin-top:0">📜 Lịch sử của bạn</h3>
-        <div id="his">Đang tải lịch sử...</div>
+        <h3 style="margin:0 0 10px 0">📜 Lịch sử đơn hàng</h3>
+        <div id="historyList">Vui lòng đăng nhập...</div>
     </div>
+</div>
+
+<div id="adminView" style="display:none">
+    <div class="box" style="border: 2px solid #ef4444">
+        <h2 style="color:#ef4444; margin-top:0">🛠 BẢNG QUẢN TRỊ</h2>
+        <div style="display:flex; margin-bottom:15px">
+            <button class="tab-btn active" onclick="showTab('orders', this)">Đơn cày</button>
+            <button class="tab-btn" onclick="showTab('naps', this)">Duyệt Nạp</button>
+            <button class="tab-btn" onclick="showTab('users', this)">Thành viên</button>
+        </div>
+
+        <div id="tabOrders" class="tab-content">
+            <div id="adminOrderList"></div>
+        </div>
+
+        <div id="tabNaps" class="tab-content" style="display:none">
+            <div id="adminNapList"></div>
+        </div>
+
+        <div id="tabUsers" class="tab-content" style="display:none">
+            <h4>Cộng tiền cho khách</h4>
+            <input id="adTargetUser" placeholder="Nhập username khách">
+            <input id="adAmount" type="number" placeholder="Số tiền cần cộng">
+            <button class="green" onclick="adminAddMoney()">XÁC NHẬN CỘNG</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
 </div>
 
 <script>
-/* ----- Cấu trúc dữ liệu ----- */
+/* ----- CONFIG & DATABASE ----- */
+const ADMIN_ACC = "snowsimo";
+const ADMIN_PASS = "SimohaysiSnow";
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"; // Thay Link Webhook vào đây
+
 let cur = null;
-const uKey = (name) => 'user_' + name.toLowerCase().trim();
+let db_users = JSON.parse(localStorage.getItem('snow_users') || '{}');
+let db_orders = JSON.parse(localStorage.getItem('snow_orders') || '[]');
+let db_naps = JSON.parse(localStorage.getItem('snow_naps') || '[]');
 
-// Hàm lấy dữ liệu chuẩn
-function getDB(k, def) {
-    try { return JSON.parse(localStorage.getItem(k)) || def; } catch(e) { return def; }
-}
-function setDB(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
-
-window.onload = function() {
-    // Kiểm tra phiên đăng nhập
-    const session = localStorage.getItem('snow_session');
-    if (session) {
-        cur = getDB(uKey(session), null);
-    }
-    render();
-
-    // 1. Xử lý Đăng nhập / Đăng ký
-    document.getElementById('btnLogin').onclick = function() {
-        const u = document.getElementById('au').value.trim();
-        const p = document.getElementById('ap').value.trim();
-        if(u.length < 3) return alert("Tên tài khoản quá ngắn!");
-
-        let user = getDB(uKey(u), null);
-        if(!user) {
-            // Đăng ký mới nếu chưa có
-            user = { username: u, password: p, balance: 0, usernameLower: u.toLowerCase() };
-            alert("Đã đăng ký tài khoản mới!");
-        } else if(user.password !== p) {
-            return alert("Sai mật khẩu!");
-        }
-
-        cur = user;
-        setDB(uKey(u), cur);
-        localStorage.setItem('snow_session', u);
-        render();
-    };
-
-    // 2. Xử lý Mua hàng (FIX CHÍNH)
-    document.getElementById('btnOrder').onclick = function() {
-        if(!cur) return alert("Vui lòng đăng nhập!");
-        
-        const góiSelected = document.getElementById('goi').value;
-        const gUser = document.getElementById('g_u').value.trim();
-        const gPass = document.getElementById('g_p').value.trim();
-
-        if(!góiSelected || !gUser || !gPass) return alert("Vui lòng điền đủ thông tin!");
-
-        const [tenGoi, giá] = góiSelected.split('|');
-        const price = parseInt(giá);
-
-        // Lấy lại dữ liệu mới nhất từ DB để kiểm tra tiền
-        let dbUser = getDB(uKey(cur.username), cur);
-        if(dbUser.balance < price) return alert("Bạn không đủ tiền! Hãy liên hệ Admin nạp thêm.");
-
-        // TRỪ TIỀN
-        dbUser.balance -= price;
-        cur = dbUser; // Cập nhật biến tạm
-        setDB(uKey(cur.username), dbUser); // Lưu vào DB
-
-        // LƯU ĐƠN HÀNG
-        let orders = getDB('snow_orders', []);
-        const newOrder = {
-            buyer: cur.username.toLowerCase(),
-            goi: tenGoi,
-            acc: gUser,
-            pass: gPass,
-            status: "Đang chờ",
-            time: new Date().toLocaleString('vi-VN')
-        };
-        orders.push(newOrder);
-        setDB('snow_orders', orders);
-
-        alert("✅ Mua thành công! Vui lòng chờ Admin xử lý.");
-        
-        // Reset form
-        document.getElementById('g_u').value = "";
-        document.getElementById('g_p').value = "";
-        render();
-    };
-
-    // Đăng xuất
-    document.getElementById('btnLogout').onclick = function() {
-        localStorage.removeItem('snow_session');
-        location.reload();
-    };
+const el = {
+    uName: document.getElementById('uName'),
+    uBalance: document.getElementById('uBalance'),
+    authBtns: document.getElementById('authButtons'),
+    userBtns: document.getElementById('userButtons'),
+    history: document.getElementById('historyList'),
+    modal: document.getElementById('modalOverlay'),
+    modalIn: document.getElementById('modalContent'),
+    adminView: document.getElementById('adminView'),
 };
 
-function render() {
-    const auth = document.getElementById('auth_sec');
-    const main = document.getElementById('main_sec');
-    const uLbl = document.getElementById('u');
-    const bLbl = document.getElementById('b');
-    const btnOut = document.getElementById('btnLogout');
-    const hisDiv = document.getElementById('his');
-
-    if(!cur) {
-        auth.style.display = "block";
-        main.style.display = "none";
-        btnOut.style.display = "none";
-    } else {
-        auth.style.display = "none";
-        main.style.display = "block";
-        btnOut.style.display = "block";
-        
-        // Cập nhật thông tin ví
-        uLbl.innerText = cur.username;
-        bLbl.innerText = cur.balance.toLocaleString();
-
-        // HIỂN THỊ LỊCH SỬ (FIX CHÍNH)
-        const allOrders = getDB('snow_orders', []);
-        const myOrders = allOrders.filter(o => o.buyer === cur.username.toLowerCase());
-
-        if(myOrders.length === 0) {
-            hisDiv.innerHTML = "<center style='color:#94a3b8;padding:10px'><i>Bạn chưa có đơn hàng nào.</i></center>";
-        } else {
-            hisDiv.innerHTML = myOrders.slice().reverse().map(o => `
-                <div class="item-list">
-                    <div style="display:flex; justify-content:space-between">
-                        <b>${o.goi}</b>
-                        <span class="status ${o.status==='Đã xong'?'done':'wait'}">${o.status}</span>
-                    </div>
-                    <div style="font-size:12px; color:#64748b; margin-top:4px">
-                        ${o.time} | Acc: ${o.acc}
-                    </div>
-                </div>
-            `).join('');
-        }
+window.onload = () => {
+    const session = localStorage.getItem('snow_session');
+    if(session && db_users[session]) {
+        cur = db_users[session];
     }
+    render();
+};
+
+/* ----- CORE FUNCTIONS ----- */
+function render() {
+    if(!cur) {
+        el.uName.innerText = "Khách";
+        el.uBalance.innerText = "0";
+        el.authBtns.style.display = "block";
+        el.userBtns.style.display = "none";
+        el.adminView.style.display = "none";
+        el.history.innerHTML = "Vui lòng đăng nhập để xem.";
+    } else {
+        el.uName.innerText = cur.username;
+        el.uBalance.innerText = cur.balance.toLocaleString();
+        el.authBtns.style.display = "none";
+        el.userBtns.style.display = "block";
+        
+        // Hiện Admin View nếu là admin
+        el.adminView.style.display = (cur.username === ADMIN_ACC) ? "block" : "none";
+
+        // Render Lịch sử khách
+        const myOrders = db_orders.filter(o => o.buyer === cur.username);
+        el.history.innerHTML = myOrders.length ? myOrders.map(o => `
+            <div style="border-bottom:1px solid #eee; padding:8px 0">
+                <b>${o.goi}</b> <span class="badge ${o.status==='Xong'?'bg-done':'bg-wait'}">${o.status}</span><br>
+                <small>${o.time}</small>
+            </div>
+        `).reverse().join('') : "Chưa có đơn hàng nào.";
+
+        if(cur.username === ADMIN_ACC) renderAdmin();
+    }
+}
+
+function renderAdmin() {
+    // Admin Đơn cày
+    document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
+        <div class="box" style="background:#f9fafb; font-size:13px">
+            <b>Khách: ${o.buyer}</b> | Gói: ${o.goi}<br>
+            TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code><br>
+            Trạng thái: <b class="${o.status==='Xong'?'bg-done':'bg-wait'}">${o.status}</b><br>
+            <button onclick="changeStatus(${i}, 'Đang cày')" class="purple" style="font-size:10px">Đang cày</button>
+            <button onclick="changeStatus(${i}, 'Xong')" class="green" style="font-size:10px">Xong</button>
+            <button onclick="deleteOrder(${i})" class="red" style="font-size:10px">Xoá đơn</button>
+        </div>
+    `).reverse().join('');
+
+    // Admin Duyệt Nạp
+    document.getElementById('adminNapList').innerHTML = db_naps.map((n, i) => `
+        <div class="box" style="background:#f9fafb; font-size:13px">
+            <b>Khách: ${n.username}</b> | Số tiền: ${n.amount.toLocaleString()}đ<br>
+            Trạng thái: ${n.status}<br>
+            ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green">Duyệt nạp tiền</button>` : ''}
+            <button onclick="deleteNap(${i})" class="red">Xoá</button>
+        </div>
+    `).reverse().join('');
+}
+
+/* ----- LOGIC MUA HÀNG & NẠP ----- */
+function handleBuy() {
+    if(!cur) return alert("Vui lòng đăng nhập!");
+    const góiVal = document.getElementById('goi').value;
+    const acc = document.getElementById('accRoblox').value.trim();
+    const pass = document.getElementById('passRoblox').value.trim();
+
+    if(!góiVal || !acc || !pass) return alert("Vui lòng nhập đủ thông tin!");
+    
+    const [tenGoi, giá] = góiVal.split('|');
+    if(cur.balance < giá) return alert("Bạn không đủ tiền!");
+
+    // Trừ tiền
+    cur.balance -= parseInt(giá);
+    db_users[cur.username] = cur;
+    
+    // Lưu đơn
+    const newOrder = {
+        buyer: cur.username,
+        goi: tenGoi,
+        acc: acc,
+        pass: pass,
+        status: "Đang chờ",
+        time: new Date().toLocaleString()
+    };
+    db_orders.push(newOrder);
+    
+    saveAll();
+    render();
+    alert("Mua thành công! Đơn đã được gửi đến Admin.");
+    sendDiscord(`🛒 **ĐƠN MỚI:**\nKhách: ${cur.username}\nGói: ${tenGoi}\nAcc: ${acc}\nPass: ${pass}`);
+}
+
+function showNapBank() {
+    if(!cur) return alert("Vui lòng đăng nhập!");
+    openModal(`
+        <h3>💳 Nạp tiền Ngân hàng</h3>
+        <div class="info">
+            STK: <b>00000000000</b><br>
+            Ngân hàng: <b>MB BANK</b><br>
+            Chủ TK: <b>NGUYEN VAN A</b><br>
+            Nội dung: <b style="color:red; font-size:18px">NAP ${cur.username}</b>
+        </div>
+        <p style="font-size:12px">Sau khi chuyển khoản, hãy nhập số tiền đã chuyển vào dưới đây:</p>
+        <input id="napAmt" type="number" placeholder="Nhập số tiền đã chuyển">
+        <button class="green" style="width:100%" onclick="submitNap()">XÁC NHẬN ĐÃ CHUYỂN</button>
+        <button class="red" style="width:100%" onclick="closeModal()">Đóng</button>
+    `);
+}
+
+function submitNap() {
+    const amt = parseInt(document.getElementById('napAmt').value);
+    if(!amt || amt < 1000) return alert("Số tiền không hợp lệ!");
+
+    db_naps.push({
+        username: cur.username,
+        amount: amt,
+        status: "Chờ duyệt",
+        time: new Date().toLocaleString()
+    });
+    saveAll();
+    closeModal();
+    alert("Yêu cầu đã gửi! Vui lòng chờ Admin duyệt tiền.");
+    sendDiscord(`💰 **YÊU CẦU NẠP:**\nKhách: ${cur.username}\nSố tiền: ${amt.toLocaleString()}đ\nNội dung: NAP ${cur.username}`);
+}
+
+/* ----- ADMIN ACTIONS ----- */
+function changeStatus(index, status) {
+    db_orders[index].status = status;
+    saveAll();
+    render();
+}
+
+function deleteOrder(index) {
+    if(confirm("Xoá đơn này?")) {
+        db_orders.splice(index, 1);
+        saveAll();
+        render();
+    }
+}
+
+function approveNap(index) {
+    const req = db_naps[index];
+    if(db_users[req.username]) {
+        db_users[req.username].balance += req.amount;
+        db_naps[index].status = "Đã duyệt";
+        saveAll();
+        render();
+        alert("Đã duyệt tiền cho khách!");
+    }
+}
+
+function adminAddMoney() {
+    const target = document.getElementById('adTargetUser').value;
+    const amt = parseInt(document.getElementById('adAmount').value);
+    if(db_users[target]) {
+        db_users[target].balance += amt;
+        saveAll();
+        render();
+        alert("Thành công!");
+    } else alert("Không tìm thấy khách này!");
+}
+
+/* ----- HELPERS ----- */
+function saveAll() {
+    localStorage.setItem('snow_users', JSON.stringify(db_users));
+    localStorage.setItem('snow_orders', JSON.stringify(db_orders));
+    localStorage.setItem('snow_naps', JSON.stringify(db_naps));
+}
+
+function sendDiscord(msg) {
+    if(!DISCORD_WEBHOOK.includes("http")) return;
+    fetch(DISCORD_WEBHOOK, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ content: msg })
+    });
+}
+
+function showLogin() {
+    openModal(`
+        <h3>🔑 Đăng nhập / Đăng ký</h3>
+        <input id="au" placeholder="Username">
+        <input id="ap" type="password" placeholder="Password">
+        <button class="blue" style="width:100%" onclick="handleAuth()">VÀO CỬA HÀNG</button>
+        <button class="red" style="width:100%" onclick="closeModal()">Hủy</button>
+    `);
+}
+
+function handleAuth() {
+    const u = document.getElementById('au').value.trim();
+    const p = document.getElementById('ap').value;
+    if(!u || !p) return;
+
+    if(!db_users[u]) {
+        db_users[u] = { username: u, password: p, balance: 0 };
+        alert("Đăng ký thành công!");
+    } else {
+        if(db_users[u].password !== p) return alert("Sai mật khẩu!");
+    }
+    cur = db_users[u];
+    localStorage.setItem('snow_session', u);
+    saveAll();
+    closeModal();
+    render();
+}
+
+function logout() {
+    localStorage.removeItem('snow_session');
+    cur = null;
+    location.reload();
+}
+
+function openModal(html) {
+    el.modalIn.innerHTML = html;
+    el.modal.style.display = "block";
+}
+function closeModal() { el.modal.style.display = "none"; }
+function showTab(tab, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = "none");
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = "block";
+    btn.classList.add('active');
 }
 </script>
 </body>
