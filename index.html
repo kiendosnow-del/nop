@@ -20,6 +20,7 @@
         .grid-nicks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .nick-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; text-align: center; }
         .detail-box { background: #f8fafc; border-left: 4px solid #38bdf8; padding: 10px; margin: 10px 0; font-size: 13px; display: none; white-space: pre-line; }
+        .history-item { border-bottom: 1px solid #eee; padding: 10px 0; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -35,7 +36,7 @@
 
 <div class="box" style="display:flex; overflow-x: auto; gap: 5px; border:none; background:transparent; box-shadow:none">
     <button class="tab-btn active" onclick="showMainTab('caythue', this)">🎮 Cày Thuê</button>
-    <button class="tab-btn" onclick="showMainTab('shopnick', this)">🛒 Mua Nick</button>
+    <button id="tabNickBtn" class="tab-btn" style="display:none" onclick="showMainTab('shopnick', this)">🛒 Mua Nick</button>
     <button class="tab-btn" onclick="showMainTab('lichsu', this)">📜 Lịch sử</button>
 </div>
 
@@ -66,9 +67,7 @@
                 <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2&#10;✔ Nhanh&#10;✔ Trong ngày">Melee V2 – 15.000đ</option>
             </optgroup>
         </select>
-
         <div id="serviceDetail" class="detail-box"></div>
-
         <input id="accRoblox" placeholder="Tài khoản (Username/Email)">
         <input id="passRoblox" type="password" placeholder="Mật khẩu">
         <button class="green" style="width:100%" onclick="handleBuyService()">XÁC NHẬN THANH TOÁN</button>
@@ -78,17 +77,21 @@
 
 <div id="tabShopNick" class="main-tab" style="display:none">
     <div class="box">
-        <h3>🔥 Danh sách Nick hiện có</h3>
+        <h3>🔥 Danh sách Nick (Chỉ Admin thấy)</h3>
         <div id="nickList" class="grid-nicks"></div>
     </div>
 </div>
 
 <div id="tabLichSu" class="main-tab" style="display:none">
     <div class="box">
-        <h3>📜 Trạng thái đơn cày</h3>
+        <h3>📜 Trạng thái đơn cày của bạn</h3>
         <div id="historyService"></div>
     </div>
     <div class="box">
+        <h3>💰 Lịch sử nạp tiền</h3>
+        <div id="historyNap"></div>
+    </div>
+    <div id="boxNickDaMua" class="box" style="display:none">
         <h3>🔑 Nick đã mua</h3>
         <div id="historyNicks"></div>
     </div>
@@ -138,6 +141,93 @@ function save() {
     localStorage.setItem('snow_nicks', JSON.stringify(db_nicks));
 }
 
+function render() {
+    if(!cur) {
+        document.getElementById('uName').innerText = "Khách";
+        document.getElementById('uBalance').innerText = "0";
+        document.getElementById('authButtons').style.display = "block";
+        document.getElementById('userButtons').style.display = "none";
+        document.getElementById('adminView').style.display = "none";
+        document.getElementById('tabNickBtn').style.display = "none";
+    } else {
+        cur = db_users[cur.username];
+        document.getElementById('uName').innerText = cur.username;
+        document.getElementById('uBalance').innerText = cur.balance.toLocaleString();
+        document.getElementById('authButtons').style.display = "none";
+        document.getElementById('userButtons').style.display = "block";
+        
+        // Chỉ admin mới thấy tab Mua Nick và Panel
+        const isAdmin = (cur.username === ADMIN_CONFIG.user);
+        document.getElementById('adminView').style.display = isAdmin ? "block" : "none";
+        document.getElementById('tabNickBtn').style.display = isAdmin ? "block" : "none";
+        
+        // Lịch sử cày thuê riêng của acc
+        const myOrders = db_orders.filter(o => o.buyer === cur.username);
+        document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
+            <div class="history-item">
+                <b>${o.goi}</b> - <span class="badge ${getStatusClass(o.status)}">${o.status}</span><br>
+                <small>${o.time}</small>
+            </div>
+        `).join('') : "Bạn chưa có đơn cày nào.";
+
+        // Lịch sử nạp riêng của acc
+        const myNaps = db_naps.filter(n => n.username === cur.username);
+        document.getElementById('historyNap').innerHTML = myNaps.length ? myNaps.reverse().map(n => `
+            <div class="history-item">
+                Nạp <b>${n.amount.toLocaleString()}đ</b> - 
+                <span class="badge ${n.status==='Xong'?'bg-done':'bg-wait'}">${n.status}</span>
+            </div>
+        `).join('') : "Chưa có lịch sử nạp.";
+
+        // Nick đã mua (Chỉ hiện nếu có mua nick)
+        const myNicks = db_nicks.filter(n => n.soldTo === cur.username);
+        if(myNicks.length > 0) {
+            document.getElementById('boxNickDaMua').style.display = "block";
+            document.getElementById('historyNicks').innerHTML = myNicks.map(n => `
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:8px; border-radius:8px; margin-top:5px; font-size:13px">
+                    <b>${n.title}</b><br>TK: <code>${n.acc}</code> | MK: <code>${n.pass}</code>
+                </div>
+            `).join('');
+        } else {
+            document.getElementById('boxNickDaMua').style.display = "none";
+        }
+    }
+    if(cur && cur.username === ADMIN_CONFIG.user) {
+        renderShopNick();
+        renderAdmin();
+    }
+}
+
+function showNapBank() {
+    if(!cur) return alert("Vui lòng đăng nhập!");
+    openModal(`
+        <h3>💳 Nạp tiền qua Bank</h3>
+        <div style="background:#f0f9ff; padding:15px; border-radius:10px; border:1px dashed #38bdf8; font-size:14px; line-height:1.6">
+            Ngân hàng: <b>MB BANK</b><br>
+            STK: <b style="color:#ef4444; font-size:18px">1373727384</b><br>
+            Chủ TK: <b>NGUYEN VAN A</b><br>
+            Nội dung CK: <b style="color:#0ea5e9">NAP ${cur.username}</b>
+        </div>
+        <p style="font-size:12px; color:#64748b; margin-top:10px">Sau khi chuyển khoản, vui lòng nhập số tiền đã chuyển vào dưới đây và bấm xác nhận.</p>
+        <input id="na" type="number" placeholder="Nhập số tiền đã chuyển">
+        <button class="green" style="width:100%" onclick="submitNapRequest()">XÁC NHẬN ĐÃ CHUYỂN</button>
+    `);
+}
+
+function submitNapRequest() {
+    const val = document.getElementById('na').value;
+    const amt = parseInt(val);
+    if(!amt || amt < 1000) return alert("Số tiền không hợp lệ!");
+    db_naps.push({
+        username: cur.username,
+        amount: amt,
+        status: 'Chờ duyệt',
+        time: new Date().toLocaleString()
+    });
+    save(); closeModal(); render();
+    alert("Yêu cầu đã được gửi! Vui lòng chờ Admin duyệt.");
+}
+
 function updateServiceDetail() {
     const select = document.getElementById('goi');
     const option = select.options[select.selectedIndex];
@@ -150,39 +240,6 @@ function updateServiceDetail() {
     }
 }
 
-function render() {
-    if(!cur) {
-        document.getElementById('uName').innerText = "Khách";
-        document.getElementById('uBalance').innerText = "0";
-        document.getElementById('authButtons').style.display = "block";
-        document.getElementById('userButtons').style.display = "none";
-        document.getElementById('adminView').style.display = "none";
-    } else {
-        cur = db_users[cur.username];
-        document.getElementById('uName').innerText = cur.username;
-        document.getElementById('uBalance').innerText = cur.balance.toLocaleString();
-        document.getElementById('authButtons').style.display = "none";
-        document.getElementById('userButtons').style.display = "block";
-        document.getElementById('adminView').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
-        
-        const myOrders = db_orders.filter(o => o.buyer === cur.username);
-        document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
-            <div style="border-bottom:1px solid #eee; padding:8px 0">
-                <b>${o.goi}</b> - <span class="badge ${getStatusClass(o.status)}">${o.status}</span><br><small>${o.time}</small>
-            </div>
-        `).join('') : "Chưa có đơn.";
-
-        const myNicks = db_nicks.filter(n => n.soldTo === cur.username);
-        document.getElementById('historyNicks').innerHTML = myNicks.length ? myNicks.map(n => `
-            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:8px; border-radius:8px; margin-top:5px">
-                <b>${n.title}</b><br>TK: <code>${n.acc}</code> | MK: <code>${n.pass}</code>
-            </div>
-        `).join('') : "Chưa mua nick nào.";
-    }
-    renderShopNick();
-    if(cur && cur.username === ADMIN_CONFIG.user) renderAdmin();
-}
-
 function getStatusClass(s){ return s==='Xong'?'bg-done':(s==='Đang cày'?'bg-process':'bg-wait'); }
 
 function renderShopNick() {
@@ -193,7 +250,7 @@ function renderShopNick() {
             <div style="color:#16a34a; font-weight:bold; margin:5px 0">${n.price.toLocaleString()}đ</div>
             <button class="green" style="width:100%; font-size:12px" onclick="buyNick('${n.acc}')">MUA NICK</button>
         </div>
-    `).join('') : "<div style='grid-column: 1/3'>Hết hàng!</div>";
+    `).join('') : "Hết hàng!";
 }
 
 function handleBuyService() {
@@ -212,17 +269,14 @@ function handleBuyService() {
 }
 
 function buyNick(acc) {
-    if(!cur) return alert("Vui lòng đăng nhập!");
     const realIdx = db_nicks.findIndex(n => n.acc === acc);
     const targetNick = db_nicks[realIdx];
     if(cur.balance < targetNick.price) return alert("Số dư không đủ!");
-    
     db_users[cur.username].balance -= targetNick.price;
     db_nicks[realIdx].soldTo = cur.username;
-    save(); render(); alert("Mua thành công! Xem ở Lịch sử.");
+    save(); render(); alert("Mua thành công!");
 }
 
-// Admin
 function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
         <div class="box" style="font-size:12px; border-left:4px solid #38bdf8">
@@ -239,6 +293,7 @@ function renderAdmin() {
         <div class="box">
             <b>${n.username}</b> nạp ${n.amount.toLocaleString()}đ<br>
             ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green">CỘNG TIỀN</button>` : 'Đã xong'}
+            <button onclick="db_naps.splice(${i},1); save(); render();" class="red" style="font-size:10px">Xoá</button>
         </div>
     `).reverse().join('');
 }
@@ -250,7 +305,7 @@ function adminAddNick() {
     const pass = document.getElementById('niPass').value;
     if(!title || !price || !acc) return alert("Nhập đủ thông tin!");
     db_nicks.push({ title, price, acc, pass, soldTo: null });
-    save(); render(); alert("Đăng bán thành công!");
+    save(); render(); alert("Đã đăng bán!");
 }
 
 function adminGiftMoney() {
@@ -258,18 +313,18 @@ function adminGiftMoney() {
     const amt = parseInt(document.getElementById('adAmount').value);
     if(db_users[user]) {
         db_users[user].balance += amt;
-        save(); render(); alert("Đã cộng " + amt.toLocaleString() + "đ");
+        save(); render(); alert("Đã cộng tiền!");
     } else alert("Không thấy user!");
 }
 
 function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { if(confirm("Xoá đơn này?")) { db_orders.splice(i,1); save(); render(); } }
+function deleteOrder(i) { if(confirm("Xoá đơn?")) { db_orders.splice(i,1); save(); render(); } }
 function approveNap(i) {
     const n = db_naps[i];
     if(db_users[n.username]) {
         db_users[n.username].balance += n.amount;
         db_naps[i].status = "Xong";
-        save(); render(); alert("Duyệt nạp thành công!");
+        save(); render();
     }
 }
 
@@ -291,7 +346,6 @@ function handleAuth() {
     else if(db_users[u].password !== p) return alert("Sai mật khẩu");
     cur = db_users[u]; localStorage.setItem('snow_session', u); save(); closeModal(); render();
 }
-function showNapBank() { openModal(`<h3>💳 Nạp tiền</h3><p>Nội dung CK: <b>NAP ${cur.username}</b></p><input id="na" type="number" placeholder="Số tiền đã chuyển"><button class="green" style="width:100%" onclick="db_naps.push({username:cur.username, amount:parseInt(document.getElementById('na').value), status:'Chờ duyệt'}); save(); closeModal(); render(); alert('Đã gửi yêu cầu!');">XÁC NHẬN</button>`); }
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
 function openModal(h) { document.getElementById('modalContent').innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; document.getElementById('modalOverlay').style.display = "block"; }
 function closeModal() { document.getElementById('modalOverlay').style.display = "none"; }
