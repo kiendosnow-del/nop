@@ -133,6 +133,17 @@ const el = {
     modalIn: document.getElementById('modalContent'),
     adminView: document.getElementById('adminView')
 };
+async function sendDiscord(webhook, payload) {
+    try {
+        await fetch(webhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+    } catch (e) {
+        console.error("Webhook error:", e);
+    }
+}
 
 // Hàm mở/đóng bong bóng
 function toggleSupport() {
@@ -199,23 +210,23 @@ function renderAdmin() {
 }
 
 function handleBuy() {
-    if(!cur) return alert("Vui lòng đăng nhập!");
-    const góiVal = document.getElementById('goi').value;
-    const acc = document.getElementById('accRoblox').value.trim();
-    const pass = document.getElementById('passRoblox').value.trim();
-    if(!góiVal || !acc || !pass) return alert("Vui lòng nhập đủ thông tin!");
-    const [name, price] = góiVal.split('|');
-    if(cur.balance < parseInt(price)) return alert("Số dư không đủ!");
-    cur.balance -= parseInt(price);
-    db_users[cur.username] = cur;
-    db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    save(); render();
-    alert("Đặt đơn thành công!");
-    sendWebhook("❄️ ĐƠN THUÊ MỚI — SNOW SHOP", 
-        `**👤 Khách:** \`${cur.username}\`\n**📦 Gói:** \`${name}\`\n**💰 Giá:** \`${parseInt(price).toLocaleString()}đ\`\n**💳 TK:** \`${acc}\`\n**🔑 MK:** \`${pass}\`\n**💸 Số dư:** \`${cur.balance.toLocaleString()}đ\``, 
-        2067276
-    );
-}
+    sendDiscord(WEBHOOK_ORDER, {
+    content: `<@&${ADMIN_ROLE_ID}> 🚨 **CÓ ĐƠN CÀY THUÊ MỚI!**`,
+    embeds: [{
+        title: "❄️ ĐƠN THUÊ MỚI — SNOW SHOP",
+        color: 0x38bdf8,
+        fields: [
+            { name: "👤 Khách hàng", value: `\`${cur.username}\``, inline: true },
+            { name: "📦 Gói dịch vụ", value: `\`${name}\``, inline: true },
+            { name: "💰 Giá", value: `\`${parseInt(price).toLocaleString()}đ\``, inline: true },
+            { name: "🎮 Tài khoản Roblox", value: `\`${acc}\`` },
+            { name: "🔑 Mật khẩu", value: `\`${pass}\`` },
+            { name: "💸 Số dư còn lại", value: `\`${cur.balance.toLocaleString()}đ\`` }
+        ],
+        footer: { text: "SNOW SHOP • Order System" },
+        timestamp: new Date()
+    }]
+});
 
 function approveNap(i) {
     const req = db_naps[i];
@@ -302,6 +313,12 @@ function showTab(t, b) {
     document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = "block";
     b.classList.add('active');
 }
+// WEBHOOK RIÊNG
+const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766081548390534/iClDUAzau9xqGY3PFZTS6CT24uspMk8w5gLBvKyVyhjcxvuf-SD07-y9f9pC8Vax5lHE";
+const WEBHOOK_NAP   = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+
+// ROLE ADMIN (ID role Discord)
+const ADMIN_ROLE_ID = "kienmcmc"; // thay bằng ID role admin
 </script>
 </body>
 </html>
