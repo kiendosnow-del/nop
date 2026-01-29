@@ -14,7 +14,6 @@
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
         .bg-wait{background:#fef3c7;color:#d97706} .bg-process{background:#f3e8ff;color:#7c3aed} .bg-done{background:#dcfce7;color:#16a34a}
         
-        /* Thanh điều hướng Flexbox chống vỡ layout */
         .tab-container { display: flex; gap: 8px; padding: 0 12px; margin-top: 10px; }
         .tab-btn {
             background: #fff;
@@ -33,7 +32,6 @@
         #modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);display:none;z-index:1000;backdrop-filter:blur(3px)}
         .modal{background:#fff;width:90%;max-width:450px;margin:50px auto;border-radius:16px;padding:20px;position:relative}
         
-        /* Hiển thị chi tiết dịch vụ */
         .detail-box { 
             background: #f8fafc; 
             border-left: 4px solid #38bdf8; 
@@ -165,9 +163,9 @@ function render() {
         document.getElementById('userButtons').style.display = "block";
         document.getElementById('adminTabBtn').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
         
-        // FIX: Hiển thị đơn hàng riêng cho từng tài khoản
+        // Sửa lỗi: Lọc đơn hàng theo người dùng hiện tại
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
-        document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
+        document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.slice().reverse().map(o => `
             <div style="border-bottom:1px solid #eee; padding:12px 0">
                 <div style="display:flex; justify-content:space-between">
                     <b>${o.goi}</b>
@@ -182,7 +180,6 @@ function render() {
 
 function getStatusClass(s){ return s==='Xong'?'bg-done':(s==='Đang cày'?'bg-process':'bg-wait'); }
 
-// Tự động cập nhật thông tin dịch vụ khi chọn gói
 function updateServiceDetail() {
     const select = document.getElementById('goi');
     const option = select.options[select.selectedIndex];
@@ -190,26 +187,14 @@ function updateServiceDetail() {
     if (option.value) {
         detailBox.innerHTML = `<strong style="color:#38bdf8">📌 Thông tin:</strong> ${option.getAttribute('data-info')}\n${option.getAttribute('data-detail')}`;
         detailBox.style.display = 'block';
-    } else { 
-        detailBox.style.display = 'none'; 
-    }
+    } else { detailBox.style.display = 'none'; }
 }
 
-async function notifyDiscord(orderData) {
+// Hàm thông báo Discord chung
+async function sendToDiscord(title, fields, color) {
     const payload = {
         username: "SNOW SHOP NOTIFIER",
-        embeds: [{
-            title: "🚨 CÓ ĐƠN CÀY MỚI!",
-            color: 5763719,
-            fields: [
-                { name: "👤 Khách hàng", value: orderData.buyer, inline: true },
-                { name: "📦 Gói dịch vụ", value: orderData.goi, inline: true },
-                { name: "🔑 Tài khoản", value: orderData.acc },
-                { name: "🔒 Mật khẩu", value: orderData.pass },
-                { name: "⏰ Thời gian", value: orderData.time }
-            ],
-            footer: { text: "Hệ thống tự động SNOW SHOP" }
-        }]
+        embeds: [{ title, color, fields, footer: { text: "Hệ thống SNOW SHOP" } }]
     };
     try { await fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (e) {}
 }
@@ -221,16 +206,47 @@ function handleBuyService() {
     const [name, price] = g.split('|');
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
-    if(!acc || !pass) return alert("Vui lòng nhập đầy đủ tài khoản & mật khẩu!");
+    if(!acc || !pass) return alert("Vui lòng nhập tài khoản & mật khẩu!");
     
     const cost = parseInt(price);
-    if(cur.balance < cost) return alert("Số dư không đủ! Vui lòng nạp thêm.");
+    if(cur.balance < cost) return alert("Số dư không đủ!");
 
     const newOrder = { buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() };
     db_users[cur.username].balance -= cost;
     db_orders.push(newOrder);
-    save(); render(); notifyDiscord(newOrder);
-    alert("Thanh toán thành công! Theo dõi tại mục Lịch Sử.");
+    save(); render();
+    
+    sendToDiscord("🚨 ĐƠN CÀY MỚI", [
+        { name: "👤 Khách", value: cur.username, inline: true },
+        { name: "📦 Gói", value: name, inline: true },
+        { name: "🔑 TK/MK", value: `${acc} / ${pass}` }
+    ], 15105570);
+    
+    alert("Thanh toán thành công!");
+}
+
+function showNapBank() {
+    openModal(`<h3>💳 Nạp tiền Bank</h3>
+        <p>MB BANK: <b>1373727384</b><br>Nội dung: <b>NAP ${cur.username}</b></p>
+        <input id="na" type="number" placeholder="Số tiền đã chuyển">
+        <button class="green" style="width:100%" onclick="confirmNapBank()">GỬI YÊU CẦU</button>`);
+}
+
+function confirmNapBank() {
+    const amt = parseInt(document.getElementById('na').value);
+    if(!amt || amt < 1000) return alert("Số tiền không hợp lệ!");
+    
+    db_naps.push({username: cur.username, amount: amt, status: 'Chờ duyệt', time: new Date().toLocaleString()});
+    save(); closeModal(); render();
+    
+    // Gửi thông báo Discord khi khách nạp tiền
+    sendToDiscord("💰 YÊU CẦU NẠP TIỀN", [
+        { name: "👤 Khách", value: cur.username, inline: true },
+        { name: "💵 Số tiền", value: amt.toLocaleString() + "đ", inline: true },
+        { name: "📝 Nội dung", value: "NAP " + cur.username }
+    ], 3066993);
+    
+    alert("Đã gửi yêu cầu nạp! Vui lòng chờ Admin duyệt.");
 }
 
 function renderAdmin() {
@@ -290,7 +306,6 @@ function handleAuth() {
     else if(db_users[u].password !== p) return alert("Sai mật khẩu!");
     cur = db_users[u]; localStorage.setItem('snow_session', u); save(); closeModal(); render();
 }
-function showNapBank() { openModal(`<h3>💳 Nạp tiền</h3><p>MB BANK: <b>1373727384</b><br>Nội dung: <b>NAP ${cur.username}</b></p><input id="na" type="number" placeholder="Số tiền đã chuyển"><button class="green" style="width:100%" onclick="db_naps.push({username:cur.username, amount:parseInt(document.getElementById('na').value), status:'Chờ duyệt'}); save(); closeModal(); render(); alert('Đã gửi yêu cầu!');">GỬI YÊU CẦU</button>`); }
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
 function openModal(h) { document.getElementById('modalContent').innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; document.getElementById('modalOverlay').style.display = "block"; }
 function closeModal() { document.getElementById('modalOverlay').style.display = "none"; }
