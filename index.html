@@ -5,260 +5,296 @@
     <title>❄️ SNOW SHOP — Professional System</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
-        body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px;color:#334155}
+        body{font-family:'Segoe UI',sans-serif;background:#f1f5f9;margin:0;padding-bottom:80px;color:#334155}
         .box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
-        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.18s;color:#fff}
-        button:hover{opacity:0.9;transform:translateY(-1px)}
-        button.red{background:#ef4444} button.green{background:#22c55e} button.purple{background:#a855f7}
-        input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #e2e8f0;box-sizing:border-box;font-size:14px}
-        .info{background:#f0f9ff;border:1px dashed #38bdf8;border-radius:10px;padding:12px;margin-top:10px;font-size:13px}
+        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;color:#fff;transition:0.2s}
+        button:hover{opacity:0.8}
+        button.red{background:#ef4444} button.green{background:#22c55e} button.purple{background:#a855f7} button.gray{background:#64748b}
+        input,select{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #e2e8f0;box-sizing:border-box}
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
-        .bg-wait{background:#fef3c7;color:#d97706} .bg-done{background:#dcfce7;color:#16a34a} .bg-process{background:#f3e8ff;color:#7c3aed}
-        .tab-btn{background:#fff;color:#64748b;border:1px solid #e2e8f0;margin-right:5px; padding: 8px 15px}
+        .bg-wait{background:#fef3c7;color:#d97706} .bg-process{background:#f3e8ff;color:#7c3aed} .bg-done{background:#dcfce7;color:#16a34a}
+        .tab-btn{background:#fff;color:#64748b;border:1px solid #e2e8f0;margin-right:5px; padding: 10px 15px}
         .tab-btn.active{background:#38bdf8;color:#fff;border-color:#38bdf8}
         #modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);display:none;z-index:1000;backdrop-filter:blur(3px)}
-        .modal{background:#fff;width:90%;max-width:400px;margin:80px auto;border-radius:16px;padding:20px;position:relative;animation:slideUp 0.3s}
-        @keyframes slideUp{from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1}}
-        
-        .support-btn { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #0ea5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4); cursor: pointer; z-index: 999; animation: pulse 2s infinite; }
-        .support-menu { position: fixed; bottom: 90px; right: 20px; display: none; flex-direction: column; gap: 10px; z-index: 999; }
-        .support-item { background: white; padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; text-decoration: none; color: #334155; font-weight: bold; font-size: 14px; border: 1px solid #e2e8f0; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .modal{background:#fff;width:90%;max-width:450px;margin:50px auto;border-radius:16px;padding:20px;position:relative}
+        .grid-nicks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .nick-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; text-align: center; }
+        .detail-box { background: #f8fafc; border-left: 4px solid #38bdf8; padding: 10px; margin: 10px 0; font-size: 13px; display: none; white-space: pre-line; }
     </style>
 </head>
 <body>
 
-<div class="box" style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(to right, #ffffff, #f0f9ff)">
+<div class="box" style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(to right, #fff, #f0f9ff)">
     <div>
-        <div style="font-size:12px; color:#64748b">Tài khoản: <b id="uName">Khách</b></div>
+        <div style="font-size:12px; color:#64748b">Chào, <b id="uName">Khách</b></div>
         <div style="font-size:18px; font-weight:bold; color:#16a34a">💰 <span id="uBalance">0</span> đ</div>
     </div>
     <div id="authButtons"><button onclick="showLogin()">🔑 Đăng nhập</button></div>
     <div id="userButtons" style="display:none"><button onclick="logout()" class="red">Thoát</button></div>
 </div>
 
-<div id="clientView">
+<div class="box" style="display:flex; overflow-x: auto; gap: 5px; border:none; background:transparent; box-shadow:none">
+    <button class="tab-btn active" onclick="showMainTab('caythue', this)">🎮 Cày Thuê</button>
+    <button class="tab-btn" onclick="showMainTab('shopnick', this)">🛒 Mua Nick</button>
+    <button class="tab-btn" onclick="showMainTab('lichsu', this)">📜 Lịch sử</button>
+</div>
+
+<div id="tabCayThue" class="main-tab">
     <div class="box">
         <h3>🛒 Chọn gói dịch vụ</h3>
-        <select id="goi">
+        <select id="goi" onchange="updateServiceDetail()">
             <option value="">-- Click để chọn gói --</option>
             <optgroup label="🔰 LEVEL">
-                <option value="Level 700|20000">Level 700 – 20.000đ</option>
-                <option value="0 → MAX|50000">0 → MAX – 50.000đ</option>
+                <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh&#10;✔ Không đổi trái&#10;✔ 3–5 giờ">Level 700 – 20.000đ</option>
+                <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest&#10;✔ Không mất đồ&#10;✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
+                <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3&#10;✔ An toàn 100%&#10;✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
+                <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3&#10;✔ Không mất acc&#10;✔ 4–6 ngày">0 → MAX – 50.000đ</option>
             </optgroup>
             <optgroup label="🎒 ITEM">
-                <option value="CDK|30000">CDK – 30.000đ</option>
-                <option value="Godhuman|20000">Godhuman – 20.000đ</option>
+                <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest&#10;✔ Không mất đồ&#10;✔ 1 ngày">Mỏ Neo – 20.000đ</option>
+                <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest&#10;✔ An toàn&#10;✔ Trong ngày">Tushita – 15.000đ</option>
+                <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama&#10;✔ Không mất đồ&#10;✔ 1–2 ngày">Yama – 30.000đ</option>
+                <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm&#10;✔ Không rollback&#10;✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
+                <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK&#10;✔ Không mất item&#10;✔ 1–2 ngày">CDK – 30.000đ</option>
+            </optgroup>
+            <optgroup label="💠 V4">
+                <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear&#10;✔ Thức tỉnh V4&#10;✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
+                <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ&#10;✔ Nhanh gọn&#10;✔ Trong ngày">1 Gear V4 – 5.000đ</option>
+            </optgroup>
+            <optgroup label="🥋 MELEE">
+                <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman&#10;✔ Farm nguyên liệu&#10;✔ 1 ngày">Godhuman – 20.000đ</option>
+                <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2&#10;✔ Nhanh&#10;✔ Trong ngày">Melee V2 – 15.000đ</option>
             </optgroup>
         </select>
-        <input id="accRoblox" placeholder="Username / Email Roblox">
-        <input id="passRoblox" type="password" placeholder="Password Roblox">
-        <div class="info">⚠️ Hãy tắt xác minh 2 bước (2FA) trước khi đặt đơn.</div>
-        <button class="green" style="width:100%; font-size:16px" onclick="handleBuy()">XÁC NHẬN MUA NGAY</button>
+
+        <div id="serviceDetail" class="detail-box"></div>
+
+        <input id="accRoblox" placeholder="Tài khoản (Username/Email)">
+        <input id="passRoblox" type="password" placeholder="Mật khẩu">
+        <button class="green" style="width:100%" onclick="handleBuyService()">XÁC NHẬN THANH TOÁN</button>
         <button class="purple" style="width:100%" onclick="showNapBank()">💳 NẠP TIỀN QUA BANK / MOMO</button>
     </div>
+</div>
 
+<div id="tabShopNick" class="main-tab" style="display:none">
     <div class="box">
-        <h3>📜 Lịch sử đơn hàng</h3>
-        <div id="historyList">Vui lòng đăng nhập...</div>
+        <h3>🔥 Danh sách Nick hiện có</h3>
+        <div id="nickList" class="grid-nicks"></div>
+    </div>
+</div>
+
+<div id="tabLichSu" class="main-tab" style="display:none">
+    <div class="box">
+        <h3>📜 Trạng thái đơn cày</h3>
+        <div id="historyService"></div>
+    </div>
+    <div class="box">
+        <h3>🔑 Nick đã mua</h3>
+        <div id="historyNicks"></div>
     </div>
 </div>
 
 <div id="adminView" style="display:none">
     <div class="box" style="border: 2px solid #ef4444;">
         <h2 style="color:#ef4444;">🛠 ADMIN PANEL</h2>
-        <div style="display:flex; gap:5px; margin-bottom:10px; overflow-x: auto;">
-            <button class="tab-btn active" onclick="showTab('orders', this)">Đơn hàng</button>
-            <button class="tab-btn" onclick="showTab('naps', this)">Duyệt Nạp</button>
-            <button class="tab-btn" onclick="showTab('users', this)">Cấp Tiền</button>
+        <div style="display:flex; gap:5px; margin-bottom:10px; overflow-x:auto">
+            <button class="gray" onclick="showAdminTab('orders')">Đơn Cày</button>
+            <button class="gray" onclick="showAdminTab('naps')">Duyệt Nạp</button>
+            <button class="gray" onclick="showAdminTab('addnick')">Thêm Nick</button>
+            <button class="gray" onclick="showAdminTab('gift')">Cấp Tiền</button>
         </div>
-        <div id="tabOrders" class="tab-content"><div id="adminOrderList"></div></div>
-        <div id="tabNaps" class="tab-content" style="display:none"><div id="adminNapList"></div></div>
-        <div id="tabUsers" class="tab-content" style="display:none">
-            <input id="adTargetUser" placeholder="Tên tài khoản">
-            <input id="adAmount" type="number" placeholder="Số tiền">
-            <button class="green" style="width:100%" onclick="adminAddMoney()">CẤP TIỀN</button>
+        <div id="admOrders" class="adm-tab"><div id="adminOrderList"></div></div>
+        <div id="admNaps" class="adm-tab" style="display:none"><div id="adminNapList"></div></div>
+        <div id="admAddNick" class="adm-tab" style="display:none">
+            <input id="niTitle" placeholder="Tiêu đề Nick">
+            <input id="niPrice" type="number" placeholder="Giá bán">
+            <input id="niAcc" placeholder="Tài khoản Nick">
+            <input id="niPass" placeholder="Mật khẩu Nick">
+            <button class="green" style="width:100%" onclick="adminAddNick()">ĐĂNG BÁN NICK</button>
+        </div>
+        <div id="admGift" class="adm-tab" style="display:none">
+            <input id="adTargetUser" placeholder="Tên khách hàng">
+            <input id="adAmount" type="number" placeholder="Số tiền cộng">
+            <button class="green" style="width:100%" onclick="adminGiftMoney()">XÁC NHẬN CỘNG TIỀN</button>
         </div>
     </div>
 </div>
 
-<div class="support-menu" id="supportMenu">
-    <a href="https://m.me/yourid" target="_blank" class="support-item">🔵 Messenger</a>
-    <a href="https://zalo.me/yourphone" target="_blank" class="support-item">🟢 Chat Zalo</a>
-</div>
-<div class="support-btn" onclick="toggleSupport()">💬</div>
-
 <div id="modalOverlay"><div class="modal" id="modalContent"></div></div>
 
 <script>
-// --- CẤU HÌNH ---
 const ADMIN_CONFIG = { user: "admin", pass: "admin123" };
-const WEB_HOOKS = {
-    order: "https://discord.com/api/webhooks/1465766081548390534/iClDUAzau9xqGY3PFZTS6CT24uspMk8w5gLBvKyVyhjcxvuf-SD07-y9f9pC8Vax5lHE",
-    nap: "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"
-};
 
-// --- DỮ LIỆU ---
 let cur = null;
 let db_users = JSON.parse(localStorage.getItem('snow_users') || '{}');
 let db_orders = JSON.parse(localStorage.getItem('snow_orders') || '[]');
 let db_naps = JSON.parse(localStorage.getItem('snow_naps') || '[]');
+let db_nicks = JSON.parse(localStorage.getItem('snow_nicks') || '[]');
 
-const el = {
-    uName: document.getElementById('uName'),
-    uBalance: document.getElementById('uBalance'),
-    authBtns: document.getElementById('authButtons'),
-    userBtns: document.getElementById('userButtons'),
-    history: document.getElementById('historyList'),
-    modal: document.getElementById('modalOverlay'),
-    modalIn: document.getElementById('modalContent'),
-    adminView: document.getElementById('adminView')
-};
-
-// --- HÀM HỆ THỐNG ---
 function save() {
     localStorage.setItem('snow_users', JSON.stringify(db_users));
     localStorage.setItem('snow_orders', JSON.stringify(db_orders));
     localStorage.setItem('snow_naps', JSON.stringify(db_naps));
+    localStorage.setItem('snow_nicks', JSON.stringify(db_nicks));
+}
+
+function updateServiceDetail() {
+    const select = document.getElementById('goi');
+    const option = select.options[select.selectedIndex];
+    const detailBox = document.getElementById('serviceDetail');
+    if (option.value) {
+        detailBox.innerHTML = `<b>${option.getAttribute('data-info')}</b>\n${option.getAttribute('data-detail')}`;
+        detailBox.style.display = 'block';
+    } else {
+        detailBox.style.display = 'none';
+    }
 }
 
 function render() {
     if(!cur) {
-        el.uName.innerText = "Khách"; el.uBalance.innerText = "0";
-        el.authBtns.style.display = "block"; el.userBtns.style.display = "none";
-        el.adminView.style.display = "none";
-        el.history.innerHTML = "Đăng nhập để xem đơn.";
-        return;
+        document.getElementById('uName').innerText = "Khách";
+        document.getElementById('uBalance').innerText = "0";
+        document.getElementById('authButtons').style.display = "block";
+        document.getElementById('userButtons').style.display = "none";
+        document.getElementById('adminView').style.display = "none";
+    } else {
+        cur = db_users[cur.username];
+        document.getElementById('uName').innerText = cur.username;
+        document.getElementById('uBalance').innerText = cur.balance.toLocaleString();
+        document.getElementById('authButtons').style.display = "none";
+        document.getElementById('userButtons').style.display = "block";
+        document.getElementById('adminView').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
+        
+        const myOrders = db_orders.filter(o => o.buyer === cur.username);
+        document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
+            <div style="border-bottom:1px solid #eee; padding:8px 0">
+                <b>${o.goi}</b> - <span class="badge ${getStatusClass(o.status)}">${o.status}</span><br><small>${o.time}</small>
+            </div>
+        `).join('') : "Chưa có đơn.";
+
+        const myNicks = db_nicks.filter(n => n.soldTo === cur.username);
+        document.getElementById('historyNicks').innerHTML = myNicks.length ? myNicks.map(n => `
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:8px; border-radius:8px; margin-top:5px">
+                <b>${n.title}</b><br>TK: <code>${n.acc}</code> | MK: <code>${n.pass}</code>
+            </div>
+        `).join('') : "Chưa mua nick nào.";
     }
-    cur = db_users[cur.username];
-    el.uName.innerText = cur.username;
-    el.uBalance.innerText = cur.balance.toLocaleString();
-    el.authBtns.style.display = "none"; el.userBtns.style.display = "block";
-    el.adminView.style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
-
-    const myOrders = db_orders.filter(o => o.buyer === cur.username);
-    el.history.innerHTML = myOrders.length ? myOrders.reverse().map(o => `
-        <div style="border-bottom:1px solid #eee; padding:10px 0">
-            <b>${o.goi}</b> - <span class="badge ${o.status==='Xong'?'bg-done':'bg-wait'}">${o.status}</span><br>
-            <small>${o.time}</small>
-        </div>
-    `).join('') : "Chưa có đơn hàng.";
-
-    if(cur.username === ADMIN_CONFIG.user) renderAdmin();
+    renderShopNick();
+    if(cur && cur.username === ADMIN_CONFIG.user) renderAdmin();
 }
 
+function getStatusClass(s){ return s==='Xong'?'bg-done':(s==='Đang cày'?'bg-process':'bg-wait'); }
+
+function renderShopNick() {
+    const list = db_nicks.filter(n => !n.soldTo);
+    document.getElementById('nickList').innerHTML = list.length ? list.map((n, i) => `
+        <div class="nick-card">
+            <div style="font-weight:bold; height:40px; overflow:hidden">${n.title}</div>
+            <div style="color:#16a34a; font-weight:bold; margin:5px 0">${n.price.toLocaleString()}đ</div>
+            <button class="green" style="width:100%; font-size:12px" onclick="buyNick('${n.acc}')">MUA NICK</button>
+        </div>
+    `).join('') : "<div style='grid-column: 1/3'>Hết hàng!</div>";
+}
+
+function handleBuyService() {
+    if(!cur) return alert("Vui lòng đăng nhập!");
+    const g = document.getElementById('goi').value;
+    if(!g) return alert("Vui lòng chọn gói!");
+    const [name, price] = g.split('|');
+    const acc = document.getElementById('accRoblox').value.trim();
+    const pass = document.getElementById('passRoblox').value.trim();
+    if(!acc || !pass) return alert("Nhập tài khoản/mật khẩu!");
+    if(cur.balance < parseInt(price)) return alert("Số dư không đủ!");
+
+    db_users[cur.username].balance -= parseInt(price);
+    db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() });
+    save(); render(); alert("Đặt đơn thành công!");
+}
+
+function buyNick(acc) {
+    if(!cur) return alert("Vui lòng đăng nhập!");
+    const realIdx = db_nicks.findIndex(n => n.acc === acc);
+    const targetNick = db_nicks[realIdx];
+    if(cur.balance < targetNick.price) return alert("Số dư không đủ!");
+    
+    db_users[cur.username].balance -= targetNick.price;
+    db_nicks[realIdx].soldTo = cur.username;
+    save(); render(); alert("Mua thành công! Xem ở Lịch sử.");
+}
+
+// Admin
 function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
-        <div class="box" style="font-size:13px; border-left:4px solid #38bdf8">
-            <b>${o.buyer}</b> mua ${o.goi}<br>
-            TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code><br>
-            <button onclick="updateStatus(${i}, 'Xong')" class="green">Xong</button>
-            <button onclick="deleteOrder(${i})" class="red">Xóa</button>
+        <div class="box" style="font-size:12px; border-left:4px solid #38bdf8">
+            <b>${o.buyer}</b> mua ${o.goi} [${o.status}]<br>
+            TK: ${o.acc} | MK: ${o.pass}<br>
+            <button onclick="updateStatus(${i}, 'Đã duyệt')" class="gray" style="font-size:10px">Duyệt</button>
+            <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:10px">Cày</button>
+            <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:10px">DONE</button>
+            <button onclick="deleteOrder(${i})" class="red" style="font-size:10px">Xoá</button>
         </div>
     `).reverse().join('');
 
     document.getElementById('adminNapList').innerHTML = db_naps.map((n, i) => `
         <div class="box">
-            <b>${n.username}</b> nạp ${n.amount.toLocaleString()}đ [${n.status}]<br>
-            ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green">Duyệt</button>` : ''}
-            <button onclick="deleteNap(${i})" class="red">Xoá</button>
+            <b>${n.username}</b> nạp ${n.amount.toLocaleString()}đ<br>
+            ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green">CỘNG TIỀN</button>` : 'Đã xong'}
         </div>
     `).reverse().join('');
 }
 
-// --- HÀM XỬ LÝ CLICK ---
-function handleBuy() {
-    if(!cur) return alert("Vui lòng đăng nhập!");
-    const g = document.getElementById('goi').value;
-    const acc = document.getElementById('accRoblox').value.trim();
-    const pass = document.getElementById('passRoblox').value.trim();
-    if(!g || !acc || !pass) return alert("Vui lòng nhập đủ thông tin!");
-
-    const [name, price] = g.split('|');
-    const cost = parseInt(price);
-    if(cur.balance < cost) return alert("Bạn không đủ tiền!");
-
-    db_users[cur.username].balance -= cost;
-    db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    save(); render(); alert("Đặt đơn thành công!");
-    
-    sendDiscord(WEB_HOOKS.order, { content: `🛒 **ĐƠN MỚI**: ${cur.username} mua ${name}\nAcc: ${acc} | Pass: ${pass}` });
+function adminAddNick() {
+    const title = document.getElementById('niTitle').value;
+    const price = parseInt(document.getElementById('niPrice').value);
+    const acc = document.getElementById('niAcc').value;
+    const pass = document.getElementById('niPass').value;
+    if(!title || !price || !acc) return alert("Nhập đủ thông tin!");
+    db_nicks.push({ title, price, acc, pass, soldTo: null });
+    save(); render(); alert("Đăng bán thành công!");
 }
 
-function showNapBank() {
-    if(!cur) return alert("Đăng nhập đã!");
-    openModal(`
-        <h3>💳 Nạp tiền</h3>
-        <p>CK với nội dung: <b>NAP ${cur.username}</b></p>
-        <input id="napAmt" type="number" placeholder="Số tiền đã chuyển">
-        <button class="green" style="width:100%" onclick="submitNap()">XÁC NHẬN</button>
-    `);
-}
-
-function submitNap() {
-    const amt = parseInt(document.getElementById('napAmt').value);
-    if(!amt || amt < 1000) return alert("Số tiền tối thiểu 1.000đ");
-    db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    save(); closeModal(); render(); alert("Đã gửi yêu cầu nạp!");
-    sendDiscord(WEB_HOOKS.nap, { content: `💰 **YÊU CẦU NẠP**: ${cur.username} nạp ${amt.toLocaleString()}đ` });
-}
-
-function approveNap(i) {
-    const req = db_naps[i];
-    if(req.status === 'Xong') return;
-    if(db_users[req.username]) {
-        db_users[req.username].balance += req.amount;
-        db_naps[i].status = 'Xong';
-        save(); render(); alert("Đã duyệt tiền!");
-    }
-}
-
-function adminAddMoney() {
+function adminGiftMoney() {
     const user = document.getElementById('adTargetUser').value.trim();
     const amt = parseInt(document.getElementById('adAmount').value);
     if(db_users[user]) {
         db_users[user].balance += amt;
-        save(); render(); alert("Cấp tiền thành công!");
-    } else alert("Không tìm thấy người dùng!");
+        save(); render(); alert("Đã cộng " + amt.toLocaleString() + "đ");
+    } else alert("Không thấy user!");
 }
 
-// --- TIỆN ÍCH ---
-async function sendDiscord(webhook, payload) {
-    fetch(webhook, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload) }).catch(()=>{});
+function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
+function deleteOrder(i) { if(confirm("Xoá đơn này?")) { db_orders.splice(i,1); save(); render(); } }
+function approveNap(i) {
+    const n = db_naps[i];
+    if(db_users[n.username]) {
+        db_users[n.username].balance += n.amount;
+        db_naps[i].status = "Xong";
+        save(); render(); alert("Duyệt nạp thành công!");
+    }
 }
 
+function showMainTab(id, btn) {
+    document.querySelectorAll('.main-tab').forEach(t => t.style.display = 'none');
+    document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1)).style.display = 'block';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+function showAdminTab(id) {
+    document.querySelectorAll('.adm-tab').forEach(t => t.style.display = 'none');
+    document.getElementById('adm' + id.charAt(0).toUpperCase() + id.slice(1)).style.display = 'block';
+}
+function showLogin() { openModal(`<h3>🔑 Đăng nhập</h3><input id="au" placeholder="User"><input id="ap" type="password" placeholder="Pass"><button class="green" style="width:100%" onclick="handleAuth()">VÀO SHOP</button>`); }
 function handleAuth() {
     const u = document.getElementById('au').value.trim(), p = document.getElementById('ap').value;
-    if(!u || !p) return alert("Nhập đủ thông tin");
+    if(!u || !p) return;
     if(!db_users[u]) db_users[u] = { username: u, password: p, balance: 0 };
     else if(db_users[u].password !== p) return alert("Sai mật khẩu");
-    cur = db_users[u]; localStorage.setItem('snow_session', u);
-    save(); closeModal(); render();
+    cur = db_users[u]; localStorage.setItem('snow_session', u); save(); closeModal(); render();
 }
-
-function showLogin() {
-    openModal(`
-        <h3>🔑 Đăng nhập / Đăng ký</h3>
-        <input id="au" placeholder="Tên tài khoản">
-        <input id="ap" type="password" placeholder="Mật khẩu">
-        <button class="green" style="width:100%" onclick="handleAuth()">VÀO SHOP</button>
-    `);
-}
-
+function showNapBank() { openModal(`<h3>💳 Nạp tiền</h3><p>Nội dung CK: <b>NAP ${cur.username}</b></p><input id="na" type="number" placeholder="Số tiền đã chuyển"><button class="green" style="width:100%" onclick="db_naps.push({username:cur.username, amount:parseInt(document.getElementById('na').value), status:'Chờ duyệt'}); save(); closeModal(); render(); alert('Đã gửi yêu cầu!');">XÁC NHẬN</button>`); }
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
-function openModal(h) { el.modalIn.innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; el.modal.style.display = "block"; }
-function closeModal() { el.modal.style.display = "none"; }
-function toggleSupport() { const m = document.getElementById('supportMenu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
-function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { if(confirm("Xóa đơn này?")) { db_orders.splice(i,1); save(); render(); } }
-function deleteNap(i) { if(confirm("Xóa nạp này?")) { db_naps.splice(i,1); save(); render(); } }
-
-function showTab(t, b) {
-    document.querySelectorAll('.tab-content').forEach(c => c.style.display = "none");
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = "block";
-    b.classList.add('active');
-}
+function openModal(h) { document.getElementById('modalContent').innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; document.getElementById('modalOverlay').style.display = "block"; }
+function closeModal() { document.getElementById('modalOverlay').style.display = "none"; }
 
 window.onload = () => {
     const session = localStorage.getItem('snow_session');
