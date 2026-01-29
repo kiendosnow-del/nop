@@ -38,22 +38,26 @@
         <h3 style="margin:0 0 10px 0; color:#0f172a">🛒 Chọn gói dịch vụ</h3>
         <select id="goi">
             <option value="">-- Click để chọn gói --</option>
-            <optgroup label="🔰 CÀY LEVEL (SEA 1-2-3)">
-                <option value="Lv 1 - 700|20000">Lv 1 → 700 (Sea 1) - 20,000đ</option>
-                <option value="Lv 700 - 1500|30000">Lv 700 → 1500 (Sea 2) - 30,000đ</option>
-                <option value="Lv 1500 - MAX|40000">Lv 1500 → MAX (Sea 3) - 40,000đ</option>
-                <option value="Lv 1 - MAX|80000">Gói Siêu Cấp: 1 → MAX - 80,000đ</option>
+            <optgroup label="🔰 LEVEL">
+                <option value="Level 700|20000">Level 700 – 20.000đ</option>
+                <option value="700 → 1500|20000">700 → 1500 – 20.000đ</option>
+                <option value="1500 → 2800|20000">1500 → 2800 – 20.000đ</option>
+                <option value="0 → MAX|50000">0 → MAX – 50.000đ</option>
             </optgroup>
-            <optgroup label="⚔️ VẬT PHẨM (ITEMS)">
-                <option value="Lấy CDK|50000">Cursed Dual Katana - 50,000đ</option>
-                <option value="Lấy Shark Anchor|40000">Mỏ Neo (Shark Anchor) - 40,000đ</option>
-                <option value="Lấy Soul Guitar|30000">Đàn Soul Guitar - 30,000đ</option>
-                <option value="Full V3-V4|60000">Up Tộc V3 → V4 (Full Gear) - 60,000đ</option>
+            <optgroup label="🎒 ITEM">
+                <option value="Mỏ Neo|20000">Mỏ Neo – 20.000đ</option>
+                <option value="Tushita|15000">Tushita – 15.000đ</option>
+                <option value="Yama|30000">Yama – 30.000đ</option>
+                <option value="Tam Kiếm Full|35000">Tam Kiếm Full – 35.000đ</option>
+                <option value="CDK|30000">CDK – 30.000đ</option>
             </optgroup>
-            <optgroup label="🔥 MASTERY (THÔNG THẠO)">
-                <option value="Mastery Sword 600|20000">Mastery Kiếm 600 - 20,000đ</option>
-                <option value="Mastery Fruit 600|30000">Mastery Trái Ác Quỷ 600 - 30,000đ</option>
-                <option value="Mastery Melee 600|20000">Mastery Võ 600 - 20,000đ</option>
+            <optgroup label="💠 V4">
+                <option value="Full Gear V4|30000">Full Gear V4 – 30.000đ</option>
+                <option value="1 Gear V4|5000">1 Gear V4 – 5.000đ</option>
+            </optgroup>
+            <optgroup label="🥋 MELEE">
+                <option value="Godhuman|20000">Godhuman – 20.000đ</option>
+                <option value="Melee V2|15000">Melee V2 – 15.000đ</option>
             </optgroup>
         </select>
         <input id="accRoblox" placeholder="Username / Email Roblox">
@@ -73,23 +77,23 @@
     <div class="box" style="border: 2px solid #ef4444; background:#fff5f5">
         <h2 style="color:#ef4444; margin-top:0">🛠 ADMIN PANEL</h2>
         <div style="display:flex; overflow-x:auto; padding-bottom:5px">
-            <button class="tab-btn" onclick="showTab('usersList', this)">Thành viên</button>
             <button class="tab-btn active" onclick="showTab('orders', this)">Quản lý đơn</button>
             <button class="tab-btn" onclick="showTab('naps', this)">Duyệt Nạp</button>
             <button class="tab-btn" onclick="showTab('users', this)">Cấp Tiền</button>
+            <button class="tab-btn" onclick="showTab('usersList', this)">Thành viên</button>
         </div>
 
         <div id="tabOrders" class="tab-content"><div id="adminOrderList"></div></div>
         <div id="tabNaps" class="tab-content" style="display:none"><div id="adminNapList"></div></div>
         <div id="tabUsers" class="tab-content" style="display:none">
-        <div id="tabUsersList" class="tab-content" style="display:none">
-    <h4>Danh sách thành viên hệ thống</h4>
-    <div id="adminMemberList"></div>
-        </div>
             <h4>Cấp tiền cho tài khoản</h4>
             <input id="adTargetUser" placeholder="Tên tài khoản nhận tiền">
             <input id="adAmount" type="number" placeholder="Số tiền (Ví dụ: 50000)">
             <button class="green" style="width:100%" onclick="adminAddMoney()">CẤP TIỀN NGAY</button>
+        </div>
+        <div id="tabUsersList" class="tab-content" style="display:none">
+            <h4>Danh sách thành viên hệ thống</h4>
+            <div id="adminMemberList"></div>
         </div>
     </div>
 </div>
@@ -99,7 +103,7 @@
 <script>
 /* ----- CONFIG ----- */
 const ADMIN_CONFIG = { user: "admin", pass: "admin123" };
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"; // Dán webhook của bạn
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
 let cur = null;
 let db_users = JSON.parse(localStorage.getItem('snow_users') || '{}');
@@ -132,7 +136,6 @@ function render() {
         el.adminView.style.display = "none";
         el.history.innerHTML = "<center>Đăng nhập để xem đơn</center>";
     } else {
-        // Cập nhật dữ liệu mới nhất từ DB (đề phòng Admin vừa cộng tiền)
         cur = db_users[cur.username];
         el.uName.innerText = cur.username;
         el.uBalance.innerText = cur.balance.toLocaleString();
@@ -156,9 +159,27 @@ function render() {
 }
 
 function renderAdmin() {
-    // ... Giữ nguyên các phần render đơn và nạp cũ ...
+    document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
+        <div class="box" style="background:#f8fafc; border-left:4px solid #38bdf8">
+            <b>${o.buyer}</b> - ${o.goi}<br>
+            <div style="background:#fff; padding:5px; border-radius:5px; margin:5px 0">
+                TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code>
+            </div>
+            <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:11px">Cày</button>
+            <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:11px">Xong</button>
+            <button onclick="deleteOrder(${i})" class="red" style="font-size:11px">Xoá</button>
+        </div>
+    `).reverse().join('');
 
-    // Thêm đoạn này để render danh sách thành viên
+    document.getElementById('adminNapList').innerHTML = db_naps.map((n, i) => `
+        <div class="box" style="background:#f8fafc">
+            <b>${n.username}</b> - nạp ${n.amount.toLocaleString()}đ<br>
+            Trạng thái: <b>${n.status}</b><br>
+            ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green">Duyệt nạp</button>` : ''}
+            <button onclick="deleteNap(${i})" class="red">Xoá</button>
+        </div>
+    `).reverse().join('');
+
     document.getElementById('adminMemberList').innerHTML = Object.values(db_users).map(user => `
         <div class="box" style="background:#f8fafc; border:1px solid #e2e8f0; margin:5px 0">
             <div style="display:flex; justify-content:space-between; align-items:center">
@@ -174,7 +195,6 @@ function renderAdmin() {
     `).reverse().join('');
 }
 
-/* ----- LOGIC CHÍNH ----- */
 function handleBuy() {
     if(!cur) return alert("Vui lòng đăng nhập!");
     const góiVal = document.getElementById('goi').value;
@@ -242,7 +262,6 @@ function submitNap() {
     sendWebhook("💰 YÊU CẦU NẠP TIỀN", `Khách: ${cur.username}\nSố tiền: ${amt.toLocaleString()}đ\nNội dung: NAP ${cur.username}`, 15105570);
 }
 
-/* ----- CÁC HÀM PHỤ ----- */
 function save() {
     localStorage.setItem('snow_users', JSON.stringify(db_users));
     localStorage.setItem('snow_orders', JSON.stringify(db_orders));
