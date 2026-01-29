@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>❄️ SNOW SHOP — Admin Management</title>
+    <title>❄️ SNOW SHOP — Hệ Thống Cày Thuê</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
         body{font-family:'Segoe UI',sans-serif;background:#f1f5f9;margin:0;padding-bottom:80px;color:#334155}
@@ -14,7 +14,7 @@
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
         .bg-wait{background:#fef3c7;color:#d97706} .bg-process{background:#f3e8ff;color:#7c3aed} .bg-done{background:#dcfce7;color:#16a34a}
         
-        /* FIX: Tối ưu thanh điều hướng để không bị vỡ layout */
+        /* Thanh điều hướng Flexbox chống vỡ layout */
         .tab-container { display: flex; gap: 8px; padding: 0 12px; margin-top: 10px; }
         .tab-btn {
             background: #fff;
@@ -32,7 +32,19 @@
         
         #modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);display:none;z-index:1000;backdrop-filter:blur(3px)}
         .modal{background:#fff;width:90%;max-width:450px;margin:50px auto;border-radius:16px;padding:20px;position:relative}
-        .detail-box { background: #f8fafc; border-left: 4px solid #38bdf8; padding: 10px; margin: 10px 0; font-size: 13px; display: none; white-space: pre-line; }
+        
+        /* Hiển thị chi tiết dịch vụ */
+        .detail-box { 
+            background: #f8fafc; 
+            border-left: 4px solid #38bdf8; 
+            padding: 12px; 
+            margin: 10px 0; 
+            font-size: 13px; 
+            display: none; 
+            white-space: pre-line;
+            line-height: 1.5;
+            color: #1e293b;
+        }
     </style>
 </head>
 <body>
@@ -58,25 +70,25 @@
         <select id="goi" onchange="updateServiceDetail()">
             <option value="">-- Chọn gói dịch vụ --</option>
             <optgroup label="🔰 LEVEL">
-                <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh&#10;✔ Không đổi trái&#10;✔ 3–5 giờ">Level 700 – 20.000đ</option>
-                <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest&#10;✔ Không mất đồ&#10;✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
-                <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3&#10;✔ An toàn 100%&#10;✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
-                <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3&#10;✔ Không mất acc&#10;✔ 4–6 ngày">0 → MAX – 50.000đ</option>
+                <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh&#10;✔ Không đổi trái&#10;✔ Thời gian: 3–5 giờ">Level 700 – 20.000đ</option>
+                <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest&#10;✔ Không mất đồ&#10;✔ Thời gian: 1–2 ngày">700 → 1500 – 20.000đ</option>
+                <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3&#10;✔ An toàn 100%&#10;✔ Thời gian: 2–3 ngày">1500 → 2800 – 20.000đ</option>
+                <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3&#10;✔ Không mất acc&#10;✔ Thời gian: 4–6 ngày">0 → MAX – 50.000đ</option>
             </optgroup>
             <optgroup label="🎒 ITEM">
-                <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest&#10;✔ Không mất đồ&#10;✔ 1 ngày">Mỏ Neo – 20.000đ</option>
-                <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest&#10;✔ An toàn&#10;✔ Trong ngày">Tushita – 15.000đ</option>
-                <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama&#10;✔ Không mất đồ&#10;✔ 1–2 ngày">Yama – 30.000đ</option>
-                <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm&#10;✔ Không rollback&#10;✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
-                <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK&#10;✔ Không mất item&#10;✔ 1–2 ngày">CDK – 30.000đ</option>
+                <option value="Mỏ Neo|20000" data-info="Lấy trang bị Mỏ Neo" data-detail="✔ Full quest lấy mỏ neo&#10;✔ Không mất đồ&#10;✔ Thời gian: 1 ngày">Mỏ Neo – 20.000đ</option>
+                <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest giải đố&#10;✔ An toàn 100%&#10;✔ Thời gian: Trong ngày">Tushita – 15.000đ</option>
+                <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama&#10;✔ Không mất đồ&#10;✔ Thời gian: 1–2 ngày">Yama – 30.000đ</option>
+                <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Lấy đủ 3 kiếm huyền thoại&#10;✔ Không rollback&#10;✔ Thời gian: 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
+                <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full nhiệm vụ CDK&#10;✔ Không mất item&#10;✔ Thời gian: 1–2 ngày">CDK – 30.000đ</option>
             </optgroup>
             <optgroup label="💠 V4">
-                <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear&#10;✔ Thức tỉnh V4&#10;✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
-                <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ&#10;✔ Nhanh gọn&#10;✔ Trong ngày">1 Gear V4 – 5.000đ</option>
+                <option value="Full Gear V4|30000" data-info="Nâng cấp Full Gear V4" data-detail="✔ Full Gear&#10;✔ Thức tỉnh V4 hoàn thiện&#10;✔ Thời gian: 1–2 ngày">Full Gear V4 – 30.000đ</option>
+                <option value="1 Gear V4|5000" data-info="Nâng cấp 1 Gear" data-detail="✔ 1 Gear bất kỳ khách chọn&#10;✔ Nhanh gọn&#10;✔ Thời gian: Trong ngày">1 Gear V4 – 5.000đ</option>
             </optgroup>
             <optgroup label="🥋 MELEE">
-                <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman&#10;✔ Farm nguyên liệu&#10;✔ 1 ngày">Godhuman – 20.000đ</option>
-                <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2&#10;✔ Nhanh&#10;✔ Trong ngày">Melee V2 – 15.000đ</option>
+                <option value="Godhuman|20000" data-info="Võ Godhuman" data-detail="✔ Full Melee Godhuman&#10;✔ Đã bao gồm farm nguyên liệu&#10;✔ Thời gian: 1 ngày">Godhuman – 20.000đ</option>
+                <option value="Melee V2|15000" data-info="Nâng cấp Melee V2" data-detail="✔ Lấy Melee V2 nhanh&#10;✔ Uy tín&#10;✔ Thời gian: Trong ngày">Melee V2 – 15.000đ</option>
             </optgroup>
         </select>
 
@@ -92,7 +104,7 @@
 
 <div id="tabLichSu" class="main-tab" style="display:none">
     <div class="box">
-        <h3>📜 Trạng thái đơn cày</h3>
+        <h3>📜 Lịch sử đơn của bạn</h3>
         <div id="historyService"></div>
     </div>
 </div>
@@ -144,6 +156,7 @@ function render() {
         document.getElementById('authButtons').style.display = "block";
         document.getElementById('userButtons').style.display = "none";
         document.getElementById('adminTabBtn').style.display = "none";
+        document.getElementById('historyService').innerHTML = "Vui lòng đăng nhập để xem lịch sử.";
     } else {
         cur = db_users[cur.username];
         document.getElementById('uName').innerText = cur.username;
@@ -152,11 +165,15 @@ function render() {
         document.getElementById('userButtons').style.display = "block";
         document.getElementById('adminTabBtn').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
         
+        // FIX: Hiển thị đơn hàng riêng cho từng tài khoản
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
         document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
-            <div style="border-bottom:1px solid #eee; padding:10px 0">
-                <b>${o.goi}</b> - <span class="badge ${getStatusClass(o.status)}">${o.status}</span><br>
-                <small style="color:#64748b">${o.time}</small>
+            <div style="border-bottom:1px solid #eee; padding:12px 0">
+                <div style="display:flex; justify-content:space-between">
+                    <b>${o.goi}</b>
+                    <span class="badge ${getStatusClass(o.status)}">${o.status}</span>
+                </div>
+                <small style="color:#64748b">Ngày đặt: ${o.time}</small>
             </div>
         `).join('') : "Bạn chưa có đơn hàng nào.";
     }
@@ -164,6 +181,19 @@ function render() {
 }
 
 function getStatusClass(s){ return s==='Xong'?'bg-done':(s==='Đang cày'?'bg-process':'bg-wait'); }
+
+// Tự động cập nhật thông tin dịch vụ khi chọn gói
+function updateServiceDetail() {
+    const select = document.getElementById('goi');
+    const option = select.options[select.selectedIndex];
+    const detailBox = document.getElementById('serviceDetail');
+    if (option.value) {
+        detailBox.innerHTML = `<strong style="color:#38bdf8">📌 Thông tin:</strong> ${option.getAttribute('data-info')}\n${option.getAttribute('data-detail')}`;
+        detailBox.style.display = 'block';
+    } else { 
+        detailBox.style.display = 'none'; 
+    }
+}
 
 async function notifyDiscord(orderData) {
     const payload = {
@@ -194,21 +224,21 @@ function handleBuyService() {
     if(!acc || !pass) return alert("Vui lòng nhập đầy đủ tài khoản & mật khẩu!");
     
     const cost = parseInt(price);
-    if(cur.balance < cost) return alert("Số dư không đủ!");
+    if(cur.balance < cost) return alert("Số dư không đủ! Vui lòng nạp thêm.");
 
     const newOrder = { buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() };
     db_users[cur.username].balance -= cost;
     db_orders.push(newOrder);
     save(); render(); notifyDiscord(newOrder);
-    alert("Thanh toán thành công!");
+    alert("Thanh toán thành công! Theo dõi tại mục Lịch Sử.");
 }
 
 function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
         <div class="box" style="font-size:12px; border-left:4px solid #38bdf8; margin: 10px 0">
-            <b>${o.buyer}</b>: ${o.goi} [${o.status}]<br>
+            <b>Khách: ${o.buyer}</b> | Đặt: ${o.goi}<br>
             TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code><br>
-            <div style="margin-top:5px">
+            <div style="margin-top:8px">
                 <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:10px; padding:5px">Cày</button>
                 <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:10px; padding:5px">Xong</button>
                 <button onclick="deleteOrder(${i})" class="red" style="font-size:10px; padding:5px">Xoá</button>
@@ -225,13 +255,13 @@ function renderAdmin() {
 }
 
 function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { if(confirm("Xoá đơn?")) { db_orders.splice(i,1); save(); render(); } }
+function deleteOrder(i) { if(confirm("Xoá đơn này?")) { db_orders.splice(i,1); save(); render(); } }
 function approveNap(i) {
     const n = db_naps[i];
     if(db_users[n.username]) {
         db_users[n.username].balance += n.amount;
         db_naps[i].status = "Xong";
-        save(); render(); alert("Đã duyệt!");
+        save(); render(); alert("Đã duyệt tiền!");
     }
 }
 function adminGiftMoney() {
@@ -252,16 +282,6 @@ function showAdminTab(id) {
     document.getElementById('adm' + id.charAt(0).toUpperCase() + id.slice(1)).style.display = 'block';
 }
 
-function updateServiceDetail() {
-    const select = document.getElementById('goi');
-    const option = select.options[select.selectedIndex];
-    const detailBox = document.getElementById('serviceDetail');
-    if (option.value) {
-        detailBox.innerHTML = `<b>${option.getAttribute('data-info')}</b>\n${option.getAttribute('data-detail')}`;
-        detailBox.style.display = 'block';
-    } else { detailBox.style.display = 'none'; }
-}
-
 function showLogin() { openModal(`<h3>🔑 Đăng nhập</h3><input id="au" placeholder="Tên đăng nhập"><input id="ap" type="password" placeholder="Mật khẩu"><button class="green" style="width:100%" onclick="handleAuth()">VÀO CỬA HÀNG</button>`); }
 function handleAuth() {
     const u = document.getElementById('au').value.trim(), p = document.getElementById('ap').value;
@@ -270,7 +290,7 @@ function handleAuth() {
     else if(db_users[u].password !== p) return alert("Sai mật khẩu!");
     cur = db_users[u]; localStorage.setItem('snow_session', u); save(); closeModal(); render();
 }
-function showNapBank() { openModal(`<h3>💳 Nạp tiền</h3><p>MB BANK: <b>1373727384</b><br>Nội dung: <b>NAP ${cur.username}</b></p><input id="na" type="number" placeholder="Số tiền"><button class="green" style="width:100%" onclick="db_naps.push({username:cur.username, amount:parseInt(document.getElementById('na').value), status:'Chờ duyệt'}); save(); closeModal(); render(); alert('Đã gửi yêu cầu!');">GỬI YÊU CẦU</button>`); }
+function showNapBank() { openModal(`<h3>💳 Nạp tiền</h3><p>MB BANK: <b>1373727384</b><br>Nội dung: <b>NAP ${cur.username}</b></p><input id="na" type="number" placeholder="Số tiền đã chuyển"><button class="green" style="width:100%" onclick="db_naps.push({username:cur.username, amount:parseInt(document.getElementById('na').value), status:'Chờ duyệt'}); save(); closeModal(); render(); alert('Đã gửi yêu cầu!');">GỬI YÊU CẦU</button>`); }
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
 function openModal(h) { document.getElementById('modalContent').innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; document.getElementById('modalOverlay').style.display = "block"; }
 function closeModal() { document.getElementById('modalOverlay').style.display = "none"; }
