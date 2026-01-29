@@ -359,17 +359,30 @@ async function notifyDiscord(type, data){
      - Remove or change this in production.
      - If you use a real backend (CONFIG.API_BASE), admin should be created there.
 ---------------------------------------------------------------------*/
+/* ---------- Fallback admin creation (for dev/testing only) ----------
+   DEFAULT CREDENTIALS (local only):
+     username: admin
+     password: Admin@2026
+   NOTE:
+     - KHÔNG tạo tài khoản demo
+     - Giữ nguyên toàn bộ fix & logic hiện tại
+---------------------------------------------------------------------*/
 (async function seedFallbackAdmin(){
-  if(CONFIG.API_BASE) return;
+  if (CONFIG.API_BASE) return; // có backend thì bỏ qua
+
   const users = Storage.getUsers();
-  if(!users['admin']){
-    users['admin'] = { username:'admin', passHash: await sha256('Admin@2026'), balance:0, roles:['admin'] };
-    console.warn('Fallback admin created: admin / Admin@2026 (remove or change in production)');
+
+  if (!users['admin']) {
+    users['admin'] = {
+      username: 'admin',
+      passHash: await sha256('Admin@2026'),
+      balance: 0,
+      roles: ['admin']
+    };
+
+    Storage.saveUsers(users);
+    console.warn('✅ Fallback admin created: admin / Admin@2026');
   }
-  if(!users['demo']){
-    users['demo'] = { username:'demo', passHash: await sha256('demo'), balance:50000, roles:[] };
-  }
-  Storage.saveUsers(users);
 })();
 
 /* ---------- Admin account management helpers (fallback) ---------- */
