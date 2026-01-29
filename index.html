@@ -2,86 +2,94 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>❄️ SNOW SHOP — Quản Trị Hệ Thống</title>
+    <title>❄️ SNOW SHOP — Final Version</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
-        body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f1f5f9;margin:0;padding-bottom:80px; color:#334155}
-        .box{background:#fff;margin:12px;border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-        button{border:0;padding:10px 14px;border-radius:8px;font-weight:600;margin:6px 0;cursor:pointer;transition:0.2s;color:#fff; display:inline-block;}
-        button:hover{opacity:0.9; transform: translateY(-1px);}
-        button:active{transform: translateY(1px);}
-        button.blue{background:#38bdf8}
-        button.red{background:#ef4444}
-        button.green{background:#22c55e}
-        button.purple{background:#8b5cf6}
+        /* --- RESET & BASIC STYLE --- */
+        body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f8fafc;margin:0;padding-bottom:100px; color:#334155}
+        * { box-sizing: border-box; }
+        
+        .box{background:#fff;margin:12px;border-radius:16px;padding:16px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)}
+        
+        /* --- BUTTONS --- */
+        button{border:0;padding:12px 16px;border-radius:10px;font-weight:600;margin:6px 0;cursor:pointer;transition:all 0.2s;color:#fff; display:inline-block; font-size: 14px;}
+        button:hover{opacity:0.95; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15);}
+        button:active{transform: translateY(0);}
+        
+        button.blue{background:linear-gradient(135deg, #38bdf8, #0ea5e9)}
+        button.red{background:linear-gradient(135deg, #ef4444, #dc2626)}
+        button.green{background:linear-gradient(135deg, #22c55e, #16a34a)}
+        button.purple{background:linear-gradient(135deg, #a855f7, #9333ea)}
         button.gray{background:#94a3b8}
+
+        /* --- INPUTS --- */
+        input,select,textarea{width:100%;padding:14px;margin:8px 0;border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc; font-size:14px; transition:0.2s}
+        input:focus, select:focus{outline:none; border-color:#38bdf8; background:#fff; box-shadow: 0 0 0 3px rgba(56,189,248,0.2);}
         
-        input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #cbd5e1;box-sizing:border-box; font-family: inherit;}
-        input:focus, select:focus{outline:none; border-color:#38bdf8; ring: 2px solid #bae6fd;}
+        /* --- UTILS --- */
+        .info{background:#f0f9ff;border:1px dashed #0ea5e9;border-radius:10px;padding:14px;margin-top:10px;line-height:1.6;font-size:14px; color:#0369a1}
+        .qr-box{text-align:center;padding:20px;background:#fff;border-radius:12px; border: 2px dashed #e2e8f0; margin-top:15px}
         
-        .info{background:#f0f9ff;border:1px dashed #38bdf8;border-radius:8px;padding:12px;margin-top:10px;line-height:1.5;font-size:14px; color:#0c4a6e}
-        .qr-box{text-align:center;padding:15px;background:#fff;border-radius:10px; border: 1px solid #e2e8f0; margin-top:10px}
-        
-        .item-list{padding:12px;border-bottom:1px solid #f1f5f9;font-size:14px; position: relative;}
+        .item-list{padding:14px;border-bottom:1px solid #f1f5f9;font-size:14px; position: relative;}
         .item-list:last-child{border-bottom:none}
         
-        .status-pending{color:#f59e0b;font-weight:bold; background:#fffbeb; padding:2px 6px; border-radius:4px}
-        .status-working{color:#8b5cf6;font-weight:bold; background:#f3e8ff; padding:2px 6px; border-radius:4px}
-        .status-done{color:#22c55e;font-weight:bold; background:#dcfce7; padding:2px 6px; border-radius:4px}
-        
-        /* --- FIX LỖI CLICK: Modal System --- */
-        /* Overlay nền đen */
-        #modal-overlay{
-            position:fixed; top:0; left:0; width:100%; height:100%; 
-            background:rgba(0,0,0,0.5); display:none; z-index:2000; 
-            backdrop-filter: blur(4px);
-        }
-        /* Container chứa nội dung modal - Dùng pointer-events: none để Click xuyên qua nếu nó trong suốt */
-        #modal_content{
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            pointer-events: none; z-index: 2001;
-            display: flex; justify-content: center; align-items: center;
-        }
-        /* Bản thân cái bảng Modal thì cho phép click */
-        .modal-card { 
-            pointer-events: auto;
-            width:90%; max-width:400px; 
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            animation: modalPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-height: 90vh; overflow-y: auto; /* Fix lỗi nếu modal dài quá màn hình */
-        }
-        @keyframes modalPop { from{opacity:0; transform:scale(0.95)} to{opacity:1; transform:scale(1)} }
+        .status-pending{color:#d97706;font-weight:bold; background:#fffbeb; padding:4px 8px; border-radius:6px; font-size:12px}
+        .status-working{color:#7c3aed;font-weight:bold; background:#f3e8ff; padding:4px 8px; border-radius:6px; font-size:12px}
+        .status-done{color:#16a34a;font-weight:bold; background:#dcfce7; padding:4px 8px; border-radius:6px; font-size:12px}
 
-        /* Admin Tabs */
-        .tab-btn{padding:8px 16px; border-radius:6px; background:#f1f5f9; color:#64748b; margin-right:4px; border:none; cursor:pointer; font-size: 13px;}
-        .tab-btn.active{background:#38bdf8; color:#fff; box-shadow: 0 2px 4px rgba(56, 189, 248, 0.3)}
+        /* --- MODAL SYSTEM (FIXED) --- */
+        #modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        #modal-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10000; pointer-events: none;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-card {
+            pointer-events: auto; background: #fff; width: 90%; max-width: 400px;
+            padding: 20px; border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh; overflow-y: auto;
+        }
+        /* Active States for Modal */
+        #modal-overlay.open { display: block; opacity: 1; }
+        .modal-card.open { transform: scale(1); opacity: 1; }
+
+        /* --- ADMIN TABS --- */
+        .tab-btn{padding:8px 16px; border-radius:8px; background:#f1f5f9; color:#64748b; margin-right:5px; border:none; cursor:pointer; font-size: 13px; font-weight: 600}
+        .tab-btn.active{background:#0ea5e9; color:#fff; box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3)}
         .admin-section{display:none; animation: fadeIn 0.3s}
         .admin-section.active{display:block}
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes fadeIn { from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:translateY(0)} }
         
-        /* Utility */
-        .flex-row { display:flex; align-items:center; justify-content:space-between; }
+        .flex-between { display:flex; align-items:center; justify-content:space-between; }
     </style>
 </head>
 <body>
 
-<div class="box flex-row">
+<div class="box flex-between" style="background: linear-gradient(to right, #ffffff, #f0f9ff);">
     <div>
-        👤 <b id="u">Đang tải...</b> <br>
-        💰 <b id="b" style="color:#22c55e; font-size:1.1em">0</b> <span style="font-size:0.9em;color:#64748b">VNĐ</span>
+        <div style="font-size:12px; color:#64748b; margin-bottom:2px">Xin chào,</div>
+        <div style="font-size:16px; font-weight:bold; color:#0f172a" id="u">Khách</div>
+        <div style="font-size:18px; font-weight:bold; color:#16a34a; margin-top:4px">
+            💰 <span id="b">0</span> <small style="font-size:12px; color:#64748b">VNĐ</small>
+        </div>
     </div>
-    <button class="red" id="btnLogout" style="padding:6px 12px; font-size:12px; display:none">Đăng xuất</button>
+    <button class="red" id="btnLogout" style="padding:8px 12px; font-size:12px; display:none">Thoát</button>
 </div>
 
 <div id="client_view">
     <div class="box" id="auth_section">
-        <div style="text-align:center; margin-bottom:10px">
-            <h3>👋 Chào mừng đến với Snow Shop</h3>
-            <p style="color:#64748b; font-size:13px">Vui lòng đăng nhập để sử dụng dịch vụ</p>
+        <div style="text-align:center; padding:10px 0;">
+            <div style="font-size:40px; margin-bottom:10px">❄️</div>
+            <h2 style="margin:0; color:#0f172a">Snow Shop</h2>
+            <p style="color:#64748b; font-size:14px; margin-top:5px">Hệ thống Cày Thuê & Item Roblox Uy Tín</p>
         </div>
-        <button id="btnShowAuth" class="blue" style="width:100%; padding:12px">🔑 Đăng nhập / Đăng ký</button>
+        <button id="btnShowAuth" class="blue" style="width:100%; padding:14px; font-size:16px">🔑 Đăng nhập / Đăng ký</button>
     </div>
 
     <div class="box" id="user_actions" style="display:none">
@@ -89,16 +97,16 @@
     </div>
 
     <div class="box">
-        <h3 style="margin-top:0">🛒 Dịch vụ Cày Thuê</h3>
+        <h3 style="margin-top:0; border-left:4px solid #0ea5e9; padding-left:10px; color:#0f172a">🛒 Dịch vụ</h3>
         <select id="goi">
-            <option value="">-- Chọn gói dịch vụ --</option>
+            <option value="">-- Vui lòng chọn gói --</option>
             <optgroup label="🔰 LEVEL & FARM">
                 <option value="Level 700|20000" data-info="Farm lên Level 700" data-detail="✔ Mở Sea 2<br>✔ Thời gian: 3–5 giờ">Level 700 – 20.000đ</option>
                 <option value="700 → 1500|20000" data-info="Farm max Sea 2" data-detail="✔ Mở Sea 3<br>✔ Thời gian: 1–2 ngày">700 → 1500 – 20.000đ</option>
                 <option value="1500 → 2800|20000" data-info="Farm max Level" data-detail="✔ Max Level hiện tại<br>✔ Thời gian: 2–3 ngày">1500 → 2800 – 20.000đ</option>
                 <option value="0 → MAX|50000" data-info="Cày từ đầu tới MAX" data-detail="✔ Full Sea 1–2–3<br>✔ Thời gian: 4–6 ngày">0 → MAX – 50.000đ</option>
             </optgroup>
-            <optgroup label="🎒 ITEMS">
+            <optgroup label="🎒 ITEMS HOT">
                 <option value="Mỏ Neo|20000" data-info="Lấy Mỏ Neo (Anchor)" data-detail="✔ Cần nguyên liệu<br>✔ Thời gian: 1 ngày">Mỏ Neo – 20.000đ</option>
                 <option value="Tushita|15000" data-info="Lấy kiếm Tushita" data-detail="✔ Cần Level 2000+<br>✔ Trong ngày">Tushita – 15.000đ</option>
                 <option value="CDK|30000" data-info="Lấy Cursed Dual Katana" data-detail="✔ Cần Tushita + Yama<br>✔ Thời gian: 1-2 ngày">CDK – 30.000đ</option>
@@ -106,25 +114,28 @@
         </select>
 
         <div id="acc_box" style="display:none; animation: fadeIn 0.3s">
-            <div style="margin:10px 0; font-size:12px; color:#ef4444; font-weight:bold">* Vui lòng tắt xác minh 2 bước (2FA) trước khi thuê.</div>
+            <div style="margin:10px 0; font-size:13px; color:#dc2626; background:#fef2f2; padding:8px; border-radius:6px">
+                <b>⚠️ Lưu ý:</b> Vui lòng tắt xác minh 2 bước (2FA) để đơn hàng được xử lý nhanh nhất.
+            </div>
             <input type="text" id="game_user" placeholder="Tên đăng nhập Roblox">
             <input type="text" id="game_pass" placeholder="Mật khẩu Roblox">
         </div>
+        
         <div id="goiInfo" class="info" style="display:none"></div>
-        <button class="green" id="btnOrder" style="width:100%; margin-top:10px; font-size: 16px;">XÁC NHẬN MUA NGAY</button>
+        <button class="green" id="btnOrder" style="width:100%; margin-top:10px; font-size: 16px; box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3)">XÁC NHẬN MUA NGAY</button>
     </div>
 
     <div class="box">
-        <h3 style="margin-top:0">📜 Lịch sử đơn hàng</h3>
+        <h3 style="margin-top:0; border-left:4px solid #f59e0b; padding-left:10px; color:#0f172a">📜 Lịch sử đơn hàng</h3>
         <div id="his">Đang tải...</div>
     </div>
 </div>
 
 <div id="admin_view" style="display:none">
-    <div class="box" style="border: 1px solid #ef4444;">
-        <h2 style="color:#ef4444; margin:0 0 15px 0; font-size:18px; text-transform:uppercase; border-bottom:1px solid #eee; padding-bottom:10px">🛠 Hệ thống Quản Trị</h2>
+    <div class="box" style="border: 2px solid #ef4444;">
+        <h2 style="color:#ef4444; margin:0 0 15px 0; font-size:18px; text-transform:uppercase; border-bottom:1px solid #eee; padding-bottom:10px">🛠 Admin Panel</h2>
         
-        <div style="margin-bottom:15px; display:flex; gap:5px; overflow-x:auto">
+        <div style="margin-bottom:15px; display:flex; gap:5px; overflow-x:auto; padding-bottom:5px">
             <button class="tab-btn active" data-tab="tab_orders">Đơn hàng</button>
             <button class="tab-btn" data-tab="tab_users">Thành viên</button>
             <button class="tab-btn" data-tab="tab_gift">Cộng tiền</button>
@@ -139,28 +150,32 @@
         </div>
 
         <div id="tab_gift" class="admin-section">
-            <div style="background:#fff7ed; padding:10px; border-radius:8px; margin-bottom:10px; font-size:13px; color:#c2410c">
-                ⚠️ <b>Lưu ý:</b> Nhập chính xác tên tài khoản khách hàng.
+            <div style="background:#fff7ed; padding:12px; border-radius:8px; margin-bottom:10px; font-size:13px; color:#c2410c; border:1px solid #ffedd5">
+                Nhập đúng Username để cộng tiền. User phải đăng nhập ít nhất 1 lần mới có tên trong hệ thống.
             </div>
-            <label style="font-size:12px; font-weight:bold">Tài khoản khách:</label>
+            <label style="font-size:12px; font-weight:bold; color:#64748b">Tài khoản khách:</label>
             <input id="ad_target" placeholder="Nhập username...">
             
-            <label style="font-size:12px; font-weight:bold">Số tiền:</label>
+            <label style="font-size:12px; font-weight:bold; color:#64748b">Số tiền:</label>
             <input type="number" id="ad_amt" placeholder="VD: 50000">
             
-            <label style="font-size:12px; font-weight:bold">Mã xác nhận (Admin Key):</label>
+            <label style="font-size:12px; font-weight:bold; color:#64748b">Admin Key:</label>
             <input type="password" id="ad_key" placeholder="Nhập mã bảo mật...">
             
-            <button class="red" id="btnAdminAdd" style="width:100%; margin-top:10px">XÁC NHẬN CỘNG TIỀN</button>
+            <button class="red" id="btnAdminAdd" style="width:100%; margin-top:10px">XÁC NHẬN</button>
         </div>
     </div>
 </div>
 
 <div id="modal-overlay"></div>
-<div id="modal_content"></div>
+<div id="modal-container">
+    <div id="modal_content_inner" class="modal-card"></div>
+</div>
 
 <script>
-/* ----- Cấu hình Hệ thống ----- */
+/* =========================================
+   1. CẤU HÌNH & TRẠNG THÁI
+   ========================================= */
 const CONFIG = {
     ADMIN_ID: "snowadmin",
     ADMIN_PASS: "Snowadmin1910",
@@ -168,27 +183,35 @@ const CONFIG = {
     WEBHOOK: "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"
 };
 
-/* ----- State ----- */
-let cur = null; 
-let allOrders = [];
-let el = {}; // Khai báo rỗng trước, load sau để tránh lỗi Null
+let cur = null;     // User hiện tại
+let allOrders = []; // Danh sách đơn
+let el = {};        // Chứa các element HTML
 
-/* ----- Helpers ----- */
-function safeParse(key, defaultVal) {
-    try { return JSON.parse(localStorage.getItem(key)) || defaultVal; } 
-    catch (e) { return defaultVal; }
-}
-function formatMoney(n) { return Number(n).toLocaleString('vi-VN'); }
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-}
-function userKeyFrom(name) { return 'user_' + (name || '').trim().toLowerCase(); }
-
-/* ----- Init ----- */
-// FIX QUAN TRỌNG: Chỉ lấy Element khi trang đã tải xong để tránh lỗi "không click được"
+/* =========================================
+   2. KHỞI TẠO (QUAN TRỌNG: FIX CLICK)
+   ========================================= */
 window.addEventListener('DOMContentLoaded', () => {
-    // 1. Map Elements
+    // Chỉ lấy element sau khi trang đã tải xong
+    mapElements();
+    
+    // Load dữ liệu
+    allOrders = safeParse('snow_orders', []);
+    const session = localStorage.getItem('snow_session');
+    
+    if (session) {
+        const uData = safeParse(userKeyFrom(session), null);
+        // Nếu tìm thấy user trong data, gán vào cur
+        if (uData) cur = uData;
+    }
+    
+    // Gán sự kiện click
+    bindEvents();
+    
+    // Vẽ giao diện lần đầu
+    render();
+});
+
+function mapElements() {
     el = {
         uLabel: document.getElementById('u'),
         bLabel: document.getElementById('b'),
@@ -200,7 +223,8 @@ window.addEventListener('DOMContentLoaded', () => {
         accBox: document.getElementById('acc_box'),
         goiInfo: document.getElementById('goiInfo'),
         overlay: document.getElementById('modal-overlay'),
-        modalCont: document.getElementById('modal_content'),
+        modalContainer: document.getElementById('modal-container'), // Container mới
+        modalCard: document.getElementById('modal_content_inner'),  // Card mới
         btnLogout: document.getElementById('btnLogout'),
         btnShowAuth: document.getElementById('btnShowAuth'),
         btnDeposit: document.getElementById('btnDeposit'),
@@ -209,35 +233,26 @@ window.addEventListener('DOMContentLoaded', () => {
         adUsers: document.getElementById('admin_user_list'),
         btnAdminAdd: document.getElementById('btnAdminAdd')
     };
-
-    // 2. Load Data
-    allOrders = safeParse('snow_orders', []);
-    const session = localStorage.getItem('snow_session');
-    if (session) {
-        const uData = safeParse(userKeyFrom(session), null);
-        if (uData) cur = uData;
-    }
-    
-    // 3. Bind Events (Gán sự kiện Click)
-    bindEvents();
-    render();
-});
+}
 
 function bindEvents() {
-    // Gán onclick an toàn
+    // Các sự kiện chính
     if(el.btnShowAuth) el.btnShowAuth.onclick = showAuthModal;
     if(el.btnLogout) el.btnLogout.onclick = logout;
     if(el.btnDeposit) el.btnDeposit.onclick = showDepositModal;
     if(el.goi) el.goi.onchange = onPackageChange;
     if(el.btnOrder) el.btnOrder.onclick = handleOrder;
-    if(el.overlay) el.overlay.onclick = closeModal;
     if(el.btnAdminAdd) el.btnAdminAdd.onclick = adminAddMoney;
+    
+    // Đóng modal khi click ra ngoài
+    if(el.overlay) el.overlay.onclick = closeModal;
 
-    // Tabs
+    // Chuyển Tab Admin
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            
             e.target.classList.add('active');
             const targetId = e.target.getAttribute('data-tab');
             document.getElementById(targetId).classList.add('active');
@@ -245,43 +260,58 @@ function bindEvents() {
     });
 }
 
-/* ----- Render ----- */
+/* =========================================
+   3. RENDER GIAO DIỆN
+   ========================================= */
 function render() {
+    // Cập nhật lại số dư mới nhất từ Storage (đề phòng Admin vừa cộng tiền)
     if (cur) {
-        // Cập nhật lại số dư mới nhất
         const fresh = safeParse(userKeyFrom(cur.username), null);
         if (fresh) cur = fresh;
     }
 
     if (!cur) {
+        // --- CHƯA ĐĂNG NHẬP ---
         el.uLabel.innerText = "Khách";
         el.bLabel.innerText = "0";
         el.authSec.style.display = "block";
         el.userAct.style.display = "none";
         el.adminView.style.display = "none";
         el.btnLogout.style.display = "none";
-        el.his.innerHTML = "<div style='text-align:center;color:#94a3b8;padding:20px'><i>Vui lòng đăng nhập.</i></div>";
+        el.his.innerHTML = `
+            <div style="text-align:center; padding:30px; color:#94a3b8">
+                🔒<br>Vui lòng đăng nhập để xem lịch sử
+            </div>`;
     } else {
+        // --- ĐÃ ĐĂNG NHẬP ---
         el.uLabel.innerText = cur.username;
         el.bLabel.innerText = formatMoney(cur.balance);
         el.authSec.style.display = "none";
         el.userAct.style.display = "block";
-        el.btnLogout.style.display = "inline-block";
+        el.btnLogout.style.display = "block";
 
-        // History
+        // Render Lịch Sử
         const myOrders = allOrders.filter(o => o.buyer && o.buyer.toLowerCase() === cur.usernameLower);
-        el.his.innerHTML = myOrders.length === 0 
-            ? "<div style='text-align:center;color:#94a3b8;padding:10px'><i>Bạn chưa có đơn hàng nào.</i></div>"
-            : myOrders.slice().reverse().map(o => `
+        if (myOrders.length === 0) {
+            el.his.innerHTML = `<div style="text-align:center; padding:20px; color:#94a3b8">Bạn chưa mua đơn hàng nào.</div>`;
+        } else {
+            el.his.innerHTML = myOrders.slice().reverse().map(o => {
+                let stClass = 'status-pending';
+                if(o.status === 'Đang cày') stClass = 'status-working';
+                if(o.status === 'Đã xong') stClass = 'status-done';
+                
+                return `
                 <div class="item-list">
-                    <div style="font-weight:600; color:#334155">${escapeHtml(o.goi)}</div>
-                    <div style="display:flex; justify-content:space-between; margin-top:4px">
-                        <span class="${o.status === 'Đã xong' ? 'status-done' : (o.status === 'Đang cày' ? 'status-working' : 'status-pending')}" style="font-size:12px">${escapeHtml(o.status)}</span>
-                        <span style="font-size:12px; color:#94a3b8">${escapeHtml(o.time)}</span>
+                    <div class="flex-between">
+                        <span style="font-weight:600; color:#334155">📦 ${escapeHtml(o.goi)}</span>
+                        <span class="${stClass}">${escapeHtml(o.status)}</span>
                     </div>
-                </div>`).join('');
+                    <div style="font-size:12px; color:#94a3b8; margin-top:4px">🕒 ${escapeHtml(o.time)}</div>
+                </div>`;
+            }).join('');
+        }
 
-        // Admin
+        // Render Admin (Nếu là Admin)
         if (cur.usernameLower === CONFIG.ADMIN_ID.toLowerCase()) {
             el.adminView.style.display = "block";
             renderAdminPanel();
@@ -292,203 +322,349 @@ function render() {
 }
 
 function renderAdminPanel() {
+    // 1. List Orders
     if (!allOrders.length) {
-        el.adOrders.innerHTML = "<p style='padding:10px; text-align:center'>Chưa có đơn nào.</p>";
+        el.adOrders.innerHTML = "<p style='text-align:center; color:#94a3b8'>Chưa có đơn hàng nào.</p>";
     } else {
+        // FIX: Sử dụng window.function để gọi hàm từ HTML string
         el.adOrders.innerHTML = allOrders.slice().reverse().map((o, idx) => {
             const realIdx = allOrders.length - 1 - idx;
-            // FIX CLICK: Gọi hàm window.updateOrder
             return `
-            <div class="item-list" style="background:#fff; border:1px solid #f1f5f9; border-radius:8px; margin-bottom:8px">
-                <div style="font-weight:bold; color:#0f172a">${escapeHtml(o.buyer)} <span style="font-weight:normal; color:#64748b">- ${escapeHtml(o.goi)}</span></div>
-                <div style="background:#f8fafc; padding:6px; font-family:monospace; font-size:12px; border-radius:4px; margin:4px 0">
-                    User: ${escapeHtml(o.acc)} | Pass: ${escapeHtml(o.pass)}
+            <div class="item-list" style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px">
+                <div class="flex-between">
+                    <strong style="color:#0f172a">${escapeHtml(o.buyer)}</strong>
+                    <span style="font-size:12px; color:#64748b">${escapeHtml(o.time)}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; align-items:center">
-                    <b style="font-size:13px">${escapeHtml(o.status)}</b>
-                    <div>
-                        <button onclick="window.updateOrder(${realIdx}, 'Đang cày')" class="purple" style="padding:4px 8px; font-size:11px">Cày</button>
-                        <button onclick="window.updateOrder(${realIdx}, 'Đã xong')" class="green" style="padding:4px 8px; font-size:11px">Xong</button>
-                        <button onclick="window.deleteOrder(${realIdx})" class="red" style="padding:4px 8px; font-size:11px">Xóa</button>
+                <div style="margin:5px 0; font-size:13px; color:#334155">Gói: <b>${escapeHtml(o.goi)}</b></div>
+                <div style="background:#f1f5f9; padding:8px; border-radius:6px; font-family:monospace; font-size:12px; color:#475569">
+                    User: ${escapeHtml(o.acc)} <br> Pass: ${escapeHtml(o.pass)}
+                </div>
+                <div class="flex-between" style="margin-top:8px">
+                    <b style="font-size:13px; color:#0ea5e9">${escapeHtml(o.status)}</b>
+                    <div style="display:flex; gap:4px">
+                        <button onclick="window.adminUpdate(${realIdx}, 'Đang cày')" class="purple" style="padding:5px 10px; font-size:11px; margin:0">Cày</button>
+                        <button onclick="window.adminUpdate(${realIdx}, 'Đã xong')" class="green" style="padding:5px 10px; font-size:11px; margin:0">Xong</button>
+                        <button onclick="window.adminDelete(${realIdx})" class="red" style="padding:5px 10px; font-size:11px; margin:0">Xóa</button>
                     </div>
                 </div>
             </div>`;
         }).join('');
     }
 
+    // 2. List Users
     const userList = safeParse('snow_users', []);
-    el.adUsers.innerHTML = userList.length === 0 ? "<p>Trống</p>" : userList.map(uKey => {
-        const u = safeParse(userKeyFrom(uKey), null);
-        if (!u) return '';
-        return `<div class="item-list flex-row">
-            <span>👤 <b>${escapeHtml(u.username)}</b></span>
-            <span style="color:#22c55e; font-weight:bold">${formatMoney(u.balance)} đ</span>
-        </div>`;
-    }).join('');
+    if (!userList.length) {
+        el.adUsers.innerHTML = "<p style='text-align:center'>Chưa có thành viên.</p>";
+    } else {
+        el.adUsers.innerHTML = userList.map(uKey => {
+            const u = safeParse(userKeyFrom(uKey), null);
+            if (!u) return '';
+            return `
+            <div class="item-list flex-between">
+                <div>
+                    <div>👤 <b>${escapeHtml(u.username)}</b></div>
+                    <div style="font-size:11px; color:#94a3b8">Pass: ${escapeHtml(u.password)}</div>
+                </div>
+                <span style="color:#16a34a; font-weight:bold">${formatMoney(u.balance)} đ</span>
+            </div>`;
+        }).join('');
+    }
 }
 
-/* ----- Logic & Actions ----- */
+/* =========================================
+   4. LOGIC XỬ LÝ (AUTH, ORDER, MODAL)
+   ========================================= */
+
+// --- Auth ---
 function showAuthModal() {
     openModal(`
-        <div class="box modal-card" style="border-top: 4px solid #38bdf8">
-            <h3 style="text-align:center; margin-top:0">🔐 Đăng nhập / Đăng ký</h3>
-            <form id="auth_form">
-                <input id="au" placeholder="Tên tài khoản (viết liền)..." autocomplete="off" required>
-                <input id="ap" type="password" placeholder="Mật khẩu..." required>
-                <button type="submit" class="blue" style="width:100%; margin-top:10px">TIẾP TỤC</button>
-            </form>
-            <p style="font-size:12px; color:#64748b; text-align:center; margin-bottom:0">* Tự động tạo tài khoản nếu chưa có.</p>
-        </div>
+        <h3 style="text-align:center; margin-top:0">🔐 Đăng nhập / Đăng ký</h3>
+        <form id="auth_form">
+            <label style="font-size:12px; font-weight:bold; color:#64748b">Tài khoản:</label>
+            <input id="au" placeholder="Nhập tên tài khoản..." autocomplete="off" required>
+            
+            <label style="font-size:12px; font-weight:bold; color:#64748b">Mật khẩu:</label>
+            <input id="ap" type="password" placeholder="Nhập mật khẩu..." required>
+            
+            <button type="submit" class="blue" style="width:100%; margin-top:15px">TIẾP TỤC</button>
+        </form>
+        <p style="font-size:12px; color:#94a3b8; text-align:center; margin-bottom:0">
+            * Hệ thống tự động tạo tài khoản mới nếu chưa tồn tại.
+        </p>
     `);
-    document.getElementById('auth_form').onsubmit = (e) => {
-        e.preventDefault();
-        handleLogin();
-    };
-    setTimeout(() => { if(document.getElementById('au')) document.getElementById('au').focus() }, 100);
+    
+    // Gán sự kiện submit cho form trong modal
+    setTimeout(() => {
+        const form = document.getElementById('auth_form');
+        const auInput = document.getElementById('au');
+        if(form) {
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                handleLogin();
+            };
+        }
+        if(auInput) auInput.focus();
+    }, 100);
 }
 
 function handleLogin() {
     const uRaw = document.getElementById('au').value.trim();
     const pRaw = document.getElementById('ap').value.trim();
-    if (uRaw.length < 3 || pRaw.length < 3) return alert("Tài khoản/Mật khẩu quá ngắn!");
+    
+    if (uRaw.length < 3 || pRaw.length < 3) return alert("Tài khoản và mật khẩu quá ngắn (tối thiểu 3 ký tự)!");
     
     const uLower = uRaw.toLowerCase();
+    
+    // Check Admin Hardcode
     if (uLower === CONFIG.ADMIN_ID.toLowerCase() && pRaw === CONFIG.ADMIN_PASS) {
-        const admin = { username: CONFIG.ADMIN_ID, password: CONFIG.ADMIN_PASS, balance: 99999999, usernameLower: uLower };
-        saveUser(admin);
-        cur = admin;
+        const adminObj = { username: CONFIG.ADMIN_ID, password: CONFIG.ADMIN_PASS, balance: 99999999, usernameLower: uLower };
+        saveUser(adminObj);
+        cur = adminObj;
     } else {
+        // User thường
         const key = userKeyFrom(uRaw);
-        const ex = safeParse(key, null);
-        if (ex) {
-            if (ex.password === pRaw) cur = ex;
-            else return alert("Sai mật khẩu!");
+        const existing = safeParse(key, null);
+        
+        if (existing) {
+            // Đăng nhập
+            if (existing.password === pRaw) {
+                cur = existing;
+            } else {
+                return alert("Sai mật khẩu! Vui lòng kiểm tra lại.");
+            }
         } else {
+            // Đăng ký mới
             const newUser = { username: uRaw, password: pRaw, balance: 0, usernameLower: uLower };
             saveUser(newUser);
             cur = newUser;
         }
     }
+    
     localStorage.setItem('snow_session', cur.username);
     closeModal();
     render();
 }
 
-function saveUser(u) {
-    if(!u.usernameLower) u.usernameLower = u.username.trim().toLowerCase();
-    localStorage.setItem(userKeyFrom(u.username), JSON.stringify(u));
-    let idx = safeParse('snow_users', []);
-    if (!idx.includes(u.usernameLower)) {
-        idx.push(u.usernameLower);
-        localStorage.setItem('snow_users', JSON.stringify(idx));
-    }
-}
-
 function logout() {
-    if(!confirm("Đăng xuất?")) return;
+    if(!confirm("Bạn có chắc muốn đăng xuất?")) return;
     localStorage.removeItem('snow_session');
     cur = null;
     render();
 }
 
-function showDepositModal() {
-    if (!cur) return;
-    openModal(`
-        <div class="box modal-card" style="border-top: 4px solid #a855f7">
-            <h3 style="text-align:center; margin-top:0">💳 Nạp tiền chuyển khoản</h3>
-            <div style="background:#fff7ed; color:#c2410c; padding:10px; border-radius:8px; font-size:13px; text-align:center">
-                Nội dung CK: <b style="user-select:all">NAP ${escapeHtml(cur.username)}</b>
-            </div>
-            <div class="qr-box">
-                <img src="https://img.vietqr.io/image/MB-0000000000-compact.png?amount=0&addInfo=NAP%20${encodeURIComponent(cur.username)}&accountName=SNOWSHOP" style="width:100%; max-width:200px;">
-            </div>
-            <button class="red" onclick="closeModal()" style="width:100%">ĐÓNG</button>
-        </div>
-    `);
-}
-
+// --- Shop & Order ---
 function onPackageChange() {
+    const s = el.goi.options[el.goi.selectedIndex];
     if (!el.goi.value) {
         el.goiInfo.style.display = "none";
         el.accBox.style.display = "none";
         return;
     }
-    const s = el.goi.options[el.goi.selectedIndex];
     el.goiInfo.style.display = "block";
     el.accBox.style.display = "block";
-    el.goiInfo.innerHTML = `<b>📌 ${escapeHtml(s.dataset.info)}</b><br><small>${s.dataset.detail}</small>`;
+    el.goiInfo.innerHTML = `
+        <div style="font-weight:bold; color:#0ea5e9; font-size:15px">📌 ${escapeHtml(s.dataset.info)}</div>
+        <div style="color:#64748b; font-size:13px; margin-top:5px">${s.dataset.detail}</div>
+    `;
 }
 
 function handleOrder() {
-    if (!cur) return alert("Vui lòng đăng nhập!");
+    if (!cur) return alert("Vui lòng đăng nhập để mua hàng!");
+    
     const val = el.goi.value;
-    const ug = document.getElementById('game_user').value.trim();
-    const pg = document.getElementById('game_pass').value.trim();
+    const uGame = document.getElementById('game_user').value.trim();
+    const pGame = document.getElementById('game_pass').value.trim();
     
-    if (!val || !ug || !pg) return alert("Thiếu thông tin!");
-    const [pkg, price] = val.split('|');
-    const cost = parseInt(price);
+    if (!val) return alert("Vui lòng chọn gói dịch vụ!");
+    if (!uGame || !pGame) return alert("Vui lòng nhập tài khoản và mật khẩu Roblox!");
     
-    if (cur.balance < cost) return alert("Không đủ tiền!");
+    const [pkgName, pkgPrice] = val.split('|');
+    const cost = parseInt(pkgPrice);
     
+    if (cur.balance < cost) {
+        return alert(`Bạn không đủ tiền! Cần thêm: ${formatMoney(cost - cur.balance)}đ`);
+    }
+    
+    // Trừ tiền
     cur.balance -= cost;
     saveUser(cur);
     
-    const od = { buyer: cur.username, goi: pkg, acc: ug, pass: pg, status: "Đang chờ", time: new Date().toLocaleString('vi-VN') };
-    allOrders.push(od);
+    // Tạo đơn
+    const newOrder = {
+        buyer: cur.username,
+        goi: pkgName,
+        acc: uGame,
+        pass: pGame,
+        status: "Đang chờ",
+        time: new Date().toLocaleString('vi-VN')
+    };
+    
+    allOrders.push(newOrder);
     localStorage.setItem('snow_orders', JSON.stringify(allOrders));
     
-    // Webhook Discord
-    fetch(CONFIG.WEBHOOK, {
-        method: "POST", headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({embeds:[{title:"🔔 ĐƠN MỚI", color:5814783, fields:[{name:"Khách",value:od.buyer},{name:"Gói",value:od.goi},{name:"Acc/Pass",value:`${od.acc} | ${od.pass}`}]}]})
-    }).catch(()=>{});
-
-    alert("Mua thành công!");
+    // Gửi Webhook
+    sendDiscord(newOrder);
+    
+    alert("✅ Mua thành công! Đơn hàng đang được xử lý.");
+    
+    // Reset Form
+    document.getElementById('game_user').value = "";
+    document.getElementById('game_pass').value = "";
     render();
 }
 
+// --- Deposit ---
+function showDepositModal() {
+    if(!cur) return;
+    openModal(`
+        <h3 style="text-align:center; margin-top:0; color:#a855f7">💳 Nạp tiền Chuyển khoản</h3>
+        <div style="background:#fff7ed; padding:12px; border-radius:8px; border:1px solid #fdba74; text-align:center; color:#c2410c">
+            Nội dung chuyển khoản bắt buộc:<br>
+            <b style="font-size:18px; user-select:all">NAP ${escapeHtml(cur.username)}</b>
+        </div>
+        
+        <div class="qr-box">
+            <img src="https://img.vietqr.io/image/MB-0000000000-compact.png?amount=0&addInfo=NAP%20${encodeURIComponent(cur.username)}&accountName=SNOWSHOP" 
+                 style="width:100%; max-width:200px; border-radius:8px">
+            <p style="margin-bottom:0; font-size:12px; color:#64748b">Quét QR hoặc chuyển đến STK Admin</p>
+        </div>
+        
+        <button class="gray" onclick="closeModal()" style="width:100%; margin-top:10px">Đóng</button>
+    `);
+}
+
+/* =========================================
+   5. ADMIN LOGIC (WINDOW GLOBAL)
+   ========================================= */
+// Admin cộng tiền
 function adminAddMoney() {
-    const tUser = document.getElementById('ad_target').value.trim();
+    const tName = document.getElementById('ad_target').value.trim();
     const tAmt = parseInt(document.getElementById('ad_amt').value);
     const tKey = document.getElementById('ad_key').value.trim();
     
-    if (!tUser || !tAmt || tKey !== CONFIG.ADMIN_KEY) return alert("Sai thông tin hoặc Key!");
-    const key = userKeyFrom(tUser);
+    if (!tName) return alert("Chưa nhập tên người nhận!");
+    if (!tAmt || isNaN(tAmt)) return alert("Số tiền không hợp lệ!");
+    if (tKey !== CONFIG.ADMIN_KEY) return alert("Sai Admin Key!");
+    
+    const key = userKeyFrom(tName);
     const u = safeParse(key, null);
-    if (!u) return alert("User không tồn tại!");
     
-    u.balance = Number(u.balance) + tAmt;
+    if (!u) return alert("Không tìm thấy user này trong hệ thống!");
+    
+    u.balance = Number(u.balance || 0) + tAmt;
     saveUser(u);
-    if (cur && cur.usernameLower === u.usernameLower) cur.balance = u.balance;
     
-    alert(`Đã cộng ${formatMoney(tAmt)}đ cho ${u.username}`);
+    // Nếu đang login bằng nick đó (hoặc admin tự cộng mình) thì update luôn UI
+    if (cur && cur.usernameLower === u.usernameLower) {
+        cur.balance = u.balance;
+    }
+    
+    alert(`✅ Đã cộng ${formatMoney(tAmt)}đ cho ${u.username}.\nSố dư mới: ${formatMoney(u.balance)}đ`);
     render();
 }
 
-/* ----- Window Global Functions (Cho Admin Button Click) ----- */
-window.updateOrder = function(idx, st) {
+// Global functions cho Button click trong HTML String
+window.adminUpdate = function(idx, status) {
     if (!allOrders[idx]) return;
-    allOrders[idx].status = st;
+    allOrders[idx].status = status;
     localStorage.setItem('snow_orders', JSON.stringify(allOrders));
     render();
-};
+}
 
-window.deleteOrder = function(idx) {
-    if (!confirm("Xóa đơn này?")) return;
+window.adminDelete = function(idx) {
+    if(!confirm("Bạn chắc chắn muốn xóa đơn này vĩnh viễn?")) return;
     allOrders.splice(idx, 1);
     localStorage.setItem('snow_orders', JSON.stringify(allOrders));
     render();
-};
+}
 
-window.closeModal = function() {
-    el.overlay.style.display = 'none';
-    el.modalCont.innerHTML = '';
-};
+window.closeModal = closeModal; // Expose ra ngoài để gọi từ nút Đóng
 
-function openModal(html) {
-    el.modalCont.innerHTML = html;
-    el.overlay.style.display = 'block';
+/* =========================================
+   6. HELPER FUNCTIONS
+   ========================================= */
+function openModal(htmlContent) {
+    if(!el.modalCard || !el.overlay) return;
+    el.modalCard.innerHTML = htmlContent;
+    
+    // Animation fade in
+    el.overlay.classList.add('open');
+    el.modalContainer.style.display = 'flex'; // Hiện container để block click
+    setTimeout(() => {
+        el.modalCard.classList.add('open');
+    }, 10);
+}
+
+function closeModal() {
+    if(!el.modalCard || !el.overlay) return;
+    el.modalCard.classList.remove('open');
+    el.overlay.classList.remove('open');
+    
+    setTimeout(() => {
+        el.modalContainer.style.display = 'none';
+        el.modalCard.innerHTML = '';
+    }, 300); // Chờ animation xong mới ẩn
+}
+
+function saveUser(uObj) {
+    const key = userKeyFrom(uObj.username);
+    if (!uObj.usernameLower) uObj.usernameLower = uObj.username.trim().toLowerCase();
+    
+    localStorage.setItem(key, JSON.stringify(uObj));
+    
+    // Lưu vào index list để hiển thị trong Admin Panel
+    let list = safeParse('snow_users', []);
+    if (!list.includes(uObj.usernameLower)) {
+        list.push(uObj.usernameLower);
+        localStorage.setItem('snow_users', JSON.stringify(list));
+    }
+}
+
+function safeParse(key, defaultVal) {
+    try {
+        const d = localStorage.getItem(key);
+        return d ? JSON.parse(d) : defaultVal;
+    } catch (e) {
+        console.error("JSON Error", e);
+        return defaultVal;
+    }
+}
+
+function userKeyFrom(name) {
+    return 'user_' + (name || '').trim().toLowerCase();
+}
+
+function formatMoney(n) {
+    return Number(n).toLocaleString('vi-VN');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function(m) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m];
+    });
+}
+
+async function sendDiscord(o) {
+    try {
+        await fetch(CONFIG.WEBHOOK, {
+            method: "POST", headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                embeds: [{
+                    title: "🔔 ĐƠN HÀNG MỚI",
+                    color: 38143, // Blue
+                    fields: [
+                        {name: "Người mua", value: o.buyer, inline: true},
+                        {name: "Dịch vụ", value: o.goi, inline: true},
+                        {name: "Account", value: `\`${o.acc}\``},
+                        {name: "Password", value: `\`${o.pass}\``}
+                    ],
+                    footer: { text: "Snow Shop System" },
+                    timestamp: new Date().toISOString()
+                }]
+            })
+        });
+    } catch(e) {}
 }
 </script>
 </body>
