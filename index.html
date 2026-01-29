@@ -1,967 +1,220 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SNOW SHOP — Thuê cày Blox Fruits (Pro)</title>
-
-<!-- Font -->
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style>
-:root{
-  /* Brighter theme (user requested "sáng hơn") */
-  --bg:#f7fafc;           /* page background (light) */
-  --panel:#ffffff;        /* panels */
-  --card:#ffffff;         /* cards */
-  --muted:#5b6b78;        /* muted text */
-  --text:#0b1320;         /* main text (dark) */
-  --accent:#06b6d4;       /* primary accent */
-  --accent-2:#2277ff;     /* secondary accent */
-  --success:#10b981;
-  --danger:#ef4444;
-  --glass: rgba(11,19,32,0.03);
-  --radius:12px;
-  --shadow: 0 10px 30px rgba(15,23,42,0.08);
-  --max-w:1200px;
-  --gap:14px;
-  --tran:200ms;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-  background:linear-gradient(180deg,var(--bg),#eef6fb);color:var(--text);
-  -webkit-font-smoothing:antialiased;
-}
-
-/* Layout */
-.container{max-width:var(--max-w);margin:18px auto;padding:12px}
-.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
-.brand{display:flex;gap:12px;align-items:center}
-.logo{width:54px;height:54px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#ffffff}
-.title{font-weight:700;color:var(--text)}
-.header-meta{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px}
-
-/* Nav */
-.nav{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
-.nav button{background:transparent;border:0;color:var(--muted);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;transition:all var(--tran)}
-.nav button[aria-current="true"], .nav button:hover{color:var(--text);background:var(--glass)}
-
-/* Main grid */
-.main{display:grid;grid-template-columns:1fr 360px;gap:18px}
-@media (max-width:980px){ .main{grid-template-columns:1fr} }
-
-.panel{background:var(--panel);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid rgba(11,19,32,0.06);color:var(--text)}
-
-/* Hero + controls */
-.hero{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(6,182,212,0.06),rgba(34,119,255,0.03))}
-.hero h1{margin:0;font-size:20px}
-.controls{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.controls input, .controls select{background:transparent;border:1px solid rgba(11,19,32,0.06);color:var(--text);padding:10px;border-radius:10px;width:100%}
-.controls .col{flex:1;min-width:160px}
-
-/* Packages grid */
-.grid{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
-@media (max-width:980px){ .grid{grid-template-columns:repeat(2,1fr)} }
-@media (max-width:640px){ .grid{grid-template-columns:1fr} }
-
-.card-item{padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.9),transparent);border:1px solid rgba(11,19,32,0.04);transition:transform var(--tran),box-shadow var(--tran)}
-.card-item:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(11,19,32,0.06)}
-.pkg-head{display:flex;justify-content:space-between;align-items:center}
-.pkg-name{font-weight:800}
-.pkg-price{font-weight:800;color:var(--accent)}
-.pkg-desc{color:var(--muted);margin-top:8px;font-size:13px}
-.features{margin-top:10px;color:var(--muted);font-size:13px}
-.feature{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
-.feature .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--accent),var(--accent-2));margin-top:6px}
-
-/* actions */
-.row-actions{display:flex;gap:8px;margin-top:12px}
-.btn{border:0;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer;color:#ffffff;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:transform var(--tran)}
-.btn.secondary{background:transparent;color:var(--text);border:1px solid rgba(11,19,32,0.06)}
-.btn:active{transform:translateY(1px)}
-
-/* Sidebar pieces */
-.sidebar{display:flex;flex-direction:column;gap:12px}
-.wallet .balance{font-weight:800;color:var(--accent);font-size:18px;margin-top:8px}
-.orders-preview .order-small{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:var(--glass);margin-bottom:8px}
-
-/* admin */
-.admin-badge{background:linear-gradient(90deg,#facc15,#eab308);color:#021022;padding:6px 8px;border-radius:999px;font-weight:700}
-
-/* modal/toast */
-.modal-backdrop{position:fixed;inset:0;background:rgba(11,19,32,0.35);display:flex;align-items:center;justify-content:center;z-index:60}
-.modal{width:100%;max-width:760px;background:var(--panel);padding:18px;border-radius:12px;border:1px solid rgba(11,19,32,0.06)}
-.toast-wrap{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:70}
-.kv{color:var(--muted);font-size:13px}
-.small{font-size:13px;color:var(--muted)}
-.hidden{display:none}
-.badge{padding:6px 8px;border-radius:999px;background:var(--glass);font-weight:700;color:var(--muted)}
-.code{font-family:monospace;background:rgba(11,19,32,0.03);padding:6px;border-radius:6px}
-</style>
+    <meta charset="utf-8">
+    <title>❄️ SNOW SHOP — Cày Thuê Blox Fruits</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        body{font-family:Arial,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
+        .box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
+        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.3s}
+        button:hover{opacity:0.8}
+        button.red{background:#ef4444;color:#fff}
+        button.green{background:#22c55e;color:#fff}
+        input,select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
+        small{color:#555;display:block;margin-top:5px}
+        hr{border:none;border-top:1px solid #eee;margin:15px 0}
+        .info{background:#f8fafc;border:1px dashed #38bdf8;border-radius:10px;padding:10px;margin-top:10px;line-height:1.6}
+        .info b{color:#0ea5e9}
+        .qr-box{text-align:center;padding:15px;background:#fff;border-radius:10px;margin-top:10px}
+        .admin-section{border-top:4px solid #ef4444}
+        .badge{padding:2px 8px;border-radius:5px;font-size:12px;background:#e2e8f0}
+    </style>
 </head>
 <body>
-<div class="container">
-  <header class="header">
-    <div class="brand">
-      <div class="logo" aria-hidden>SS</div>
-      <div>
-        <div class="title">SNOW SHOP</div>
-        <div class="kv">Thuê cày Blox Fruits — Cao cấp • Uy tín • Bảo mật</div>
-      </div>
-    </div>
 
-    <div class="header-meta" aria-hidden>
-      <div>👤 <strong id="hdr-user">Chưa đăng nhập</strong> <span id="hdr-admin" class="admin-badge hidden">ADMIN</span></div>
-      <div>💰 <strong id="hdr-balance">0đ</strong></div>
-    </div>
-  </header>
-
-  <nav class="nav" role="navigation">
-    <button data-tab="packages" aria-current="true">Gói dịch vụ</button>
-    <button data-tab="account">Tài khoản</button>
-    <button data-tab="orders">Lịch sử</button>
-    <button id="nav-deposit">Nạp bank</button>
-    <button id="contactBtn">Liên hệ</button>
-  </nav>
-
-  <main class="main">
-    <!-- left -->
-    <section class="panel" id="leftPanel">
-      <div class="hero">
-        <div>
-          <h1>Thuê cày chuyên nghiệp — An toàn & Nhanh</h1>
-          <p class="kv">Chọn gói theo nhu cầu. Thanh toán bằng ví (số dư) hoặc nạp bank. Admin duyệt nạp và có thể gift tiền.</p>
-          <div style="margin-top:10px">
-            <button class="btn" id="cta-order">Mua ngay</button>
-            <button class="btn secondary" id="cta-learn">Cách hoạt động</button>
-          </div>
-        </div>
-        <div style="text-align:right">
-          <div class="kv">Hỗ trợ 24/7</div>
-          <div style="margin-top:10px" class="kv">Cam kết hoàn tiền nếu vi phạm</div>
-        </div>
-      </div>
-
-      <div class="controls" style="margin-top:12px">
-        <div class="col" style="flex:2">
-          <input id="searchInput" placeholder="Tìm kiếm gói (ví dụ: Tushita, Level,...)" />
-        </div>
-
-        <div class="col" style="min-width:220px">
-          <select id="goi" aria-label="Chọn gói">
-            <option value="">-- Chọn gói cày thuê --</option>
-            <optgroup label="🔰 LEVEL">
-              <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh\n✔ Không đổi trái\n✔ 3–5 giờ">Level 700 – 20.000đ</option>
-              <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest\n✔ Không mất đ���\n✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
-              <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3\n✔ An toàn 100%\n✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
-              <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3\n✔ Không mất acc\n✔ 4–6 ngày">0 → MAX – 50.000đ</option>
-            </optgroup>
-            <optgroup label="🎒 ITEM">
-              <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest\n✔ Không mất đồ\n✔ 1 ngày">Mỏ Neo – 20.000đ</option>
-              <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest\n✔ An toàn\n✔ Trong ngày">Tushita – 15.000đ</option>
-              <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama\n✔ Không mất đồ\n✔ 1–2 ngày">Yama – 30.000đ</option>
-              <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm\n✔ Không rollback\n✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
-              <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK\n✔ Không mất item\n✔ 1–2 ngày">CDK – 30.000đ</option>
-            </optgroup>
-            <optgroup label="💠 V4">
-              <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear\n✔ Thức tỉnh V4\n✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
-              <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ\n✔ Nhanh gọn\n✔ Trong ngày">1 Gear V4 – 5.000đ</option>
-            </optgroup>
-            <optgroup label="🥋 MELEE">
-              <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman\n✔ Farm nguyên liệu\n✔ 1 ngày">Godhuman – 20.000đ</option>
-              <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2\n✔ Nhanh\n✔ Trong ngày">Melee V2 – 15.000đ</option>
-            </optgroup>
-          </select>
-        </div>
-
-        <div style="min-width:140px">
-          <select id="sortSelect" aria-label="Sắp xếp">
-            <option value="default">Mặc định</option>
-            <option value="price_asc">Giá tăng dần</option>
-            <option value="price_desc">Giá giảm dần</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="packagesGrid" class="grid" aria-live="polite"></div>
-    </section>
-
-    <!-- right -->
-    <aside class="sidebar">
-      <div class="panel wallet">
-        <div class="kv">Tài khoản</div>
-        <div id="acctName" class="kv" style="margin-top:6px">Bạn chưa đăng nhập</div>
-        <div id="balance" class="balance">0đ</div>
-
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn" id="openAccount">Đăng nhập / Đăng ký</button>
-          <button class="btn secondary" id="quickBuy">Đặt nhanh</button>
-        </div>
-
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn secondary" id="openDeposit">Nạp bank</button>
-        </div>
-      </div>
-
-      <div class="panel orders-preview">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Đơn gần đây</strong>
-          <button class="small" id="viewOrders">Xem tất cả</button>
-        </div>
-        <div id="ordersPreview" style="margin-top:12px"></div>
-      </div>
-
-      <!-- Admin placeholder: contains admin controls and a new "Admin accounts" management -->
-      <div id="adminPanelPlaceholder" class="panel hidden">
-        <strong>Admin</strong>
-        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" id="openAdminPanel">Bảng quản trị</button>
-          <button class="btn secondary" id="openGiftModal">Gift tiền</button>
-          <button class="btn secondary" id="openAdminAccounts">Quản lý tài khoản admin</button>
-        </div>
-      </div>
-
-      <div class="panel">
-        <strong>Hỗ trợ</strong>
-        <div class="kv" style="margin-top:8px">Discord / Telegram / Zalo — cập nhật</div>
-        <div style="margin-top:12px"><button class="btn secondary" id="contactSupport">Mở kênh hỗ trợ</button></div>
-      </div>
-    </aside>
-  </main>
+<div class="box">
+    👤 <b id="u">Chưa đăng nhập</b> | 
+    💰 <b id="b">0</b>đ 
+    <button class="red" onclick="logout()" style="float:right;padding:5px 10px">Đăng xuất</button>
 </div>
 
-<!-- modal + toast root -->
-<div id="modalRoot" class="hidden" aria-hidden="true"></div>
-<div id="toastWrap" class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+<div class="box" id="auth_btns">
+    <button onclick="auth()">🔑 Đăng nhập / Đăng ký</button>
+    <button onclick="showDeposit()">💳 Nạp tiền (QR)</button>
+    <button id="adminBtn" class="red" style="display:none" onclick="showAdmin()">🛠 Admin Panel</button>
+</div>
+
+<div class="box" id="main_shop">
+    <h3>🛒 Thuê dịch vụ</h3>
+    <select id="goi" onchange="showInfo()">
+        <option value="">-- Chọn gói cày thuê --</option>
+        <optgroup label="🔰 LEVEL">
+            <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh<br>✔ Không đổi trái<br>✔ 3–5 giờ">Level 700 – 20.000đ</option>
+            <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest<br>✔ Không mất đồ<br>✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
+            <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3<br>✔ An toàn 100%<br>✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
+            <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3<br>✔ Không mất acc<br>✔ 4–6 ngày">0 → MAX – 50.000đ</option>
+        </optgroup>
+        <optgroup label="🎒 ITEM">
+            <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest<br>✔ Không mất đồ<br>✔ 1 ngày">Mỏ Neo – 20.000đ</option>
+            <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest<br>✔ An toàn<br>✔ Trong ngày">Tushita – 15.000đ</option>
+            <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama<br>✔ Không mất đồ<br>✔ 1–2 ngày">Yama – 30.000đ</option>
+            <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm<br>✔ Không rollback<br>✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
+            <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK<br>✔ Không mất item<br>✔ 1–2 ngày">CDK – 30.000đ</option>
+        </optgroup>
+        <optgroup label="💠 V4">
+            <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear<br>✔ Thức tỉnh V4<br>✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
+            <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ<br>✔ Nhanh gọn<br>✔ Trong ngày">1 Gear V4 – 5.000đ</option>
+        </optgroup>
+        <optgroup label="🥋 MELEE">
+            <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman<br>✔ Farm nguyên liệu<br>✔ 1 ngày">Godhuman – 20.000đ</option>
+            <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2<br>✔ Nhanh<br>✔ Trong ngày">Melee V2 – 15.000đ</option>
+        </optgroup>
+    </select>
+    <div id="goiInfo" class="info" style="display:none"></div>
+    <button class="green" style="width:100%;font-size:16px" onclick="order()">THUÊ NGAY (Trừ tiền ví)</button>
+    <small>📩 Đơn sẽ được gửi qua Discord Admin</small>
+</div>
+
+<div class="box">
+    <h3>📜 Lịch sử của tôi</h3>
+    <div id="his"></div>
+</div>
+
+<div id="adminPanel" class="box admin-section" style="display:none">
+    <h3>🛠 Quản lý (Admin Only)</h3>
+    <div id="adminList">Đang tải danh sách chờ...</div>
+</div>
+
+<div id="modal"></div>
 
 <script>
-/* ====================================================================================
-   SNOW SHOP — Admin-account enhancement
-   - Adds a dedicated Admin Accounts management modal (create admin, change pass, revoke)
-   - Seeds a fallback admin account for local/testing use:
-       username: admin
-       password: Admin@2026
-     (REMOVE or change in production!)
-   - Shows admin-only button "Quản lý tài khoản admin" in admin panel.
-   - Provides helper functions: createAdminUser, setAdminPassword, revokeAdminRole
-   ==================================================================================== */
+const API = "/api"; 
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"; // Thay link webhook của bạn vào đây
 
-/* CONFIG */
-const CONFIG = {
-  API_BASE: "", // set to your API to enable server mode
-  DISCORD_WEBHOOK: "",
-  DEPOSIT_MIN: 1000,
-  RATE_LIMIT: { depositWindowMs: 5*60*1000, depositMax: 3, orderWindowMs: 60*1000, orderMax: 5 }
-};
+let cur = null;
 
-/* PACKAGES (unchanged) */
-const PACKAGES = [
-  { id:'level_700', name:'Level 700', price:20000, group:'LEVEL', desc:'Farm nhanh lên level 700', detail:'✔ Farm quest nhanh\n✔ Không đổi trái\n✔ 3–5 giờ', time:'3–5 giờ' },
-  { id:'700_1500', name:'700 → 1500', price:20000, group:'LEVEL', desc:'Farm từ Sea 2', detail:'✔ Farm boss + quest\n✔ Không mất đồ\n✔ 1–2 ngày', time:'1–2 ngày' },
-  { id:'1500_2800', name:'1500 → 2800', price:20000, group:'LEVEL', desc:'Farm Sea 3', detail:'✔ Farm full Sea 3\n✔ An toàn 100%\n✔ 2–3 ngày', time:'2–3 ngày' },
-  { id:'0_max', name:'0 → MAX', price:50000, group:'LEVEL', desc:'Cày từ đầu tới max', detail:'✔ Full Sea 1–2–3\n✔ Không mất acc\n✔ 4–6 ngày', time:'4–6 ngày' },
-
-  { id:'mo_neo', name:'Mỏ Neo', price:20000, group:'ITEM', desc:'Làm Mỏ Neo', detail:'✔ Full quest\n✔ Không mất đồ\n✔ 1 ngày', time:'1 ngày' },
-  { id:'tushita', name:'Tushita', price:15000, group:'ITEM', desc:'Kiếm Tushita', detail:'✔ Full quest\n✔ An toàn\n✔ Trong ngày', time:'Trong ngày' },
-  { id:'yama', name:'Yama', price:30000, group:'ITEM', desc:'Kiếm Yama', detail:'✔ Full Yama\n✔ Không mất đồ\n✔ 1–2 ngày', time:'1–2 ngày' },
-  { id:'tam_kiem', name:'Tam Kiếm Full', price:35000, group:'ITEM', desc:'True Triple Katana', detail:'✔ Full 3 kiếm\n✔ Không rollback\n✔ 2–3 ngày', time:'2–3 ngày' },
-  { id:'cdk', name:'CDK', price:30000, group:'ITEM', desc:'Cursed Dual Katana', detail:'✔ Full CDK\n✔ Không mất item\n✔ 1–2 ngày', time:'1–2 ngày' },
-
-  { id:'full_v4', name:'Full Gear V4', price:30000, group:'V4', desc:'Full Gear V4', detail:'✔ Full Gear\n✔ Thức tỉnh V4\n✔ 1–2 ngày', time:'1–2 ngày' },
-  { id:'one_v4', name:'1 Gear V4', price:5000, group:'V4', desc:'Up 1 Gear', detail:'✔ 1 Gear bất kỳ\n✔ Nhanh gọn\n✔ Trong ngày', time:'Trong ngày' },
-
-  { id:'godhuman', name:'Godhuman', price:20000, group:'MELEE', desc:'Melee Godhuman', detail:'✔ Full Godhuman\n✔ Farm nguyên liệu\n✔ 1 ngày', time:'1 ngày' },
-  { id:'melee_v2', name:'Melee V2', price:15000, group:'MELEE', desc:'Up Melee V2', detail:'✔ Melee V2\n✔ Nhanh\n✔ Trong ngày', time:'Trong ngày' }
-];
-
-/* Fallback storage (used if no API) */
-const Storage = {
-  usersKey: 'snow_users_v7',
-  ordersKey: 'snow_orders_v7',
-  depositsKey: 'snow_deposits_v7',
-  logsKey: 'snow_logs_v7',
-  getUsers(){ try{return JSON.parse(localStorage.getItem(this.usersKey)||'{}')}catch(e){return{}} },
-  saveUsers(v){ localStorage.setItem(this.usersKey, JSON.stringify(v)) },
-  getOrders(){ try{return JSON.parse(localStorage.getItem(this.ordersKey)||'[]')}catch(e){return[]} },
-  saveOrders(v){ localStorage.setItem(this.ordersKey, JSON.stringify(v)) },
-  getDeposits(){ try{return JSON.parse(localStorage.getItem(this.depositsKey)||'[]')}catch(e){return[]} },
-  saveDeposits(v){ localStorage.setItem(this.depositsKey, JSON.stringify(v)) },
-  pushLog(entry){ const l = JSON.parse(localStorage.getItem(this.logsKey)||'[]'); l.unshift(entry); localStorage.setItem(this.logsKey, JSON.stringify(l)); }
-};
-
-/* Helpers */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const fmt = n => (Number(n)||0).toLocaleString('vi-VN');
-const now = () => Date.now();
-function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-function debounce(fn, wait=160){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); } }
-async function sha256(msg){ const enc = new TextEncoder(); const buf = await crypto.subtle.digest('SHA-256', enc.encode(msg)); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
-
-/* Session helpers */
-function currentUser(){ try{return JSON.parse(sessionStorage.getItem('snow_current_user')||'null')}catch(e){return null} }
-function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
-
-/* Toast / modal */
-const toastWrap = document.getElementById('toastWrap');
-function toast(msg, {type='info', timeout=3500}={}) {
-  const el = document.createElement('div');
-  el.className = 'panel';
-  el.style.padding='10px';
-  el.style.minWidth='220px';
-  el.style.borderRadius='8px';
-  el.style.background = type==='error' ? 'linear-gradient(180deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02))' : 'linear-gradient(180deg, rgba(6,182,212,0.04), transparent)';
-  el.style.color = 'var(--text)';
-  el.textContent = msg;
-  toastWrap.appendChild(el);
-  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(12px)'; setTimeout(()=>el.remove(),300); }, timeout);
-}
-const modalRoot = document.getElementById('modalRoot');
-function showModal(contentHTML, {onOpen=null}={}) {
-  modalRoot.innerHTML = `<div class="modal-backdrop" id="modalBackdrop">${contentHTML}</div>`;
-  modalRoot.classList.remove('hidden');
-  requestAnimationFrame(()=> {
-    const focusable = modalRoot.querySelector('button, input, textarea, [tabindex]:not([tabindex="-1"])');
-    if(focusable) focusable.focus();
-    if(onOpen) onOpen();
-  });
-  function onKey(e){ if(e.key==='Escape') hideModal(); }
-  document.addEventListener('keydown', onKey);
-  modalRoot._onKey = onKey;
-}
-function hideModal(){ modalRoot.innerHTML=''; modalRoot.classList.add('hidden'); if(modalRoot._onKey) document.removeEventListener('keydown', modalRoot._onKey); }
-
-/* Discord notify helper (best-effort) */
-async function notifyDiscord(type, data){
-  try{
-    if(!CONFIG.https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm) { console.log('Discord notify disabled', type, data); return; }
-    const payload = {
-      embeds:[{
-        title:type,
-        color:3447003,
-        fields:Object.keys(data||{}).map(k=>({ name:k, value:String(data[k]||'-'), inline:true })),
-        timestamp:new Date().toISOString()
-      }]
-    };
-    await fetch(CONFIG.https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-  }catch(e){ console.error('notifyDiscord failed', e); }
+/* ===== HIỂN THỊ THÔNG TIN GÓI ===== */
+function showInfo(){
+    let s=goi.options[goi.selectedIndex];
+    if(!s.dataset.info){goiInfo.style.display="none";return;}
+    goiInfo.style.display="block";
+    goiInfo.innerHTML=`<b>📌 ${s.dataset.info}</b><br>${s.dataset.detail}`;
 }
 
-/* ---------- Fallback admin creation (for dev/testing only) ----------
-   We create a fallback admin user so you can log in and manage deposits/admins
-   DEFAULT CREDENTIALS (fallback local mode):
-     username: admin
-     password: Admin@2026
-   IMPORTANT:
-     - Remove or change this in production.
-     - If you use a real backend (CONFIG.API_BASE), admin should be created there.
----------------------------------------------------------------------*/
-/* ---------- Fallback admin creation (for dev/testing only) ----------
-   DEFAULT CREDENTIALS (local only):
-     username: admin
-     password: Admin@2026
-   NOTE:
-     - KHÔNG tạo tài khoản demo
-     - Giữ nguyên toàn bộ fix & logic hiện tại
----------------------------------------------------------------------*/
-(async function seedFallbackAdmin() {
-  // Check if we should seed fallback admin for testing
-  const users = Storage.getUsers(); // Get the existing users from local storage
-  if (!users['admin']) {
-    // Create a fallback admin account if it doesn't exist
-    const adminPassword = await sha256("Admin@2026"); // Hash the default password
-    users['admin'] = {
-      username: 'admin',
-      passwordHash: adminPassword, // Store hashed password
-      role: 'admin',
-      balance: 0,
-    };
-    Storage.saveUsers(users); // Save the updated users with the admin account
-    console.log('Fallback admin account created. Username: admin, Password: Admin@2026');
-  }
-})();
-
-/* ---------- Admin account management helpers (fallback) ---------- */
-async function createAdminUser(username, password){
-  if(!username || !password) throw new Error('Username và password cần được cung cấp');
-  if(CONFIG.API_BASE){
-    // server-side should implement admin creation endpoint
-    return apiFetch('/admin/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
-  } else {
-    const users = Storage.getUsers();
-    if(users[username]) throw new Error('Người dùng đã tồn tại');
-    users[username] = { username, passHash: await sha256(password), balance:0, roles:['admin'] };
-    Storage.saveUsers(users);
-    Storage.pushLog({ type:'admin_created', username, time:now() });
-    notifyDiscord('Admin mới được tạo', { Admin: username, By: 'SYSTEM' });
-    return users[username];
-  }
-}
-
-async function setAdminPassword(username, newPassword){
-  if(!username || !newPassword) throw new Error('Thiếu username hoặc password mới');
-  if(CONFIG.API_BASE){
-    return apiFetch(`/admin/users/${encodeURIComponent(username)}/password`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password:newPassword }) });
-  } else {
-    const users = Storage.getUsers();
-    if(!users[username]) throw new Error('Người dùng không tồn tại');
-    users[username].passHash = await sha256(newPassword);
-    Storage.saveUsers(users);
-    Storage.pushLog({ type:'admin_pass_changed', username, time:now() });
-    notifyDiscord('Mật khẩu admin đã thay đổi', { Admin: username, By: 'SYSTEM' });
-    return true;
-  }
-}
-
-async function revokeAdminRole(username){
-  if(!username) throw new Error('Thiếu username');
-  if(CONFIG.API_BASE){
-    return apiFetch(`/admin/users/${encodeURIComponent(username)}/revoke`, { method:'POST' });
-  } else {
-    const users = Storage.getUsers();
-    if(!users[username]) throw new Error('Người dùng không tồn tại');
-    users[username].roles = (users[username].roles||[]).filter(r => r !== 'admin');
-    Storage.saveUsers(users);
-    Storage.pushLog({ type:'admin_revoked', username, time:now() });
-    notifyDiscord('Quyền admin bị thu hồi', { Admin: username, By: 'SYSTEM' });
-    return true;
-  }
-}
-
-/* ---------- Auth (fallback) ---------- */
-async function registerUser(username, password){
-  if(!username || !password) throw new Error('Nhập tên đăng nhập và mật khẩu');
-  if(CONFIG.API_BASE){
-    return apiFetch('/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password}) });
-  } else {
-    const users = Storage.getUsers();
-    if(users[username]) throw new Error('Tài khoản đã tồn tại');
-    users[username] = { username, passHash: await sha256(password), balance: 0, roles:[] };
-    Storage.saveUsers(users);
-    Storage.pushLog({ type:'register', username, time: now() });
-    return { ok:true };
-  }
-}
-
-async function loginUser(username, password){
-  if(CONFIG.API_BASE){
-    const res = await apiFetch('/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
-    if(res && res.token){
-      sessionStorage.setItem('snow_token', res.token);
-      setCurrentUser(res.user);
-      return res.user;
-    }
-    throw new Error('Login failed');
-  } else {
-    const users = Storage.getUsers();
-    const rec = users[username];
-    if(!rec) throw new Error('Không tìm thấy tài khoản');
-    const h = await sha256(password);
-    if(h !== rec.passHash) throw new Error('Mật khẩu sai');
-    setCurrentUser({ username: rec.username, roles: rec.roles || [] });
-    Storage.pushLog({ type:'login', username: rec.username, time: now() });
-    renderHeader();
-    return rec;
-  }
-}
-
-function logoutUser(){ sessionStorage.removeItem('snow_token'); setCurrentUser(null); renderHeader(); }
-
-/* ---------- Rendering & UI ---------- */
-
-function renderHeader(){
-  const cur = currentUser();
-  const hdrUser = document.getElementById('hdr-user');
-  const hdrBalance = document.getElementById('hdr-balance');
-  const acctName = document.getElementById('acctName');
-  const balanceEl = document.getElementById('balance');
-  const hdrAdmin = document.getElementById('hdr-admin');
-  if(cur){
-    hdrUser.textContent = cur.username;
-    if(CONFIG.API_BASE){
-      apiFetch('/auth/me').then(res => {
-        const bal = (res && res.user && res.user.balance) ? res.user.balance : 0;
-        hdrBalance.textContent = fmt(bal)+'đ';
-        acctName.textContent = 'Xin chào, ' + (res && res.user && res.user.username ? res.user.username : cur.username);
-        balanceEl.textContent = fmt(bal)+'đ';
-        const isAdmin = (res && res.user && (res.user.roles||[]).includes('admin'));
-        hdrAdmin.classList.toggle('hidden', !isAdmin);
-        document.getElementById('adminPanelPlaceholder').classList.toggle('hidden', !isAdmin);
-      }).catch(()=> { hdrBalance.textContent = '—'; });
-    } else {
-      const users = Storage.getUsers(); const bal = (users[cur.username] && users[cur.username].balance) || 0;
-      hdrBalance.textContent = fmt(bal)+'đ';
-      acctName.textContent = 'Xin chào, ' + cur.username;
-      balanceEl.textContent = fmt(bal)+'đ';
-      const isAdmin = (cur.roles||[]).includes('admin');
-      hdrAdmin.classList.toggle('hidden', !isAdmin);
-      document.getElementById('adminPanelPlaceholder').classList.toggle('hidden', !isAdmin);
-    }
-  } else {
-    hdrUser.textContent = 'Chưa đăng nhập';
-    hdrBalance.textContent = '0đ';
-    acctName.textContent = 'Bạn chưa đăng nhập';
-    balanceEl.textContent = '0đ';
-    hdrAdmin.classList.add('hidden');
-    document.getElementById('adminPanelPlaceholder').classList.add('hidden');
-  }
-}
-
-/* Build packages grid */
-function renderPackages({ filter=null, sortMode='default' }={}) {
-  const grid = document.getElementById('packagesGrid');
-  const list = PACKAGES.slice();
-  let filtered = list;
-  if(filter){
-    const q = filter.trim().toLowerCase();
-    filtered = list.filter(p => (p.name + ' ' + p.desc + ' ' + p.detail).toLowerCase().includes(q));
-  }
-  if(sortMode === 'price_asc') filtered = filtered.sort((a,b)=>a.price-b.price);
-  else if(sortMode === 'price_desc') filtered = filtered.sort((a,b)=>b.price-a.price);
-
-  grid.innerHTML = '';
-  if(filtered.length === 0){
-    grid.innerHTML = `<div class="kv">Không tìm thấy gói phù hợp.</div>`;
-    return;
-  }
-
-  for(const pkg of filtered){
-    const card = document.createElement('div');
-    card.className = 'card-item panel';
-    card.innerHTML = `
-      <div class="pkg-head">
-        <div class="pkg-name">${escapeHtml(pkg.name)}</div>
-        <div class="pkg-price">${fmt(pkg.price)}đ</div>
-      </div>
-      <div class="pkg-desc">${escapeHtml(pkg.desc)}</div>
-      <div class="features">
-        <div class="feature"><div class="dot"></div><div>${escapeHtml(pkg.detail).replace(/\n/g,'<br>')}</div></div>
-        <div class="kv">Thời gian: ${escapeHtml(pkg.time)}</div>
-      </div>
-      <div class="row-actions">
-        <button class="btn buy-btn" data-id="${escapeHtml(pkg.id)}">Mua ngay</button>
-        <button class="btn secondary info-btn" data-id="${escapeHtml(pkg.id)}">Chi tiết</button>
-      </div>
-    `;
-    grid.appendChild(card);
-  }
-
-  $$('.buy-btn').forEach(b => b.addEventListener('click', (e) => {
-    const id = e.currentTarget.getAttribute('data-id');
-    openOrderModal(id);
-  }));
-  $$('.info-btn').forEach(b => b.addEventListener('click', (e) => {
-    const id = e.currentTarget.getAttribute('data-id');
-    const pkg = PACKAGES.find(x => x.id === id);
-    if(pkg){
-      showModal(`<div class="modal"><h3>${escapeHtml(pkg.name)}</h3><p class="kv">${escapeHtml(pkg.desc)}</p><pre style="white-space:pre-wrap;margin-top:8px">${escapeHtml(pkg.detail)}</pre><div style="margin-top:12px"><button class="btn" id="closeInfo">Đóng</button></div></div>`, {
-        onOpen(){ document.getElementById('closeInfo').addEventListener('click', hideModal); }
-      });
-    }
-  }));
-}
-
-/* Order modal (simplified) */
-function openOrderModal(pkgId){
-  const cur = currentUser();
-  if(!cur){ showLoginModal(() => { openOrderModal(pkgId); }); return; }
-  const pkg = PACKAGES.find(p => p.id === pkgId) || null;
-  const defaultPackageText = pkg ? `${pkg.name} — ${fmt(pkg.price)}đ` : '';
-
-  const html = `
-  <div class="modal">
-    <h3>Đặt gói thuê</h3>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-      <div style="flex:1">
-        <label class="kv">Chọn gói</label>
-        <select id="order_package_select" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)">
-          <option value="">-- Chọn --</option>
-          ${PACKAGES.map(p=>`<option value="${escapeHtml(p.id)}" data-price="${p.price}">${escapeHtml(p.name)} — ${fmt(p.price)}đ</option>`).join('')}
+/* ===== THANH TOÁN QR ===== */
+function showDeposit(){
+    modal.innerHTML = `
+    <div class="box" style="position:fixed;top:10%;left:5%;right:5%;z-index:100;background:#fff;border:2px solid #38bdf8">
+        <h3>💳 Nạp tiền qua Ngân hàng / Ví</h3>
+        <select id="bankSelect" onchange="updateQR()">
+            <option value="MBBANK">MB Bank (Quân Đội)</option>
+            <option value="MOMO">Ví MoMo</option>
         </select>
-      </div>
-      <div style="width:160px">
-        <label class="kv">Giá</label>
-        <div id="order_price" class="kv" style="padding:10px;border-radius:8px;background:rgba(11,19,32,0.03);text-align:center">${defaultPackageText || '—'}</div>
-      </div>
-    </div>
+        <input type="number" id="napAmount" placeholder="Nhập số tiền muốn nạp (vnđ)" oninput="updateQR()">
+        <div class="qr-box" id="qrArea">
+            <p>Vui lòng chọn ngân hàng và nhập số tiền</p>
+        </div>
+        <button onclick="modal.innerHTML=''">Đóng</button>
+    </div>`;
+}
 
-    <div style="margin-top:10px">
-      <label class="kv">Login / Tài khoản game (bắt buộc)</label>
-      <input id="order_login" placeholder="Tên tài khoản / ID" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-    </div>
+function updateQR(){
+    const bank = document.getElementById('bankSelect').value;
+    const amount = document.getElementById('napAmount').value;
+    const user = cur ? cur.username : 'KHACH';
+    const content = `NAP ${user}`;
     
-     <input id="order_login" placeholder="Login Roblox" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-    </div>
-
-    <div style="margin-top:10px">
-      <label class="kv">Ghi chú (nội dung cần lưu ý)</label>
-      <textarea id="order_note" rows="3" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)"></textarea>
-    </div>
-
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      <button class="btn secondary" id="order_cancel">Hủy</button>
-      <button class="btn" id="order_submit">Xác nhận & Thanh toán</button>
-    </div>
-  </div>
-  `;
-
-  showModal(html, {
-    onOpen(){
-      const select = document.getElementById('order_package_select');
-      const priceBox = document.getElementById('order_price');
-      const loginInput = document.getElementById('order_login');
-      const noteInput = document.getElementById('order_note');
-      document.getElementById('order_cancel').addEventListener('click', hideModal);
-      if(pkgId){ select.value = pkgId; priceBox.textContent = `${pkg.name} — ${fmt(pkg.price)}đ`; }
-      select.addEventListener('change', (e) => {
-        const p = PACKAGES.find(x => x.id === select.value);
-        priceBox.textContent = p ? `${p.name} — ${fmt(p.price)}đ` : '—';
-      });
-      document.getElementById('order_submit').addEventListener('click', async () => {
-        const sel = select.value;
-        if(!sel){ toast('Vui lòng chọn gói', {type:'error'}); return; }
-        if(!loginInput.value.trim()){ toast('Vui lòng nhập Login / tài khoản game', {type:'error'}); loginInput.focus(); return; }
-        const pkg = PACKAGES.find(x => x.id === sel);
-        const order = {
-          id: 'o_' + now(),
-          username: currentUser().username,
-          package: pkg.name,
-          packageId: pkg.id,
-          price: pkg.price,
-          login: loginInput.value.trim(),
-          note: noteInput.value.trim(),
-          createdAt: now(),
-          status: 'pending'
-        };
-
-        try {
-          // fallback create order (or server)
-          const list = Storage.getOrders(); list.unshift(order); Storage.saveOrders(list);
-          Storage.pushLog({ type:'order_created', orderId:order.id, user:order.username, time:now() });
-          notifyDiscord('Đơn hàng mới', { User: order.username, Package: order.package, Price: fmt(order.price)+'đ', Login: order.login || '-' });
-          hideModal();
-          toast('Đơn đã được tạo. Chúng tôi đã gửi thông báo tới team.', { type:'info' });
-          renderOrdersPreview();
-        } catch (err) {
-          console.error(err);
-          toast('Tạo đơn thất bại: ' + (err.message || err), {type:'error'});
-        }
-      });
+    if(amount > 0) {
+        // Sử dụng API VietQR để tạo mã tự động
+        const qrUrl = `https://img.vietqr.io/image/${bank}-123456789-compact2.png?amount=${amount}&addInfo=${content}`;
+        document.getElementById('qrArea').innerHTML = `
+            <img src="${qrUrl}" style="width:200px;border:1px solid #ddd">
+            <p>Nội dung CK: <b>${content}</b></p>
+            <small>(Hệ thống tự động duyệt sau 1-3 phút)</small>
+        `;
     }
-  });
 }
 
-/* Login / register modal */
-function showLoginModal(onSuccess){
-  const html = `
-  <div class="modal">
-    <h3>Đăng nhập / Đăng ký</h3>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <input id="auth_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-      <input id="auth_pass" placeholder="Mật khẩu" type="password" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-    </div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      <button class="btn secondary" id="auth_reg">Đăng ký</button>
-      <button class="btn" id="auth_login">Đăng nhập</button>
-    </div>
-  </div>
-  `;
-  showModal(html, {
-    onOpen(){
-      document.getElementById('auth_login').addEventListener('click', async ()=>{
-        const u = document.getElementById('auth_user').value.trim();
-        const p = document.getElementById('auth_pass').value;
-        try{
-          await loginUser(u,p);
-          hideModal();
-          toast('Đăng nhập thành công', { type:'info' });
-          renderHeader();
-          if(onSuccess) onSuccess();
-        }catch(err){
-          toast('Lỗi đăng nhập: ' + (err.message||err), {type:'error'});
-        }
-      });
-      document.getElementById('auth_reg').addEventListener('click', async ()=>{
-        const u = document.getElementById('auth_user').value.trim();
-        const p = document.getElementById('auth_pass').value;
-        try{
-          await registerUser(u,p);
-          toast('Đăng ký thành công. Vui lòng đăng nhập.', {type:'info'});
-        }catch(err){
-          toast('Lỗi đăng ký: ' + (err.message||err), {type:'error'});
-        }
-      });
-    }
-  });
+/* ===== GỬI DISCORD WEBHOOK ===== */
+async function sendDiscord(service, price) {
+    if(!)
+    const msg = {
+        embeds: [{
+            title: "🔥 ĐƠN CÀY THUÊ MỚI",
+            color: 5814783,
+            fields: [
+                { name: "Người đặt", value: cur.username, inline: true },
+                { name: "Dịch vụ", value: service, inline: true },
+                { name: "Giá tiền", value: price + "đ", inline: true }
+            ],
+            footer: { text: "Snow Shop System" },
+            timestamp: new Date()
+        }]
+    };
+    await fetch(DISCORD_WEBHOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(msg)});
 }
 
-/* Orders preview */
-function renderOrdersPreview(){
-  const cur = currentUser();
-  const container = document.getElementById('ordersPreview');
-  container.innerHTML = '';
-  if(!cur){
-    container.innerHTML = '<div class="kv">Đăng nhập để xem đơn của bạn.</div>';
-    return;
-  }
-  const orders = Storage.getOrders().filter(o => o.username === cur.username).slice(0,5);
-  if(orders.length === 0){ container.innerHTML = '<div class="kv">Bạn chưa có đơn.</div>'; return; }
-  container.innerHTML = orders.map(o => `<div class="order-small"><div>${escapeHtml(o.package)} <div class="small kv">${new Date(o.createdAt).toLocaleString()}</div></div><div class="small">${escapeHtml(o.status||'—')}</div></div>`).join('');
+/* ===== ADMIN LOGIC (SIMULATED) ===== */
+function showAdmin() {
+    const p = document.getElementById('adminPanel');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    // Giả lập danh sách chờ duyệt
+    document.getElementById('adminList').innerHTML = `
+        <div class="info">
+            <b>User: tung99</b> - Nạp 50,000đ 
+            <button class="green" onclick="approve(50000)">Duyệt 1-Click</button>
+        </div>
+    `;
 }
 
-/* Wire search/sort/goi */
-const searchInput = document.getElementById('searchInput');
-const sortSelect = document.getElementById('sortSelect');
-const goiSelect = document.getElementById('goi');
+async function approve(amt) {
+    alert("Đã cộng " + amt + "đ vào tài khoản khách!");
+    // Logic thực tế: fetch(API + "/admin/approve", ...)
+}
 
-const doRender = debounce(()=> {
-  const q = searchInput.value || '';
-  const sort = sortSelect.value || 'default';
-  renderPackages({ filter: q, sortMode: sort });
-}, 120);
+/* ===== CÁC HÀM CŨ (ĐÃ TỐI ƯU) ===== */
+async function login(){
+    // Giả lập login thành công để bạn test giao diện
+    const userVal = document.getElementById('au').value;
+    if(!userVal) return alert("Nhập tên");
+    cur = { username: userVal, balance: 100000, role: 'admin' };
+    localStorage.token = "fake-token";
+    modal.innerHTML="";
+    if(cur.role === 'admin') document.getElementById('adminBtn').style.display = 'inline-block';
+    render();
+}
 
-searchInput.addEventListener('input', doRender);
-sortSelect.addEventListener('change', doRender);
+async function order(){
+    if(!cur) return alert("Vui lòng đăng nhập trước!");
+    if(!goi.value) return alert("Vui lòng chọn gói cày!");
+    let [name, price] = goi.value.split("|");
+    if(cur.balance < price) return alert("Bạn không đủ tiền!");
 
-goiSelect.addEventListener('change', (e)=>{
-  const v = e.target.value;
-  if(!v) return;
-  const [name, price] = v.split('|');
-  const pkg = PACKAGES.find(p => p.name === name) || { id: 'custom_' + name.replace(/\s+/g,'_'), name, price: Number(price)||0 };
-  openOrderModal(pkg.id);
-  setTimeout(()=>{ goiSelect.value = ''; }, 200);
-});
+    // Giả lập trừ tiền
+    cur.balance -= price;
+    render();
+    await sendDiscord(name, price);
+    alert("Đặt đơn thành công! Admin đã nhận được thông báo.");
+    
+    const h = document.getElementById('his');
+    h.innerHTML = `<div>📦 ${name} — <b style="color:orange">Đang xử lý</b></div>` + h.innerHTML;
+}
 
-/* Deposit modal (user creates request; admin must approve) - simplified for fallback */
-document.getElementById('openDeposit').addEventListener('click', () => {
-  const cur = currentUser();
-  if(!cur){ showLoginModal(()=> document.getElementById('openDeposit').click()); return; }
-  showModal(`
-    <div class="modal">
-      <h3>Tạo yêu cầu nạp (chờ admin duyệt)</h3>
-      <label class="kv">Số tiền (VNĐ)</label>
-      <input id="dep_amount" type="number" placeholder="Số tiền" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-      <label class="kv" style="margin-top:8px">Ngân hàng</label>
-      <input id="dep_bank" placeholder="Ngân hàng / chủ tài khoản" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-      <label class="kv" style="margin-top:8px">Mã tham chiếu (VD: mã giao dịch)</label>
-      <input id="dep_ref" placeholder="Mã ref" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button class="btn secondary" id="dep_cancel">Hủy</button>
-        <button class="btn" id="dep_create">Tạo yêu cầu</button>
-      </div>
-    </div>
-  `, { onOpen(){
-      document.getElementById('dep_cancel').addEventListener('click', hideModal);
-      document.getElementById('dep_create').addEventListener('click', async ()=>{
-        const amount = Number(document.getElementById('dep_amount').value || 0);
-        const bank = document.getElementById('dep_bank').value.trim();
-        const ref = document.getElementById('dep_ref').value.trim();
-        if(!amount || amount <= 0){ toast('Số tiền không hợp lệ', {type:'error'}); return; }
-        if(amount < CONFIG.DEPOSIT_MIN){ toast(`Số tiền tối thiểu là ${CONFIG.DEPOSIT_MIN}đ`, {type:'error'}); return; }
-        if(!bank || !ref){ toast('Vui lòng nhập thông tin ngân hàng và mã ref', {type:'error'}); return; }
-        try{
-          const deposits = Storage.getDeposits();
-          if(deposits.find(d => d.reference && d.reference.trim() === ref.trim())){
-            throw new Error('Mã tham chiếu đã tồn tại');
-          }
-          const deposit = { id:'d_'+now(), username: cur.username, amount, bank, reference: ref, status:'pending', createdAt: now(), reviewedBy:null };
-          deposits.unshift(deposit); Storage.saveDeposits(deposits);
-          Storage.pushLog({ type:'deposit_created', depositId:deposit.id, user:cur.username, time:now() });
-          notifyDiscord('Yêu cầu nạp mới', { User: cur.username, Amount: amount + 'đ', Ref: ref, Bank: bank });
-          hideModal();
-          toast('Yêu cầu nạp đã gửi. Chờ admin duyệt.', {type:'info'});
-          renderHeader();
-        }catch(err){
-          toast('Tạo yêu cầu thất bại: ' + (err.message||err), {type:'error'});
-        }
-      });
-    }});
-});
+function auth(){
+    modal.innerHTML=`<div class="box" style="position:fixed;top:20%;left:10%;right:10%;z-index:100;background:#fff;border:2px solid #38bdf8">
+        <h3>🔐 Đăng nhập hệ thống</h3>
+        <input id="au" placeholder="Tên tài khoản">
+        <input id="ap" type="password" placeholder="Mật khẩu">
+        <button onclick="login()" style="width:100%">Vào cửa hàng</button>
+        <button onclick="modal.innerHTML=''" class="red">Hủy</button>
+    </div>`;
+}
 
-/* Admin panel: review deposits (fallback) */
-document.getElementById('openAdminPanel').addEventListener('click', () => {
-  const cur = currentUser();
-  if(!cur || !(cur.roles||[]).includes('admin')){ toast('Cần quyền admin', {type:'error'}); return; }
-  const deposits = Storage.getDeposits();
-  const rows = (deposits || []).map(d => `
-    <div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(11,19,32,0.03)">
-      <strong>${escapeHtml(d.username)} — ${fmt(d.amount)}đ</strong>
-      <div class="small kv">Bank: ${escapeHtml(d.bank || '-')}, Ref: ${escapeHtml(d.reference || '-')}</div>
-      <div class="small kv">Trạng thái: ${escapeHtml(d.status || '-')}${d.reviewedBy ? ' — bởi '+escapeHtml(d.reviewedBy):''}</div>
-      <div style="margin-top:8px;display:flex;gap:8px">
-        ${d.status === 'pending' ? `<button class="btn approve-btn" data-id="${d.id}">Duyệt</button><button class="btn secondary decline-btn" data-id="${d.id}">Từ chối</button>` : ''}
-      </div>
-    </div>
-  `).join('') || '<div class="kv">Không có yêu cầu nạp</div>';
+function render(){
+    if(!cur){u.innerText="Chưa đăng nhập";b.innerText=0;return;}
+    u.innerText=cur.username;
+    b.innerText=cur.balance.toLocaleString();
+}
 
-  showModal(`<div class="modal"><h3>Bảng quản trị — Duyệt nạp</h3><div style="max-height:520px;overflow:auto;margin-top:8px">${rows}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="admin_close">Đóng</button></div></div>`, {
-    onOpen(){
-      document.getElementById('admin_close').addEventListener('click', hideModal);
-      $$('.approve-btn').forEach(b => b.addEventListener('click', async (e)=>{
-        const id = e.currentTarget.getAttribute('data-id');
-        try{
-          const deposits = Storage.getDeposits();
-          const d = deposits.find(x => x.id === id);
-          if(!d) throw new Error('Không tìm thấy yêu cầu');
-          if(d.status !== 'pending') throw new Error('Đã xử lý');
-          d.status = 'approved'; d.reviewedBy = cur.username; d.reviewedAt = now();
-          Storage.saveDeposits(deposits);
-          const users = Storage.getUsers();
-          if(!users[d.username]) users[d.username] = { username: d.username, passHash:'', balance:0, roles:[] };
-          users[d.username].balance = (users[d.username].balance||0) + Number(d.amount||0);
-          Storage.saveUsers(users);
-          Storage.pushLog({ type:'deposit_approved', depositId:d.id, by:cur.username, time:now() });
-          notifyDiscord('Nạp tiền được duyệt', { User: d.username, Amount: d.amount + 'đ', By: cur.username, Ref: d.reference || '-' });
-          toast('Đã duyệt & cộng tiền cho user', {type:'info'});
-          hideModal();
-          renderHeader();
-        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
-      }));
-      $$('.decline-btn').forEach(b => b.addEventListener('click', (e)=>{
-        const id = e.currentTarget.getAttribute('data-id');
-        const reason = prompt('Lý do từ chối (tùy chọn):') || '';
-        try{
-          const deposits = Storage.getDeposits();
-          const d = deposits.find(x => x.id === id);
-          if(!d) throw new Error('Không tìm thấy yêu cầu');
-          if(d.status !== 'pending') throw new Error('Đã xử lý');
-          d.status = 'declined'; d.reviewedBy = cur.username; d.reviewedAt = now(); d.declineReason = reason;
-          Storage.saveDeposits(deposits);
-          Storage.pushLog({ type:'deposit_declined', depositId:d.id, by:cur.username, reason, time:now() });
-          notifyDiscord('Nạp tiền bị từ chối', { User: d.username, Amount: d.amount + 'đ', By: cur.username, Reason: reason || '-' });
-          toast('Đã từ chối yêu cầu', {type:'info'});
-          hideModal();
-        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
-      }));
-    }
-  });
-});
-
-/* Admin accounts management modal (new feature requested) */
-document.getElementById('openAdminAccounts').addEventListener('click', () => {
-  const cur = currentUser();
-  if(!cur || !(cur.roles||[]).includes('admin')){ toast('Cần quyền admin', {type:'error'}); return; }
-  const users = Storage.getUsers();
-  const adminList = Object.values(users).filter(u => (u.roles||[]).includes('admin'));
-  const rows = adminList.map(u => `
-    <div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(11,19,32,0.03);display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div><strong>${escapeHtml(u.username)}</strong> <span class="small kv">(${escapeHtml((u.roles||[]).join(','))})</span></div>
-        <div class="small kv">Số dư: ${fmt(u.balance||0)}đ</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn admin-change-pass" data-username="${escapeHtml(u.username)}">Đổi mật khẩu</button>
-        <button class="btn secondary admin-revoke" data-username="${escapeHtml(u.username)}">Thu hồi</button>
-      </div>
-    </div>
-  `).join('') || '<div class="kv">Chưa có admin</div>';
-
-  const html = `<div class="modal"><h3>Quản lý tài khoản admin</h3>
-    <div style="max-height:420px;overflow:auto;margin-top:8px">${rows}</div>
-    <hr style="margin:12px 0" />
-    <h4>Tạo admin mới</h4>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <input id="new_admin_user" placeholder="username" style="flex:1;padding:8px;border-radius:6px;border:1px solid rgba(11,19,32,0.06)" />
-      <input id="new_admin_pass" placeholder="password" style="flex:1;padding:8px;border-radius:6px;border:1px solid rgba(11,19,32,0.06)" />
-      <button class="btn" id="new_admin_create">Tạo</button>
-    </div>
-    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="admin_accounts_close">Đóng</button></div>
-  </div>`;
-
-  showModal(html, {
-    onOpen(){
-      document.getElementById('admin_accounts_close').addEventListener('click', hideModal);
-      document.getElementById('new_admin_create').addEventListener('click', async () => {
-        const u = document.getElementById('new_admin_user').value.trim();
-        const p = document.getElementById('new_admin_pass').value;
-        if(!u || !p){ toast('Vui lòng nhập username & password', {type:'error'}); return; }
-        try{
-          await createAdminUser(u,p);
-          toast('Admin mới đã được tạo', {type:'info'});
-          hideModal();
-        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
-      });
-      $$('.admin-change-pass').forEach(b => b.addEventListener('click', async (e) => {
-        const username = e.currentTarget.getAttribute('data-username');
-        const newPass = prompt('Mật khẩu mới cho ' + username + ':');
-        if(!newPass) return;
-        try{
-          await setAdminPassword(username, newPass);
-          toast('Mật khẩu đã đổi', {type:'info'});
-          hideModal();
-        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
-      }));
-      $$('.admin-revoke').forEach(b => b.addEventListener('click', async (e) => {
-        const username = e.currentTarget.getAttribute('data-username');
-        if(!confirm(`Thu hồi quyền admin của ${username}?`)) return;
-        try{
-          await revokeAdminRole(username);
-          toast('Đã thu hồi quyền admin', {type:'info'});
-          hideModal();
-        }catch(err){ toast('Lỗi: ' + (err.message||err), {type:'error'}); }
-      }));
-    }
-  });
-});
-
-/* Admin gift modal (same as before) */
-document.getElementById('openGiftModal').addEventListener('click', () => {
-  const cur = currentUser();
-  if(!cur || !(cur.roles||[]).includes('admin')){ toast('Cần quyền admin', {type:'error'}); return; }
-  showModal(`<div class="modal"><h3>Gift tiền</h3>
-    <label class="kv">Người nhận (username)</label>
-    <input id="gift_to" placeholder="username" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-    <label class="kv" style="margin-top:8px">Số tiền</label>
-    <input id="gift_amount" type="number" placeholder="Số tiền" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-    <label class="kv" style="margin-top:8px">Ghi chú</label>
-    <input id="gift_note" placeholder="Lý do / ghi chú" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(11,19,32,0.06)" />
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn secondary" id="gift_cancel">Hủy</button><button class="btn" id="gift_send">Gửi gift</button></div>
-  </div>`, {
-    onOpen(){
-      document.getElementById('gift_cancel').addEventListener('click', hideModal);
-      document.getElementById('gift_send').addEventListener('click', async () => {
-        const to = document.getElementById('gift_to').value.trim();
-        const amount = Number(document.getElementById('gift_amount').value || 0);
-        const note = document.getElementById('gift_note').value.trim();
-        if(!to || !amount){ toast('Vui lòng nhập người nhận và số tiền', {type:'error'}); return; }
-        try{
-          const users = Storage.getUsers();
-          if(!users[to]) throw new Error('Người nhận không tồn tại');
-          users[to].balance = (users[to].balance||0) + amount;
-          Storage.saveUsers(users);
-          Storage.pushLog({ type:'gift', from: cur.username, to, amount, note, time: now() });
-          notifyDiscord('Gift từ admin', { Admin: cur.username, To: to, Amount: amount + 'đ', Note: note || '-' });
-          hideModal();
-          toast('Gift thành công', {type:'info'});
-          renderHeader();
-        }catch(err){ toast('Lỗi gift: ' + (err.message||err), {type:'error'}); }
-      });
-    }
-  });
-});
-
-/* Orders listing page */
-document.getElementById('viewOrders').addEventListener('click', () => {
-  const cur = currentUser();
-  if(!cur){ showLoginModal(()=> document.getElementById('viewOrders').click()); return; }
-  const rows = Storage.getOrders().filter(o => o.username === cur.username);
-  showModal(`<div class="modal"><h3>Đơn hàng</h3><div style="max-height:400px;overflow:auto">${rows.map(r=>`<div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(11,19,32,0.03)"><strong>${escapeHtml(r.package)}</strong><div class="small kv">${new Date(r.createdAt).toLocaleString()}</div><div class="small">Trạng thái: ${escapeHtml(r.status||'—')}</div></div>`).join('') || '<div class="kv">Không có đơn</div>'}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="orders_close">Đóng</button></div></div>`, { onOpen(){ document.getElementById('orders_close').addEventListener('click', hideModal); }});
-});
-
-/* quick bindings */
-document.getElementById('openAccount').addEventListener('click', ()=> showLoginModal());
-document.getElementById('cta-order').addEventListener('click', ()=> openOrderModal(PACKAGES[0].id));
-
-/* initial render */
-renderHeader();
-renderPackages();
-renderOrdersPreview();
-
-/* Expose some helpers for debugging */
-window.SNOW = { CONFIG, createAdminUser, setAdminPassword, revokeAdminRole, Storage };
+function logout(){
+    localStorage.removeItem("token");
+    cur=null;
+    document.getElementById('adminBtn').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'none';
+    render();
+}
 </script>
+
 </body>
 </html>
