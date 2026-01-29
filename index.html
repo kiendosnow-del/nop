@@ -92,7 +92,7 @@
             <button class="green" style="width:100%" onclick="adminAddMoney()">CẤP TIỀN NGAY</button>
         </div>
         <div id="tabUsersList" class="tab-content" style="display:none">
-            <h4>Danh sách thành viên hệ thống</h4>
+            <h4>Danh sách thành viên</h4>
             <div id="adminMemberList"></div>
         </div>
     </div>
@@ -162,9 +162,7 @@ function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
         <div class="box" style="background:#f8fafc; border-left:4px solid #38bdf8">
             <b>${o.buyer}</b> - ${o.goi}<br>
-            <div style="background:#fff; padding:5px; border-radius:5px; margin:5px 0">
-                TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code>
-            </div>
+            TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code><br>
             <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:11px">Cày</button>
             <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:11px">Xong</button>
             <button onclick="deleteOrder(${i})" class="red" style="font-size:11px">Xoá</button>
@@ -182,15 +180,8 @@ function renderAdmin() {
 
     document.getElementById('adminMemberList').innerHTML = Object.values(db_users).map(user => `
         <div class="box" style="background:#f8fafc; border:1px solid #e2e8f0; margin:5px 0">
-            <div style="display:flex; justify-content:space-between; align-items:center">
-                <div>
-                    <b>User:</b> <span style="color:#0ea5e9">${user.username}</span><br>
-                    <b>Pass:</b> <code>${user.password}</code>
-                </div>
-                <div style="text-align:right">
-                    <b style="color:#16a34a">${user.balance.toLocaleString()}đ</b>
-                </div>
-            </div>
+            <b>User:</b> ${user.username} | <b>Pass:</b> ${user.password}<br>
+            <b>Số dư:</b> <span style="color:#16a34a">${user.balance.toLocaleString()}đ</span>
         </div>
     `).reverse().join('');
 }
@@ -200,56 +191,44 @@ function handleBuy() {
     const góiVal = document.getElementById('goi').value;
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
-
     if(!góiVal || !acc || !pass) return alert("Vui lòng nhập đủ thông tin!");
     const [name, price] = góiVal.split('|');
-    
     if(cur.balance < parseInt(price)) return alert("Số dư không đủ!");
-
     cur.balance -= parseInt(price);
     db_users[cur.username] = cur;
     db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    
     save(); render();
     alert("Đặt đơn thành công!");
-    sendWebhook("🛒 ĐƠN MÀU MỚI", `Khách: ${cur.username}\nGói: ${name}\nAcc: ${acc}\nPass: ${pass}`, 3447003);
+    sendWebhook("🛒 ĐƠN MỚI", `Khách: ${cur.username}\nGói: ${name}`, 3447003);
 }
 
 function adminAddMoney() {
     const target = document.getElementById('adTargetUser').value.trim();
     const amt = parseInt(document.getElementById('adAmount').value);
-    
     if(db_users[target]) {
         db_users[target].balance += amt;
         save(); render();
         alert(`Đã cấp ${amt.toLocaleString()}đ cho ${target}`);
-        document.getElementById('adAmount').value = "";
-    } else {
-        alert("Người dùng không tồn tại!");
-    }
+    } else alert("Người dùng không tồn tại!");
 }
 
+/* DUYỆT NẠP TỰ CỘNG TIỀN */
 function approveNap(i) {
     const req = db_naps[i];
     if(db_users[req.username]) {
-        db_users[req.username].balance += req.amount;
+        db_users[req.username].balance += req.amount; // Tự động cộng tiền vào ví người dùng
         db_naps[i].status = "Đã duyệt";
         save(); render();
-        alert("Đã duyệt nạp!");
-    }
+        alert(`Đã duyệt nạp và cộng ${req.amount.toLocaleString()}đ vào tài khoản ${req.username}`);
+    } else alert("Tài khoản này không còn tồn tại!");
 }
 
 function showNapBank() {
     openModal(`
-        <h3>💳 Nạp tiền Ngân hàng</h3>
-        <div class="info" style="text-align:center">
-            Ngân hàng: <b>TEC BANK</b><br>
-            STK: <b>1373727384</b><br>
-            Nội dung: <b style="color:red; font-size:18px">NAP ${cur.username}</b>
-        </div>
+        <h3>💳 Nạp tiền</h3>
+        <div class="info" style="text-align:center">Nội dung chuyển khoản: <b>NAP ${cur.username}</b></div>
         <input id="napAmt" type="number" placeholder="Nhập số tiền đã chuyển">
         <button class="green" style="width:100%" onclick="submitNap()">XÁC NHẬN ĐÃ CHUYỂN</button>
-        <button class="red" style="width:100%" onclick="closeModal()">Đóng</button>
     `);
 }
 
@@ -257,9 +236,8 @@ function submitNap() {
     const amt = parseInt(document.getElementById('napAmt').value);
     if(!amt || amt < 1000) return alert("Tiền không hợp lệ!");
     db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    save(); closeModal();
+    save(); closeModal(); render();
     alert("Đã gửi yêu cầu nạp!");
-    sendWebhook("💰 YÊU CẦU NẠP TIỀN", `Khách: ${cur.username}\nSố tiền: ${amt.toLocaleString()}đ\nNội dung: NAP ${cur.username}`, 15105570);
 }
 
 function save() {
@@ -287,7 +265,6 @@ function showLogin() {
         <input id="au" placeholder="Tên tài khoản">
         <input id="ap" type="password" placeholder="Mật khẩu">
         <button class="green" style="width:100%" onclick="handleAuth()">VÀO SHOP</button>
-        <button onclick="closeModal()" style="width:100%; background:none; color:#64748b">Quay lại</button>
     `);
 }
 
@@ -305,7 +282,7 @@ function handleAuth() {
 }
 
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
-function openModal(h) { el.modalIn.innerHTML = h; el.modal.style.display = "block"; }
+function openModal(h) { el.modalIn.innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; el.modal.style.display = "block"; }
 function closeModal() { el.modal.style.display = "none"; }
 function showTab(t, b) {
     document.querySelectorAll('.tab-content').forEach(c => c.style.display = "none");
