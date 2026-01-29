@@ -11,14 +11,9 @@
         button:hover{opacity:0.8; transform: translateY(-1px)}
         button.red{background:#ef4444} button.green{background:#22c55e} button.purple{background:#a855f7} button.gray{background:#64748b}
         input,select{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #e2e8f0;box-sizing:border-box}
-        
-        /* Trạng thái đơn hàng */
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
-        .bg-wait{background:#fef3c7;color:#d97706} 
-        .bg-process{background:#f3e8ff;color:#7c3aed} 
-        .bg-done{background:#dcfce7;color:#16a34a}
+        .bg-wait{background:#fef3c7;color:#d97706} .bg-process{background:#f3e8ff;color:#7c3aed} .bg-done{background:#dcfce7;color:#16a34a}
         
-        /* Giao diện Tab chống tràn */
         .tab-container { display: flex; gap: 8px; padding: 0 12px; margin-top: 10px; }
         .tab-btn {
             background: #fff;
@@ -36,7 +31,7 @@
         
         #modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);display:none;z-index:1000;backdrop-filter:blur(3px)}
         .modal{background:#fff;width:90%;max-width:450px;margin:50px auto;border-radius:16px;padding:20px;position:relative}
-        .detail-box { background: #f8fafc; border-left: 4px solid #38bdf8; padding: 10px; margin: 10px 0; font-size: 13px; display: none; white-space: pre-line; line-height: 1.5}
+        .detail-box { background: #f8fafc; border-left: 4px solid #38bdf8; padding: 10px; margin: 10px 0; font-size: 13px; display: none; white-space: pre-line; }
     </style>
 </head>
 <body>
@@ -52,8 +47,8 @@
 
 <div class="tab-container">
     <button class="tab-btn active" onclick="showMainTab('caythue', this)">🎮 Cày Thuê</button>
-    <button class="tab-btn" onclick="showMainTab('lichsu', this)">📜 Lịch sử</button>
-    <button id="adminTabBtn" class="tab-btn" style="display:none; color:#ef4444" onclick="showMainTab('admin', this)">🛠 ADMIN</button>
+    <button class="tab-btn" onclick="showMainTab('doncay', this)">📜 Đơn Cày</button>
+    <button id="adminTabBtn" class="tab-btn" style="display:none; color:#ef4444" onclick="showMainTab('admin', this)">🛠 QUẢN TRỊ</button>
 </div>
 
 <div id="tabCayThue" class="main-tab">
@@ -94,20 +89,20 @@
     </div>
 </div>
 
-<div id="tabLichSu" class="main-tab" style="display:none">
+<div id="tabDoncay" class="main-tab" style="display:none">
     <div class="box">
-        <h3>📜 Lịch sử đơn của bạn</h3>
+        <h3>📜 Đơn cày của bạn</h3>
         <div id="historyService"></div>
     </div>
 </div>
 
 <div id="tabAdmin" class="main-tab" style="display:none">
     <div class="box" style="border: 2px solid #ef4444;">
-        <h3 style="color:#ef4444; text-align: center;">🛠 QUẢN TRỊ VIÊN</h3>
+        <h3 style="color:#ef4444; margin: 0 0 15px 0; text-align: center;">🛠 QUẢN TRỊ VIÊN</h3>
         <div style="display:flex; gap:5px; margin-bottom:15px;">
-            <button class="gray" style="flex:1; font-size:12px" onclick="showAdminTab('orders')">Đơn Cày</button>
-            <button class="gray" style="flex:1; font-size:12px" onclick="showAdminTab('naps')">Duyệt Nạp</button>
-            <button class="gray" style="flex:1; font-size:12px" onclick="showAdminTab('gift')">Cấp Tiền</button>
+            <button class="gray" style="flex:1; font-size:12px; padding:10px 2px" onclick="showAdminTab('orders')">Tất Cả Đơn</button>
+            <button class="gray" style="flex:1; font-size:12px; padding:10px 2px" onclick="showAdminTab('naps')">Duyệt Nạp</button>
+            <button class="gray" style="flex:1; font-size:12px; padding:10px 2px" onclick="showAdminTab('gift')">Cấp Tiền</button>
         </div>
         
         <div id="admOrders" class="adm-tab">
@@ -157,7 +152,7 @@ function render() {
         document.getElementById('userButtons').style.display = "block";
         document.getElementById('adminTabBtn').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
         
-        // FIX: Lọc đơn hàng theo tài khoản đang đăng nhập
+        // FIX: Chỉ lọc đơn hàng của đúng người đang đăng nhập
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
         document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.slice().reverse().map(o => `
             <div style="border-bottom:1px solid #eee; padding:12px 0">
@@ -165,9 +160,9 @@ function render() {
                     <b>${o.goi}</b>
                     <span class="badge ${getStatusClass(o.status)}">${o.status}</span>
                 </div>
-                <small style="color:#64748b">Ngày đặt: ${o.time}</small>
+                <small style="color:#64748b">Tài khoản: ${o.acc} | Ngày: ${o.time}</small>
             </div>
-        `).join('') : "Bạn chưa có đơn hàng nào.";
+        `).join('') : "Bạn chưa đặt đơn nào.";
     }
     if(cur && cur.username === ADMIN_CONFIG.user) renderAdmin();
 }
@@ -179,96 +174,78 @@ function getStatusClass(s){
 }
 
 async function sendToDiscord(title, fields, color) {
-    const payload = {
-        username: "SNOW SHOP NOTIFIER",
-        embeds: [{ title, color, fields, footer: { text: "SNOW SHOP NOTIFIER" } }]
-    };
+    const payload = { username: "SNOW SHOP", embeds: [{ title, color, fields }] };
     try { await fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (e) {}
 }
 
 function handleBuyService() {
     if(!cur) return alert("Vui lòng đăng nhập!");
     const g = document.getElementById('goi').value;
-    if(!g) return alert("Vui lòng chọn gói!");
+    if(!g) return alert("Chọn gói dịch vụ!");
     const [name, price] = g.split('|');
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
-    if(!acc || !pass) return alert("Nhập đủ tài khoản & mật khẩu!");
+    if(!acc || !pass) return alert("Nhập đủ thông tin!");
     
-    const cost = parseInt(price);
-    if(cur.balance < cost) return alert("Bạn không đủ tiền!");
+    if(cur.balance < parseInt(price)) return alert("Không đủ tiền!");
 
     const newOrder = { buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() };
-    db_users[cur.username].balance -= cost;
+    db_users[cur.username].balance -= parseInt(price);
     db_orders.push(newOrder);
     save(); render();
     
-    sendToDiscord("🚨 ĐƠN CÀY MỚI", [
-        { name: "👤 Khách", value: cur.username, inline: true },
-        { name: "📦 Gói", value: name, inline: true },
-        { name: "🔑 TK/MK", value: `${acc} | ${pass}` }
-    ], 15105570);
-    
-    alert("Thanh toán thành công! Xem tiến độ tại mục Lịch sử.");
+    sendToDiscord("🚨 ĐƠN MỚI", [{name: "Khách", value: cur.username}, {name: "Gói", value: name}], 15105570);
+    alert("Thanh toán thành công!");
 }
 
 function showNapBank() {
-    openModal(`<h3>💳 Nạp tiền Bank</h3>
-        <p>MB BANK: <b>1373727384</b><br>Nội dung: <b>NAP ${cur.username}</b></p>
+    openModal(`<h3>💳 Nạp tiền</h3><p>MB BANK: 1373727384<br>Nội dung: NAP ${cur.username}</p>
         <input id="na" type="number" placeholder="Số tiền đã chuyển">
-        <button class="green" style="width:100%" onclick="confirmNapBank()">GỬI YÊU CẦU</button>`);
+        <button class="green" style="width:100%" onclick="confirmNap()">GỬI YÊU CẦU</button>`);
 }
 
-function confirmNapBank() {
+function confirmNap() {
     const amt = parseInt(document.getElementById('na').value);
-    if(!amt || amt < 1000) return alert("Tiền nạp không hợp lệ!");
-    db_naps.push({username: cur.username, amount: amt, status: 'Chờ duyệt', time: new Date().toLocaleString()});
+    if(!amt) return;
+    db_naps.push({username:cur.username, amount:amt, status:'Chờ duyệt'});
     save(); closeModal(); render();
-    
-    sendToDiscord("💰 KHÁCH NẠP BANK", [
-        { name: "👤 Khách", value: cur.username, inline: true },
-        { name: "💵 Số tiền", value: amt.toLocaleString() + "đ", inline: true }
-    ], 3066993);
-    
-    alert("Đã gửi thông báo cho Admin duyệt!");
+    sendToDiscord("💰 NẠP TIỀN", [{name: "Khách", value: cur.username}, {name: "Tiền", value: amt.toLocaleString()}], 3066993);
+    alert('Đã gửi yêu cầu!');
 }
 
 function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
-        <div class="box" style="font-size:12px; border-left:4px solid #38bdf8; margin: 10px 0">
-            <b>${o.buyer}</b> đặt: ${o.goi} <span class="badge ${getStatusClass(o.status)}">${o.status}</span><br>
-            TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code><br>
-            <div style="margin-top:8px">
-                <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:10px; padding:5px">Cày</button>
-                <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:10px; padding:5px">Xong</button>
-                <button onclick="deleteOrder(${i})" class="red" style="font-size:10px; padding:5px">Xoá</button>
-            </div>
+        <div class="box" style="font-size:12px; border-left:4px solid #38bdf8">
+            <b>${o.buyer}</b>: ${o.goi} [${o.status}]<br>
+            TK: ${o.acc} | MK: ${o.pass}<br>
+            <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:10px">Cày</button>
+            <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:10px">Xong</button>
+            <button onclick="deleteOrder(${i})" class="red" style="font-size:10px">Xoá</button>
         </div>
     `).reverse().join('');
 
     document.getElementById('adminNapList').innerHTML = db_naps.map((n, i) => `
-        <div class="box" style="margin: 10px 0">
+        <div class="box">
             <b>${n.username}</b> nạp ${n.amount.toLocaleString()}đ<br>
-            ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green" style="width:100%">DUYỆT NẠP</button>` : '<span class="badge bg-done">Đã duyệt</span>'}
+            ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green">Duyệt</button>` : 'Đã duyệt'}
         </div>
     `).reverse().join('');
 }
 
 function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { if(confirm("Xoá đơn này?")) { db_orders.splice(i,1); save(); render(); } }
+function deleteOrder(i) { if(confirm("Xoá?")) { db_orders.splice(i,1); save(); render(); } }
 function approveNap(i) {
     const n = db_naps[i];
     if(db_users[n.username]) {
         db_users[n.username].balance += n.amount;
         db_naps[i].status = "Xong";
-        save(); render(); alert("Đã duyệt tiền!");
+        save(); render();
     }
 }
 function adminGiftMoney() {
-    const user = document.getElementById('adTargetUser').value.trim();
-    const amt = parseInt(document.getElementById('adAmount').value);
-    if(db_users[user]) { db_users[user].balance += amt; save(); render(); alert("Đã cộng tiền!"); }
-    else alert("Không tìm thấy người dùng!");
+    const u = document.getElementById('adTargetUser').value.trim();
+    const a = parseInt(document.getElementById('adAmount').value);
+    if(db_users[u]) { db_users[u].balance += a; save(); render(); alert("Xong!"); }
 }
 
 function showMainTab(id, btn) {
@@ -288,15 +265,15 @@ function updateServiceDetail() {
     const option = select.options[select.selectedIndex];
     const detailBox = document.getElementById('serviceDetail');
     if (option.value) {
-        detailBox.innerHTML = `<strong style="color:#38bdf8">📌 Chi tiết gói:</strong>\n${option.getAttribute('data-detail')}`;
+        detailBox.innerHTML = option.getAttribute('data-detail');
         detailBox.style.display = 'block';
     } else { detailBox.style.display = 'none'; }
 }
 
-function showLogin() { openModal(`<h3>🔑 Đăng nhập / Đăng ký</h3><p style="font-size:12px; color:gray">Nếu chưa có nịc, hệ thống sẽ tự tạo mới.</p><input id="au" placeholder="Tên đăng nhập"><input id="ap" type="password" placeholder="Mật khẩu"><button class="green" style="width:100%" onclick="handleAuth()">VÀO CỬA HÀNG</button>`); }
+function showLogin() { openModal(`<h3>🔑 Đăng nhập / Đăng ký</h3><input id="au" placeholder="Tên đăng nhập"><input id="ap" type="password" placeholder="Mật khẩu"><button class="green" style="width:100%" onclick="handleAuth()">VÀO CỬA HÀNG</button>`); }
 function handleAuth() {
     const u = document.getElementById('au').value.trim(), p = document.getElementById('ap').value;
-    if(!u || !p) return alert("Vui lòng nhập đủ!");
+    if(!u || !p) return;
     if(!db_users[u]) db_users[u] = { username: u, password: p, balance: 0 };
     else if(db_users[u].password !== p) return alert("Sai mật khẩu!");
     cur = db_users[u]; localStorage.setItem('snow_session', u); save(); closeModal(); render();
