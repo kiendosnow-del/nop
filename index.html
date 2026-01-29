@@ -14,16 +14,15 @@
         .info{background:#f0f9ff;border:1px dashed #38bdf8;border-radius:10px;padding:12px;margin-top:10px;font-size:13px}
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
         .bg-wait{background:#fef3c7;color:#d97706} .bg-done{background:#dcfce7;color:#16a34a} .bg-process{background:#f3e8ff;color:#7c3aed}
-        .tab-btn{background:#fff;color:#64748b;border:1px solid #e2e8f0;margin-right:5px}
+        .tab-btn{background:#fff;color:#64748b;border:1px solid #e2e8f0;margin-right:5px; padding: 8px 15px}
         .tab-btn.active{background:#38bdf8;color:#fff;border-color:#38bdf8}
         #modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);display:none;z-index:1000;backdrop-filter:blur(3px)}
         .modal{background:#fff;width:90%;max-width:400px;margin:80px auto;border-radius:16px;padding:20px;position:relative;animation:slideUp 0.3s}
         @keyframes slideUp{from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1}}
         
-        /* HỖ TRỢ */
         .support-btn { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #0ea5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4); cursor: pointer; z-index: 999; animation: pulse 2s infinite; }
         .support-menu { position: fixed; bottom: 90px; right: 20px; display: none; flex-direction: column; gap: 10px; z-index: 999; }
-        .support-item { background: white; padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; text-decoration: none; color: #334155; font-weight: bold; font-size: 14px; transition: 0.2s; border: 1px solid #e2e8f0; }
+        .support-item { background: white; padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; text-decoration: none; color: #334155; font-weight: bold; font-size: 14px; border: 1px solid #e2e8f0; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
@@ -60,7 +59,7 @@
     </div>
 
     <div class="box">
-        <h3>📜 Lịch sử giao dịch</h3>
+        <h3>📜 Lịch sử đơn hàng</h3>
         <div id="historyList">Vui lòng đăng nhập...</div>
     </div>
 </div>
@@ -68,7 +67,7 @@
 <div id="adminView" style="display:none">
     <div class="box" style="border: 2px solid #ef4444;">
         <h2 style="color:#ef4444;">🛠 ADMIN PANEL</h2>
-        <div style="display:flex; gap:5px; margin-bottom:10px">
+        <div style="display:flex; gap:5px; margin-bottom:10px; overflow-x: auto;">
             <button class="tab-btn active" onclick="showTab('orders', this)">Đơn hàng</button>
             <button class="tab-btn" onclick="showTab('naps', this)">Duyệt Nạp</button>
             <button class="tab-btn" onclick="showTab('users', this)">Cấp Tiền</button>
@@ -92,12 +91,14 @@
 <div id="modalOverlay"><div class="modal" id="modalContent"></div></div>
 
 <script>
-// --- CONFIG ---
+// --- CẤU HÌNH ---
 const ADMIN_CONFIG = { user: "admin", pass: "admin123" };
-const WEBHOOK_ORDER = "https://discord.com/api/webhooks/1465766081548390534/iClDUAzau9xqGY3PFZTS6CT24uspMk8w5gLBvKyVyhjcxvuf-SD07-y9f9pC8Vax5lHE"};
-const WEBHOOK_NAP = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+const WEB_HOOKS = {
+    order: "https://discord.com/api/webhooks/1465766081548390534/iClDUAzau9xqGY3PFZTS6CT24uspMk8w5gLBvKyVyhjcxvuf-SD07-y9f9pC8Vax5lHE",
+    nap: "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"
+};
 
-// --- DATABASE ---
+// --- DỮ LIỆU ---
 let cur = null;
 let db_users = JSON.parse(localStorage.getItem('snow_users') || '{}');
 let db_orders = JSON.parse(localStorage.getItem('snow_orders') || '[]');
@@ -114,7 +115,7 @@ const el = {
     adminView: document.getElementById('adminView')
 };
 
-// --- CORE FUNCTIONS ---
+// --- HÀM HỆ THỐNG ---
 function save() {
     localStorage.setItem('snow_users', JSON.stringify(db_users));
     localStorage.setItem('snow_orders', JSON.stringify(db_orders));
@@ -126,31 +127,31 @@ function render() {
         el.uName.innerText = "Khách"; el.uBalance.innerText = "0";
         el.authBtns.style.display = "block"; el.userBtns.style.display = "none";
         el.adminView.style.display = "none";
-        el.history.innerHTML = "Vui lòng đăng nhập...";
-    } else {
-        cur = db_users[cur.username];
-        el.uName.innerText = cur.username;
-        el.uBalance.innerText = cur.balance.toLocaleString();
-        el.authBtns.style.display = "none"; el.userBtns.style.display = "block";
-        el.adminView.style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
-        
-        const myOrders = db_orders.filter(o => o.buyer === cur.username);
-        el.history.innerHTML = myOrders.length ? myOrders.reverse().map(o => `
-            <div style="border-bottom:1px solid #eee; padding:10px 0">
-                <b>${o.goi}</b> - <span class="badge ${o.status==='Xong'?'bg-done':'bg-wait'}">${o.status}</span><br>
-                <small>${o.time}</small>
-            </div>
-        `).join('') : "Chưa có đơn hàng.";
-        
-        if(cur.username === ADMIN_CONFIG.user) renderAdmin();
+        el.history.innerHTML = "Đăng nhập để xem đơn.";
+        return;
     }
+    cur = db_users[cur.username];
+    el.uName.innerText = cur.username;
+    el.uBalance.innerText = cur.balance.toLocaleString();
+    el.authBtns.style.display = "none"; el.userBtns.style.display = "block";
+    el.adminView.style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
+
+    const myOrders = db_orders.filter(o => o.buyer === cur.username);
+    el.history.innerHTML = myOrders.length ? myOrders.reverse().map(o => `
+        <div style="border-bottom:1px solid #eee; padding:10px 0">
+            <b>${o.goi}</b> - <span class="badge ${o.status==='Xong'?'bg-done':'bg-wait'}">${o.status}</span><br>
+            <small>${o.time}</small>
+        </div>
+    `).join('') : "Chưa có đơn hàng.";
+
+    if(cur.username === ADMIN_CONFIG.user) renderAdmin();
 }
 
 function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
         <div class="box" style="font-size:13px; border-left:4px solid #38bdf8">
             <b>${o.buyer}</b> mua ${o.goi}<br>
-            Acc: <code>${o.acc}</code> | Pass: <code>${o.pass}</code><br>
+            TK: <code>${o.acc}</code> | MK: <code>${o.pass}</code><br>
             <button onclick="updateStatus(${i}, 'Xong')" class="green">Xong</button>
             <button onclick="deleteOrder(${i})" class="red">Xóa</button>
         </div>
@@ -158,29 +159,30 @@ function renderAdmin() {
 
     document.getElementById('adminNapList').innerHTML = db_naps.map((n, i) => `
         <div class="box">
-            <b>${n.username}</b> nạp ${n.amount.toLocaleString()}đ (${n.status})<br>
+            <b>${n.username}</b> nạp ${n.amount.toLocaleString()}đ [${n.status}]<br>
             ${n.status === 'Chờ duyệt' ? `<button onclick="approveNap(${i})" class="green">Duyệt</button>` : ''}
+            <button onclick="deleteNap(${i})" class="red">Xoá</button>
         </div>
     `).reverse().join('');
 }
 
-// --- ACTIONS ---
+// --- HÀM XỬ LÝ CLICK ---
 function handleBuy() {
     if(!cur) return alert("Vui lòng đăng nhập!");
     const g = document.getElementById('goi').value;
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
-    if(!g || !acc || !pass) return alert("Nhập đủ thông tin!");
+    if(!g || !acc || !pass) return alert("Vui lòng nhập đủ thông tin!");
 
     const [name, price] = g.split('|');
     const cost = parseInt(price);
-    if(cur.balance < cost) return alert("Không đủ tiền!");
+    if(cur.balance < cost) return alert("Bạn không đủ tiền!");
 
     db_users[cur.username].balance -= cost;
-    db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Đang chờ", time: new Date().toLocaleString() });
-    save(); render(); alert("Mua thành công!");
+    db_orders.push({ buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() });
+    save(); render(); alert("Đặt đơn thành công!");
     
-    sendDiscord(WEBHOOK_ORDER, { content: `🛒 **ĐƠN MỚI**: ${cur.username} mua ${name} | Acc: ${acc} | Pass: ${pass}` });
+    sendDiscord(WEB_HOOKS.order, { content: `🛒 **ĐƠN MỚI**: ${cur.username} mua ${name}\nAcc: ${acc} | Pass: ${pass}` });
 }
 
 function showNapBank() {
@@ -195,10 +197,10 @@ function showNapBank() {
 
 function submitNap() {
     const amt = parseInt(document.getElementById('napAmt').value);
-    if(!amt || amt < 1000) return alert("Số tiền không hợp lệ");
-    db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt" });
-    save(); closeModal(); render(); alert("Đã gửi yêu cầu!");
-    sendDiscord(WEBHOOK_NAP, { content: `💰 **YÊU CẦU NẠP**: ${cur.username} nạp ${amt.toLocaleString()}đ` });
+    if(!amt || amt < 1000) return alert("Số tiền tối thiểu 1.000đ");
+    db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt", time: new Date().toLocaleString() });
+    save(); closeModal(); render(); alert("Đã gửi yêu cầu nạp!");
+    sendDiscord(WEB_HOOKS.nap, { content: `💰 **YÊU CẦU NẠP**: ${cur.username} nạp ${amt.toLocaleString()}đ` });
 }
 
 function approveNap(i) {
@@ -207,7 +209,7 @@ function approveNap(i) {
     if(db_users[req.username]) {
         db_users[req.username].balance += req.amount;
         db_naps[i].status = 'Xong';
-        save(); render(); alert("Đã cộng tiền!");
+        save(); render(); alert("Đã duyệt tiền!");
     }
 }
 
@@ -216,22 +218,13 @@ function adminAddMoney() {
     const amt = parseInt(document.getElementById('adAmount').value);
     if(db_users[user]) {
         db_users[user].balance += amt;
-        save(); render(); alert("Xong!");
-    } else alert("Không thấy user");
+        save(); render(); alert("Cấp tiền thành công!");
+    } else alert("Không tìm thấy người dùng!");
 }
 
-// --- UTILS ---
+// --- TIỆN ÍCH ---
 async function sendDiscord(webhook, payload) {
-    fetch(webhook, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload) }).catch(e => console.error(e));
-}
-
-function showLogin() {
-    openModal(`
-        <h3>🔑 Đăng nhập / Đăng ký</h3>
-        <input id="au" placeholder="Username">
-        <input id="ap" type="password" placeholder="Password">
-        <button class="green" style="width:100%" onclick="handleAuth()">VÀO SHOP</button>
-    `);
+    fetch(webhook, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload) }).catch(()=>{});
 }
 
 function handleAuth() {
@@ -243,18 +236,29 @@ function handleAuth() {
     save(); closeModal(); render();
 }
 
+function showLogin() {
+    openModal(`
+        <h3>🔑 Đăng nhập / Đăng ký</h3>
+        <input id="au" placeholder="Tên tài khoản">
+        <input id="ap" type="password" placeholder="Mật khẩu">
+        <button class="green" style="width:100%" onclick="handleAuth()">VÀO SHOP</button>
+    `);
+}
+
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
 function openModal(h) { el.modalIn.innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; el.modal.style.display = "block"; }
 function closeModal() { el.modal.style.display = "none"; }
 function toggleSupport() { const m = document.getElementById('supportMenu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
+function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
+function deleteOrder(i) { if(confirm("Xóa đơn này?")) { db_orders.splice(i,1); save(); render(); } }
+function deleteNap(i) { if(confirm("Xóa nạp này?")) { db_naps.splice(i,1); save(); render(); } }
+
 function showTab(t, b) {
     document.querySelectorAll('.tab-content').forEach(c => c.style.display = "none");
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = "block";
     b.classList.add('active');
 }
-function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { db_orders.splice(i,1); save(); render(); }
 
 window.onload = () => {
     const session = localStorage.getItem('snow_session');
