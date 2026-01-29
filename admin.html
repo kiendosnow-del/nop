@@ -1,108 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>ADMIN | SNOW</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>SNOW SHOP — Admin</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body{margin:0;font-family:Arial;background:#eef3ff}
-header{background:#1e90ff;color:#fff;padding:12px;text-align:center}
-.container{max-width:720px;margin:auto;padding:14px}
-.card{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px}
-.order{border-bottom:1px solid #eee;padding:8px 0}
-button{padding:6px 10px;border:none;border-radius:6px;font-weight:bold;cursor:pointer}
-.done{background:#2ecc71;color:#fff}
-.refund{background:#e74c3c;color:#fff}
-select{padding:6px;border-radius:6px}
+body{font-family:Arial;background:#020617;color:#fff;margin:0}
+.box{background:#0f172a;margin:12px;border-radius:12px;padding:14px}
+button{background:#22c55e;border:0;padding:6px 10px;border-radius:8px}
 </style>
 </head>
-
 <body>
 
-<header>
-<h2>❄️ ADMIN PANEL – SNOW</h2>
-<button onclick="logout()">Đăng xuất</button>
-</header>
-
-<div class="container">
-
-<div class="card">
-<b>Lọc đơn:</b>
-<select id="filter" onchange="render()">
-<option value="all">Tất cả</option>
-<option value="Đang làm">Đang làm</option>
-<option value="Hoàn tiền">Hoàn tiền</option>
-<option value="Hoàn thành">Hoàn thành</option>
-</select>
-</div>
-
-<div class="card" id="orderList"></div>
-
+<div class="box">
+<h3>ADMIN – DUYỆT NẠP</h3>
+<div id="list"></div>
 </div>
 
 <script>
-// 🔐 BẢO VỆ ADMIN
-if(localStorage.getItem("snow_admin")!=="true"){
-  alert("❌ Không có quyền admin");
-  location.href="index.html";
-}
+const K={u:"users",d:"deposits"};
+const load=k=>JSON.parse(localStorage.getItem(k)||"[]");
+const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
-// DATA
-let users  = JSON.parse(localStorage.snow_users  || "{}");
-let orders = JSON.parse(localStorage.snow_orders || "[]");
-
-function save(){
-  localStorage.snow_users  = JSON.stringify(users);
-  localStorage.snow_orders = JSON.stringify(orders);
-}
-
-// RENDER
 function render(){
-  const f = filter.value;
-  orderList.innerHTML = "";
-
-  orders.forEach((o,i)=>{
-    if(f!=="all" && o.status!==f) return;
-
-    orderList.innerHTML += `
-      <div class="order">
-        👤 <b>${o.user}</b><br>
-        📦 ${o.goi}<br>
-        💰 ${o.price.toLocaleString()}đ<br>
-        📌 <b>${o.status}</b><br><br>
-
-        ${o.status==="Đang làm" ? `
-          <button class="done" onclick="done(${i})">✔ Duyệt</button>
-          <button class="refund" onclick="refund(${i})">↩ Hoàn</button>
-        `:""}
-      </div>
-    `;
-  });
-
-  if(orderList.innerHTML==="")
-    orderList.innerHTML="<i>Không có đơn</i>";
+ let d=load(K.d),u=load(K.u);
+ list.innerHTML=d.filter(x=>!x.ok).map((x,i)=>`
+ <div>
+ 👤 ${x.user} — 💰 ${x.amt}
+ <button onclick="ok(${i})">DUYỆT</button>
+ </div>`).join("");
 }
 
-// DUYỆT ĐƠN
-function done(i){
-  orders[i].status="Hoàn thành";
-  save(); render();
-  alert("✅ Đã duyệt đơn");
-}
-
-// HOÀN TIỀN
-function refund(i){
-  const o = orders[i];
-  users[o.user].wallet += o.price;
-  orders[i].status="Hoàn tiền";
-  save(); render();
-  alert("↩ Đã hoàn tiền");
-}
-
-// LOGOUT
-function logout(){
-  localStorage.removeItem("snow_admin");
-  location.href="index.html";
+function ok(i){
+ let d=load(K.d),u=load(K.u);
+ d[i].ok=true;
+ let user=u.find(x=>x.user==d[i].user);
+ user.bal+=d[i].amt;
+ save(K.d,d);save(K.u,u);
+ render();
 }
 
 render();
