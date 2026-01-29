@@ -5,19 +5,21 @@
     <title>❄️ SNOW SHOP — Cày Thuê Blox Fruits</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
-        body{font-family:Arial,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
+        body{font-family:Segoe UI,Tahoma,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
         .box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
         button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.3s;color:#fff}
         button:hover{opacity:0.8}
         button.red{background:#ef4444}
         button.green{background:#22c55e}
         button.orange{background:#f59e0b}
-        input,select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
-        small{color:#555;display:block;margin-top:5px}
+        input,select,textarea{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
         .info{background:#f8fafc;border:1px dashed #38bdf8;border-radius:10px;padding:10px;margin-top:10px;line-height:1.6;font-size:14px}
-        .qr-box{text-align:center;padding:15px;background:#f1f5f9;border-radius:10px;margin-top:10px}
-        .history-item{padding:8px;border-bottom:1px solid #eee;font-size:13px}
+        .qr-box{text-align:center;padding:15px;background:#f1f5f9;border-radius:10px}
+        .history-item{padding:10px;border-bottom:1px solid #eee;font-size:13px}
+        .status-pending{color:#f59e0b;font-weight:bold}
+        .status-done{color:#22c55e;font-weight:bold}
         #modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:99}
+        .badge{padding:2px 6px;border-radius:4px;font-size:10px;color:#fff;background:#94a3b8}
     </style>
 </head>
 <body>
@@ -25,87 +27,113 @@
 <div id="modal-overlay"></div>
 
 <div class="box">
-    👤 <b id="u">Chưa đăng nhập</b> | 
-    💰 <b id="b">0</b>đ 
-    <button class="red" onclick="logout()" style="float:right;padding:5px 10px">Thoát</button>
+    👤 <b id="u">Đang tải...</b> | 💰 <b id="b">0</b>đ 
+    <button class="red" onclick="logout()" style="float:right;padding:5px 10px;margin:0">Thoát</button>
 </div>
 
-<div class="box" id="auth_section">
+<div class="box" id="auth_section" style="display:none">
     <button onclick="showAuth()" style="width:100%">🔑 Đăng nhập / Đăng ký</button>
 </div>
 
 <div class="box" id="user_actions" style="display:none">
-    <button class="orange" onclick="showDeposit()" style="width:48%">💳 Nạp tiền</button>
-    <button id="adminBtn" class="red" style="display:none;width:48%" onclick="showAdmin()">🛠 Admin</button>
+    <div style="display:flex; gap:10px">
+        <button class="orange" onclick="showDeposit()" style="flex:1">💳 Nạp tiền</button>
+        <button id="adminBtn" class="red" style="display:none; flex:1" onclick="showAdmin()">🛠 Quản trị</button>
+    </div>
 </div>
 
 <div class="box">
     <h3>🛒 Dịch vụ Cày Thuê</h3>
     <select id="goi" onchange="showInfo()">
-        <option value="">-- Chọn gói dịch vụ --</option>
+        <option value="">-- Chọn gói cày thuê --</option>
         <optgroup label="🔰 LEVEL">
-            <option value="Level 700|20000" data-info="Farm lên level 700" data-detail="✔ Tốc độ nhanh<br>✔ An toàn 100%">Level 700 – 20.000đ</option>
-            <option value="0 → MAX|50000" data-info="Cày Max Level" data-detail="✔ Full Sea 1-2-3<br>✔ 4–6 ngày hoàn thành">0 → MAX – 50.000đ</option>
+            <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh<br>✔ Không đổi trái<br>✔ 3–5 giờ">Level 700 – 20.000đ</option>
+            <option value="700 → 1500|20000" data-info="Farm từ Sea 2" data-detail="✔ Farm boss + quest<br>✔ Không mất đồ<br>✔ 1–2 ngày">700 → 1500 – 20.000đ</option>
+            <option value="1500 → 2800|20000" data-info="Farm Sea 3" data-detail="✔ Farm full Sea 3<br>✔ An toàn 100%<br>✔ 2–3 ngày">1500 → 2800 – 20.000đ</option>
+            <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3<br>✔ Không mất acc<br>✔ 4–6 ngày">0 → MAX – 50.000đ</option>
         </optgroup>
         <optgroup label="🎒 ITEM">
-            <option value="CDK|30000" data-info="Lấy Song kiếm CDK" data-detail="✔ Yêu cầu lv 2200+<br>✔ Hoàn thành nhanh">CDK – 30.000đ</option>
+            <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest<br>✔ Không mất đồ<br>✔ 1 ngày">Mỏ Neo – 20.000đ</option>
+            <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest<br>✔ An toàn<br>✔ Trong ngày">Tushita – 15.000đ</option>
+            <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama<br>✔ Không mất đồ<br>✔ 1–2 ngày">Yama – 30.000đ</option>
+            <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm<br>✔ Không rollback<br>✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
+            <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK<br>✔ Không mất item<br>✔ 1–2 ngày">CDK – 30.000đ</option>
+        </optgroup>
+        <optgroup label="💠 V4">
+            <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear<br>✔ Thức tỉnh V4<br>✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
+            <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ<br>✔ Nhanh gọn<br>✔ Trong ngày">1 Gear V4 – 5.000đ</option>
+        </optgroup>
+        <optgroup label="🥋 MELEE">
+            <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman<br>✔ Farm nguyên liệu<br>✔ 1 ngày">Godhuman – 20.000đ</option>
+            <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2<br>✔ Nhanh<br>✔ Trong ngày">Melee V2 – 15.000đ</option>
         </optgroup>
     </select>
+
+    <div id="acc_box" style="display:none; background:#fff3cd; padding:10px; border-radius:8px; margin-top:10px">
+        <small><b>Thông tin tài khoản Roblox:</b></small>
+        <input type="text" id="game_user" placeholder="Tên đăng nhập Roblox">
+        <input type="text" id="game_pass" placeholder="Mật khẩu Roblox">
+    </div>
+
     <div id="goiInfo" class="info" style="display:none"></div>
-    <button class="green" style="width:100%;font-size:16px;margin-top:10px" onclick="order()">MUA NGAY (Trừ ví)</button>
+    <button id="btnOrder" class="green" style="width:100%;font-size:16px;margin-top:10px" onclick="order()">MUA NGAY</button>
 </div>
 
 <div class="box">
-    <h3>📜 Lịch sử giao dịch</h3>
-    <div id="his"><i>Chưa có giao dịch nào</i></div>
+    <h3>📜 Lịch sử đơn hàng</h3>
+    <div id="his">Đang tải...</div>
 </div>
 
-<div id="adminPanel" class="box" style="display:none;border-top:4px solid red">
-    <h3>🛠 Quản trị viên (Cộng tiền)</h3>
-    <input type="text" id="admin_target" placeholder="Tên tài khoản khách">
-    <input type="number" id="admin_amount" placeholder="Số tiền cộng">
-    <input type="password" id="admin_key_input" placeholder="Nhập mã Admin Key">
-    <button class="red" style="width:100%" onclick="adminAddMoney()">XÁC NHẬN CỘNG TIỀN</button>
+<div id="adminPanel" class="box" style="display:none; border:2px solid red">
+    <h2 style="color:red">🛠 ADMIN CONTROL</h2>
+    
+    <div style="background:#fef2f2; padding:10px; border-radius:8px; margin-bottom:15px">
+        <h4>Cộng tiền thành viên</h4>
+        <input id="ad_target" placeholder="Username khách">
+        <input type="number" id="ad_amt" placeholder="Số tiền">
+        <input type="password" id="ad_key" placeholder="Admin Key">
+        <button class="red" onclick="adminAddMoney()" style="width:100%">CỘNG TIỀN</button>
+    </div>
+
+    <h4>Quản lý đơn hàng (Toàn hệ thống)</h4>
+    <div id="admin_orders_list"></div>
 </div>
 
 <div id="modal_content"></div>
 
 <script>
-// CẤU HÌNH BẢO MẬT
-const ADMIN_KEY = "SNOW_ADMIN_123"; // Thay mã này để bảo mật nạp tiền
+const ADMIN_KEY = "SNOW_ADMIN_123";
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
 let cur = null;
+let allOrders = JSON.parse(localStorage.getItem('snow_orders') || "[]");
 
-// Tự động tải dữ liệu khi mở trang
 window.onload = () => {
     const session = localStorage.getItem('snow_session');
-    if(session) {
-        loadUser(session);
-    }
+    if(session) loadUser(session);
+    else render();
 };
 
 function loadUser(username) {
     const data = localStorage.getItem('user_' + username);
-    if(data) {
-        cur = JSON.parse(data);
-        render();
-    }
+    if(data) cur = JSON.parse(data);
+    render();
 }
 
 function saveUser() {
-    if(cur) {
-        localStorage.setItem('user_' + cur.username, JSON.stringify(cur));
-    }
+    if(cur) localStorage.setItem('user_' + cur.username, JSON.stringify(cur));
+}
+
+function saveOrders() {
+    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
 }
 
 function render() {
     if(!cur) {
-        document.getElementById('u').innerText = "Chưa đăng nhập";
+        document.getElementById('u').innerText = "Khách";
         document.getElementById('b').innerText = "0";
         document.getElementById('auth_section').style.display = "block";
         document.getElementById('user_actions').style.display = "none";
-        document.getElementById('adminBtn').style.display = "none";
         document.getElementById('his').innerHTML = "<i>Vui lòng đăng nhập</i>";
         return;
     }
@@ -113,22 +141,119 @@ function render() {
     document.getElementById('b').innerText = cur.balance.toLocaleString();
     document.getElementById('auth_section').style.display = "none";
     document.getElementById('user_actions').style.display = "block";
-    
-    if(cur.username === 'admin') document.getElementById('adminBtn').style.display = 'inline-block';
+    document.getElementById('adminBtn').style.display = cur.username === 'admin' ? 'block' : 'none';
 
-    // Render lịch sử
+    // Lịch sử cá nhân
+    const myOrders = allOrders.filter(o => o.buyer === cur.username);
     const hisBox = document.getElementById('his');
-    if(cur.history.length === 0) {
-        hisBox.innerHTML = "<i>Chưa có giao dịch</i>";
-    } else {
-        hisBox.innerHTML = cur.history.map(h => `<div class="history-item"><b>[${h.time}]</b> ${h.msg}</div>`).join('');
+    if(myOrders.length === 0) hisBox.innerHTML = "<i>Chưa có đơn hàng nào</i>";
+    else {
+        hisBox.innerHTML = myOrders.reverse().map(o => `
+            <div class="history-item">
+                <b>${o.goi}</b> <span class="badge">${o.time}</span><br>
+                Trạng thái: <span class="${o.status === 'Đã xong' ? 'status-done' : 'status-pending'}">${o.status}</span>
+            </div>
+        `).join('');
+    }
+
+    if(cur.username === 'admin') renderAdminOrders();
+}
+
+function renderAdminOrders() {
+    const box = document.getElementById('admin_orders_list');
+    if(allOrders.length === 0) box.innerHTML = "Chưa có đơn";
+    else {
+        box.innerHTML = allOrders.slice().reverse().map((o, idx) => `
+            <div class="history-item" style="background:#f9fafb; margin-bottom:5px; border:1px solid #ddd">
+                <b>Khách: ${o.buyer}</b> | Gói: ${o.goi}<br>
+                TK: <code style="color:blue">${o.acc}</code> | MK: <code style="color:blue">${o.pass}</code><br>
+                TT: <b class="${o.status==='Đã xong'?'status-done':'status-pending'}">${o.status}</b>
+                ${o.status === 'Đang chờ' ? `<button onclick="completeOrder(${allOrders.length - 1 - idx})" class="green" style="padding:2px 5px; font-size:11px">Xong</button>` : ''}
+            </div>
+        `).join('');
     }
 }
 
+function showInfo(){
+    let s = document.getElementById('goi').options[document.getElementById('goi').selectedIndex];
+    const info = document.getElementById('goiInfo');
+    const accBox = document.getElementById('acc_box');
+    if(!s.value) { info.style.display="none"; accBox.style.display="none"; return; }
+    info.style.display="block";
+    accBox.style.display="block";
+    info.innerHTML=`<b>📌 ${s.dataset.info}</b><br>${s.dataset.detail}`;
+}
+
+async function order() {
+    if(!cur) return alert("Hãy đăng nhập!");
+    const select = document.getElementById('goi');
+    const gUser = document.getElementById('game_user').value.trim();
+    const gPass = document.getElementById('game_pass').value.trim();
+
+    if(!select.value) return alert("Hãy chọn gói!");
+    if(!gUser || !gPass) return alert("Vui lòng nhập tài khoản/mật khẩu Roblox!");
+
+    const [name, price] = select.value.split('|');
+    const cost = parseInt(price);
+
+    if(cur.balance < cost) return alert("Số dư không đủ! Vui lòng nạp thêm.");
+
+    cur.balance -= cost;
+    const newOrder = {
+        buyer: cur.username,
+        goi: name,
+        acc: gUser,
+        pass: gPass,
+        time: new Date().toLocaleString('vi-VN'),
+        status: "Đang chờ"
+    };
+    
+    allOrders.push(newOrder);
+    saveOrders();
+    saveUser();
+    render();
+    
+    alert("Đặt đơn thành công!");
+
+    // Webhook Discord
+    fetch(DISCORD_WEBHOOK, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            content: `🔔 **ĐƠN MỚI**\n👤 Khách: ${cur.username}\n📦 Gói: ${name}\n🎮 TK: ${gUser} | MK: ${gPass}`
+        })
+    });
+}
+
+function completeOrder(index) {
+    allOrders[index].status = "Đã xong";
+    saveOrders();
+    render();
+    alert("Đã duyệt hoàn thành đơn hàng!");
+}
+
+function adminAddMoney() {
+    const target = document.getElementById('ad_target').value.trim();
+    const amount = parseInt(document.getElementById('ad_amt').value);
+    const key = document.getElementById('ad_key').value;
+
+    if(key !== ADMIN_KEY) return alert("Sai mã Admin!");
+    
+    const targetData = localStorage.getItem('user_' + target);
+    if(!targetData) return alert("Không tìm thấy người dùng!");
+
+    let userObj = JSON.parse(targetData);
+    userObj.balance += amount;
+    localStorage.setItem('user_' + target, JSON.stringify(userObj));
+    
+    if(cur.username === target) { cur = userObj; render(); }
+    alert(`Đã cộng ${amount}đ cho ${target}`);
+}
+
+// Các hàm Auth & UI cơ bản
 function showAuth() {
     openModal(`
         <h3>🔑 Đăng nhập / Đăng ký</h3>
-        <small>Nếu chưa có tk, hệ thống sẽ tự tạo mới với mật khẩu bạn nhập.</small>
         <input id="au" placeholder="Tên tài khoản...">
         <input id="ap" type="password" placeholder="Mật khẩu...">
         <button onclick="handleAuth()" style="width:100%">XÁC NHẬN</button>
@@ -136,7 +261,7 @@ function showAuth() {
 }
 
 function handleAuth() {
-    const user = document.getElementById('au').value.trim();
+    const user = document.getElementById('au').value.trim().toLowerCase();
     const pass = document.getElementById('ap').value.trim();
     if(user.length < 3) return alert("Tên quá ngắn");
 
@@ -146,7 +271,7 @@ function handleAuth() {
         if(parsed.password !== pass) return alert("Sai mật khẩu!");
         cur = parsed;
     } else {
-        cur = { username: user, password: pass, balance: 0, history: [] };
+        cur = { username: user, password: pass, balance: 0 };
         saveUser();
     }
     localStorage.setItem('snow_session', cur.username);
@@ -155,73 +280,16 @@ function handleAuth() {
 }
 
 function showDeposit() {
-    openModal(`
-        <h3>💳 Nạp tiền qua QR</h3>
-        <input type="number" id="napAmount" placeholder="Nhập số tiền..." oninput="updateQR()">
-        <div class="qr-box" id="qrArea">Vui lòng nhập số tiền</div>
-        <p style="font-size:12px; color:red">Lưu ý: Sau khi chuyển khoản, hãy đợi Admin kiểm tra và cộng tiền vào ví.</p>
-    `);
-}
-
-function updateQR() {
-    const amount = document.getElementById('napAmount').value;
-    const qrArea = document.getElementById('qrArea');
-    if(amount < 1000) {
-        qrArea.innerHTML = "Tối thiểu 1,000đ";
-        return;
-    }
     const content = `NAP ${cur.username}`;
-    const qrUrl = `https://img.vietqr.io/image/TCB-1373727384-compact.png`;
-    qrArea.innerHTML = `<img src="${qrUrl}" style="width:180px"><br>Nội dung: <b>${content}</b>`;
-}
-
-async function order() {
-    if(!cur) return alert("Hãy đăng nhập!");
-    const select = document.getElementById('goi');
-    if(!select.value) return alert("Hãy chọn gói!");
-
-    const [name, price] = select.value.split('|');
-    const cost = parseInt(price);
-
-    if(cur.balance < cost) return alert("Ví không đủ tiền! Vui lòng nạp thêm.");
-
-    cur.balance -= cost;
-    cur.history.unshift({time: new Date().toLocaleString(), msg: `Mua gói ${name} -${cost}đ`});
-    saveUser();
-    render();
-    
-    alert("Đặt đơn thành công! Admin sẽ xử lý sớm.");
-    
-    // Gửi Discord thông báo cho Admin
-    await fetch(DISCORD_WEBHOOK, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            content: `🔔 **ĐƠN MỚI**: Khách **${cur.username}** vừa mua **${name}** (${cost}đ)`
-        })
-    });
-}
-
-function adminAddMoney() {
-    const target = document.getElementById('admin_target').value.trim();
-    const amount = parseInt(document.getElementById('admin_amount').value);
-    const key = document.getElementById('Simohayha').value;
-
-    if(key !== ADMIN_KEY) return alert("Sai mã Admin Key! Đừng hack bạn ơi.");
-    
-    const targetData = localStorage.getItem('user_' + target);
-    if(!targetData) return alert("Không tìm thấy người dùng này!");
-
-    let userObj = JSON.parse(targetData);
-    userObj.balance += amount;
-    userObj.history.unshift({time: new Date().toLocaleString(), msg: `Admin cộng +${amount}đ`});
-    localStorage.setItem('user_' + target, JSON.stringify(userObj));
-    
-    if(cur && cur.username === target) {
-        cur = userObj;
-        render();
-    }
-    alert("Đã cộng tiền thành công cho " + target);
+    openModal(`
+        <h3>💳 Nạp tiền Techcombank</h3>
+        <div class="qr-box">
+            <img src="https://img.vietqr.io/image/TCB-1373727384-compact.png" style="width:200px"><br>
+            STK: <b>1373 7273 84</b><br>
+            Nội dung: <b style="color:red; font-size:18px">${content}</b>
+        </div>
+        <p style="font-size:12px">Chuyển xong vui lòng đợi admin cộng tiền.</p>
+    `);
 }
 
 function showAdmin() {
@@ -231,16 +299,7 @@ function showAdmin() {
 
 function logout() {
     localStorage.removeItem('snow_session');
-    cur = null;
     location.reload();
-}
-
-function showInfo(){
-    let s = document.getElementById('goi').options[document.getElementById('goi').selectedIndex];
-    const info = document.getElementById('goiInfo');
-    if(!s.value) { info.style.display="none"; return; }
-    info.style.display="block";
-    info.innerHTML=`<b>📌 ${s.dataset.info}</b><br>${s.dataset.detail}`;
 }
 
 function openModal(html) {
