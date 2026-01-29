@@ -198,35 +198,21 @@ function handleBuy() {
     save(); render();
     alert("Đặt đơn thành công!");
 
-    // THÔNG BÁO DISCORD ĐẸP MẮT
-    sendWebhook("❄️ CÓ ĐƠN THUÊ MỚI — SNOW SHOP", 
-        `**👤 Khách hàng:** \`${cur.username}\`\n` +
-        `**📦 Gói dịch vụ:** \`${name}\`\n` +
-        `**💰 Giá tiền:** \`${parseInt(price).toLocaleString()}đ\`\n` +
-        `**💳 Tài khoản:** \`${acc}\`\n` +
-        `**🔑 Mật khẩu:** \`${pass}\`\n` +
-        `**💸 Số dư còn lại:** \`${cur.balance.toLocaleString()}đ\`\n\n` +
-        `👉 *Hãy vào Admin Panel để kiểm tra và cày đơn ngay!*`, 
-        5763719 // Màu xanh lá sáng
+    // Thông báo Discord chi tiết
+    sendWebhook("🛒 CÓ ĐƠN THUÊ MỚI!", 
+        `**Khách hàng:** ${cur.username}\n**Gói:** ${name}\n**Giá:** ${parseInt(price).toLocaleString()}đ\n**TK Roblox:** \`${acc}\`\n**MK Roblox:** \`${pass}\``, 
+        3447003
     );
 }
 
-function submitNap() {
-    const amt = parseInt(document.getElementById('napAmt').value);
-    if(!amt || amt < 1000) return alert("Tiền không hợp lệ!");
-    db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    save(); closeModal(); render();
-    alert("Đã gửi yêu cầu nạp!");
-
-    // THÔNG BÁO NẠP TIỀN
-    sendWebhook("💰 CÓ YÊU CẦU NẠP TIỀN — SNOW SHOP", 
-        `**👤 Khách nạp:** \`${cur.username}\`\n` +
-        `**💵 Số tiền:** \`${amt.toLocaleString()}đ\`\n` +
-        `**📝 Nội dung:** \`NAP ${cur.username}\`\n` +
-        `**⏰ Thời gian:** \`${new Date().toLocaleString()}\`\n\n` +
-        `👉 *Vui lòng kiểm tra tài khoản ngân hàng và duyệt nạp.*`, 
-        15105570 // Màu vàng cam
-    );
+function approveNap(i) {
+    const req = db_naps[i];
+    if(db_users[req.username]) {
+        db_users[req.username].balance += req.amount;
+        db_naps[i].status = "Đã duyệt";
+        save(); render();
+        alert(`Đã cộng ${req.amount.toLocaleString()}đ cho ${req.username}`);
+    }
 }
 
 function showNapBank() {
