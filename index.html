@@ -116,8 +116,8 @@
 <div id="modal_content"></div>
 
 <script>
-const ADMIN_ID = "admin"; 
-const ADMIN_PASS = "123456"; 
+const ADMIN_ID = "Snow_admin"; 
+const ADMIN_PASS = "Snow_admin_1910"; 
 const ADMIN_KEY = "SNOW_SECRET"; 
 
 let cur = null;
@@ -264,20 +264,33 @@ function showAuth() {
 function handleAuth() {
     const user = document.getElementById('au').value.trim().toLowerCase();
     const pass = document.getElementById('ap').value.trim();
-    if(user.length < 3) return alert("Tên quá ngắn!");
-    const existing = localStorage.getItem('user_' + user);
-    if(existing) {
-        if(JSON.parse(existing).password !== pass) return alert("Sai mật khẩu!");
-        cur = JSON.parse(existing);
+    
+    if(user.length < 3 || pass.length < 3) return alert("Tên và mật khẩu phải từ 3 ký tự!");
+
+    const existingData = localStorage.getItem('user_' + user);
+
+    if(existingData) {
+        // TRƯỜNG HỢP: ĐĂNG NHẬP
+        const userData = JSON.parse(existingData);
+        if(userData.password === pass) {
+            cur = userData;
+            localStorage.setItem('snow_session', cur.username);
+            closeModal();
+            render();
+            alert("Đăng nhập thành công!");
+        } else {
+            alert("Mật khẩu không chính xác. Nếu bạn muốn đăng ký, hãy dùng tên tài khoản khác!");
+        }
     } else {
+        // TRƯỜNG HỢP: ĐĂNG KÝ MỚI
         cur = { username: user, password: pass, balance: 0 };
         localStorage.setItem('user_' + user, JSON.stringify(cur));
+        localStorage.setItem('snow_session', cur.username);
+        closeModal();
+        render();
+        alert("Đăng ký tài khoản mới thành công!");
     }
-    localStorage.setItem('snow_session', cur.username);
-    closeModal();
-    render();
 }
-
 function logout() {
     localStorage.removeItem('snow_session');
     location.reload();
