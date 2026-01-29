@@ -7,8 +7,8 @@
     <style>
         body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
         .box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
-        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.3s;color:#fff}
-        button:hover{opacity:0.8}
+        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.18s;color:#fff}
+        button:hover{opacity:0.9}
         button.red{background:#ef4444}
         button.green{background:#22c55e}
         button.purple{background:#a855f7}
@@ -19,34 +19,35 @@
         .status-pending{color:#f59e0b;font-weight:bold}
         .status-working{color:#a855f7;font-weight:bold}
         .status-done{color:#22c55e;font-weight:bold}
-        #modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:99}
+        /* Overlay should be under the modal; modal-card gets higher z-index */
+        #modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);display:none;z-index:99;backdrop-filter: blur(2px)}
         .tab-btn{padding:8px 15px; border-radius:8px; background:#e2e8f0; color:#475569; margin-right:5px; border:none; cursor:pointer}
         .tab-btn.active{background:#38bdf8; color:#fff}
         .admin-section{display:none}
         .admin-section.active{display:block}
+        /* smoother modal and ensure modal sits above overlay */
+        .modal-card { transform-origin: center; transition: transform 160ms ease, opacity 160ms ease; will-change: transform, opacity; z-index:1000; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:400px; }
     </style>
 </head>
 <body>
 
-<div id="modal-overlay" onclick="closeModal()"></div>
-
 <div class="box">
     👤 <b id="u">Đang tải...</b> | 💰 <b id="b">0</b>đ 
-    <button class="red" onclick="logout()" style="float:right;padding:5px 10px;margin:0">Thoát</button>
+    <button class="red" id="btnLogout" style="float:right;padding:5px 10px;margin:0;display:none">Thoát</button>
 </div>
 
 <div id="client_view">
-    <div class="box" id="auth_section" style="display:none">
-        <button onclick="showAuth()" style="width:100%; background:#6366f1">🔑 Đăng nhập / Đăng ký</button>
+    <div class="box" id="auth_section">
+        <button id="btnShowAuth" style="width:100%; background:#6366f1">🔑 Đăng nhập / Đăng ký</button>
     </div>
 
     <div class="box" id="user_actions" style="display:none">
-        <button class="purple" onclick="showDeposit()" style="width:100%">💳 Nạp tiền vào tài khoản</button>
+        <button class="purple" id="btnDeposit" style="width:100%">💳 Nạp tiền vào tài khoản</button>
     </div>
 
     <div class="box">
         <h3>🛒 Dịch vụ Cày Thuê</h3>
-        <select id="goi" onchange="showInfo()">
+        <select id="goi">
             <option value="">-- Chọn gói cày thuê --</option>
             <optgroup label="🔰 LEVEL">
                 <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh<br>✔ 3–5 giờ">Level 700 – 20.000đ</option>
@@ -65,7 +66,7 @@
             <input type="text" id="game_pass" placeholder="Mật khẩu Roblox">
         </div>
         <div id="goiInfo" class="info" style="display:none"></div>
-        <button class="green" style="width:100%; margin-top:10px; font-size: 16px;" onclick="order()">XÁC NHẬN MUA</button>
+        <button class="green" id="btnOrder" style="width:100%; margin-top:10px; font-size: 16px;">XÁC NHẬN MUA</button>
     </div>
 
     <div class="box">
@@ -78,9 +79,9 @@
     <div class="box" style="border: 2px solid #ef4444;">
         <h2 style="color:#ef4444; margin:0 0 10px 0">🛠 HỆ THỐNG QUẢN TRỊ</h2>
         <div style="margin-bottom:10px">
-            <button class="tab-btn active" onclick="openTab(event, 'tab_orders')">Đơn hàng</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab_users')">Thành viên</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab_gift')">Gift/Nạp</button>
+            <button class="tab-btn active" data-tab="tab_orders">Đơn hàng</button>
+            <button class="tab-btn" data-tab="tab_users">Thành viên</button>
+            <button class="tab-btn" data-tab="tab_gift">Gift/Nạp</button>
         </div>
 
         <div id="tab_orders" class="admin-section active">
@@ -96,122 +97,323 @@
             <input id="ad_target" placeholder="Tên tài khoản khách">
             <input type="number" id="ad_amt" placeholder="Số tiền cần cộng">
             <input type="password" id="ad_key" placeholder="Admin Key xác nhận">
-            <button class="red" onclick="adminAddMoney()" style="width:100%">XÁC NHẬN CỘNG TIỀN</button>
+            <button class="red" id="btnAdminAdd" style="width:100%">XÁC NHẬN CỘNG TIỀN</button>
         </div>
     </div>
 </div>
 
+<!-- removed inline onclick to avoid overlay catching clicks meant for modal -->
+<div id="modal-overlay"></div>
 <div id="modal_content"></div>
 
 <script>
-const ADMIN_ID = "snowadmin"; 
+/* ----- Constants ----- */
+const ADMIN_ID = "snowadmin";
 const ADMIN_PASS = "Snowadmin1910";
-const ADMIN_KEY = "SNOW_SECRET"; // Key dùng để xác nhận cộng tiền
+const ADMIN_KEY = "SNOW_SECRET";
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
 
+/* ----- App state ----- */
 let cur = null;
 let allOrders = JSON.parse(localStorage.getItem('snow_orders') || "[]");
 
-window.onload = () => {
-    const session = localStorage.getItem('snow_session');
-    if(session) loadUser(session);
-    else render();
+/* ----- Cached DOM ----- */
+const el = {
+    userLabel: document.getElementById('u'),
+    balLabel: document.getElementById('b'),
+    authSection: document.getElementById('auth_section'),
+    userActions: document.getElementById('user_actions'),
+    adminView: document.getElementById('admin_view'),
+    his: document.getElementById('his'),
+    goi: document.getElementById('goi'),
+    accBox: document.getElementById('acc_box'),
+    goiInfo: document.getElementById('goiInfo'),
+    modalOverlay: document.getElementById('modal-overlay'),
+    modalContent: document.getElementById('modal_content'),
+    btnLogout: document.getElementById('btnLogout'),
+    btnShowAuth: document.getElementById('btnShowAuth'),
+    btnDeposit: document.getElementById('btnDeposit'),
+    btnOrder: document.getElementById('btnOrder'),
+    adminAllOrders: document.getElementById('admin_all_orders'),
+    adminUserList: document.getElementById('admin_user_list'),
+    tabBtns: document.getElementsByClassName('tab-btn'),
+    btnAdminAdd: document.getElementById('btnAdminAdd'),
 };
 
-function loadUser(username) {
-    const data = localStorage.getItem('user_' + username);
-    if(data) cur = JSON.parse(data);
-    render();
+/* ----- Utilities ----- */
+function userKeyFrom(name) {
+    return 'user_' + name.trim().toLowerCase();
+}
+function saveUser(userObj) {
+    // userObj must contain username (original display), password, balance
+    const key = userKeyFrom(userObj.username);
+    // store canonical usernameLower inside object for easier lookup
+    const stored = {
+        username: userObj.username,        // display name (original)
+        usernameLower: userObj.username.trim().toLowerCase(),
+        password: userObj.password,
+        balance: Number(userObj.balance) || 0
+    };
+    localStorage.setItem(key, JSON.stringify(stored));
+    // maintain index of users for faster admin rendering
+    let idx = JSON.parse(localStorage.getItem('snow_users') || "[]");
+    if (!idx.includes(stored.usernameLower)) {
+        idx.push(stored.usernameLower);
+        localStorage.setItem('snow_users', JSON.stringify(idx));
+    }
+    return stored;
+}
+function loadUserFromStorageByKey(key) {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
 }
 
+/* ----- Initialization ----- */
+window.addEventListener('DOMContentLoaded', () => {
+    const session = localStorage.getItem('snow_session');
+    if (session) {
+        const data = loadUserFromStorageByKey(userKeyFrom(session));
+        if (data) cur = data;
+    }
+    bindUI();
+    render();
+});
+
+/* ----- UI Bindings ----- */
+function bindUI() {
+    // show auth modal
+    el.btnShowAuth.addEventListener('click', showAuth);
+    el.btnLogout.addEventListener('click', logout);
+    el.btnDeposit.addEventListener('click', showDeposit);
+    el.goi.addEventListener('change', showInfo);
+    el.btnOrder.addEventListener('click', order);
+
+    // tab switching
+    Array.from(el.tabBtns).forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tabId = btn.getAttribute('data-tab');
+            openTab(tabId, btn);
+        });
+    });
+
+    // admin add money
+    const btnAdmin = document.getElementById('btnAdminAdd');
+    if (btnAdmin) {
+        btnAdmin.addEventListener('click', adminAddMoney);
+    }
+
+    // IMPORTANT: only close modal when clicking directly on overlay (not when clicking inside modal)
+    el.modalOverlay.addEventListener('click', (e) => {
+        if (e.target === el.modalOverlay) closeModal();
+    });
+}
+
+/* ----- Render ----- */
 function render() {
-    if(!cur) {
-        document.getElementById('u').innerText = "Khách";
-        document.getElementById('b').innerText = "0";
-        document.getElementById('auth_section').style.display = "block";
-        document.getElementById('user_actions').style.display = "none";
-        document.getElementById('admin_view').style.display = "none";
+    if (!cur) {
+        el.userLabel.innerText = "Khách";
+        el.balLabel.innerText = "0";
+        el.authSection.style.display = "block";
+        el.userActions.style.display = "none";
+        el.adminView.style.display = "none";
+        el.btnLogout.style.display = "none";
+        renderHistory([]);
         return;
     }
-    
-    document.getElementById('u').innerText = cur.username;
-    document.getElementById('b').innerText = cur.balance.toLocaleString();
-    document.getElementById('auth_section').style.display = "none";
-    document.getElementById('user_actions').style.display = "block";
 
-    // Hiển thị lịch sử cá nhân
-    const myOrders = allOrders.filter(o => o.buyer === cur.username);
-    document.getElementById('his').innerHTML = myOrders.length ? myOrders.slice().reverse().map(o => {
-        let cls = o.status === 'Đã xong' ? 'status-done' : (o.status === 'Đang cày' ? 'status-working' : 'status-pending');
-        return `<div class="item-list"><b>${o.goi}</b> - <span class="${cls}">${o.status}</span><br><small>${o.time}</small></div>`;
-    }).join('') : "<i>Chưa có đơn hàng.</i>";
+    el.userLabel.innerText = cur.username; // display name
+    el.balLabel.innerText = Number(cur.balance).toLocaleString();
+    el.authSection.style.display = "none";
+    el.userActions.style.display = "block";
+    el.btnLogout.style.display = "inline-block";
 
-    // Quyền Admin
-    if(cur.username === ADMIN_ID) {
-        document.getElementById('admin_view').style.display = "block";
+    // personal history
+    const myOrders = allOrders.filter(o => o.buyer && o.buyer.toLowerCase() === cur.usernameLower);
+    renderHistory(myOrders);
+
+    // admin?
+    if (cur.usernameLower === ADMIN_ID.toLowerCase()) {
+        el.adminView.style.display = "block";
         renderAdminData();
     } else {
-        document.getElementById('admin_view').style.display = "none";
+        el.adminView.style.display = "none";
     }
+}
+
+function renderHistory(myOrders) {
+    if (!myOrders || myOrders.length === 0) {
+        el.his.innerHTML = "<i>Chưa có đơn hàng.</i>";
+        return;
+    }
+    // build html once
+    const lines = myOrders.slice().reverse().map(o => {
+        let cls = o.status === 'Đã xong' ? 'status-done' : (o.status === 'Đang cày' ? 'status-working' : 'status-pending');
+        return `<div class="item-list"><b>${escapeHtml(o.goi)}</b> - <span class="${cls}">${escapeHtml(o.status)}</span><br><small>${escapeHtml(o.time)}</small></div>`;
+    });
+    el.his.innerHTML = lines.join('');
 }
 
 function renderAdminData() {
-    // Render đơn hàng
-    document.getElementById('admin_all_orders').innerHTML = allOrders.length ? allOrders.slice().reverse().map((o, idx) => {
-        const originalIdx = allOrders.length - 1 - idx;
-        return `<div class="item-list">
-            <b>${o.buyer}</b>: ${o.goi} <br>
-            <code>User: ${o.acc}</code> | <code>Pass: ${o.pass}</code> <br>
-            TT: <b>${o.status}</b> <br>
-            <button onclick="upSt(${originalIdx},'Đang cày')" class="purple" style="padding:4px 8px; font-size:11px">Đang cày</button>
-            <button onclick="upSt(${originalIdx},'Đã xong')" class="green" style="padding:4px 8px; font-size:11px">Xong</button>
-            <button onclick="delOrder(${originalIdx})" class="red" style="padding:4px 8px; font-size:11px">Xóa</button>
-        </div>`}).join('') : "Chưa có đơn hàng nào.";
+    // orders
+    if (!allOrders || allOrders.length === 0) {
+        el.adminAllOrders.innerHTML = "Chưa có đơn hàng nào.";
+    } else {
+        const html = allOrders.slice().reverse().map((o, idx) => {
+            const originalIdx = allOrders.length - 1 - idx;
+            return `<div class="item-list">
+                <b>${escapeHtml(o.buyer)}</b>: ${escapeHtml(o.goi)} <br>
+                <code>User: ${escapeHtml(o.acc)}</code> | <code>Pass: ${escapeHtml(o.pass)}</code> <br>
+                TT: <b>${escapeHtml(o.status)}</b> <br>
+                <button data-idx="${originalIdx}" data-st="Đang cày" class="btn-mini purple" style="padding:4px 8px; font-size:11px">Đang cày</button>
+                <button data-idx="${originalIdx}" data-st="Đã xong" class="btn-mini green" style="padding:4px 8px; font-size:11px">Xong</button>
+                <button data-idx="${originalIdx}" class="btn-mini red" style="padding:4px 8px; font-size:11px">Xóa</button>
+            </div>`;
+        }).join('');
+        el.adminAllOrders.innerHTML = html;
+        // delegate buttons
+        Array.from(el.adminAllOrders.querySelectorAll('.btn-mini')).forEach(b => {
+            b.addEventListener('click', (ev) => {
+                const idx = parseInt(b.getAttribute('data-idx'));
+                const st = b.getAttribute('data-st');
+                if (b.classList.contains('red')) return delOrder(idx);
+                if (st) return upSt(idx, st);
+            });
+        });
+    }
 
-    // Render thành viên (Lọc từ localStorage)
-    let users = [];
-    for (let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        if (key.startsWith('user_')) {
-            users.push(JSON.parse(localStorage.getItem(key)));
+    // users - use snow_users index
+    const idx = JSON.parse(localStorage.getItem('snow_users') || "[]");
+    if (!idx || idx.length === 0) {
+        el.adminUserList.innerHTML = "<i>Chưa có thành viên.</i>";
+    } else {
+        const lines = idx.map(nameLower => {
+            const u = loadUserFromStorageByKey(userKeyFrom(nameLower));
+            if (!u) return '';
+            return `<div class="item-list">👤 <b>${escapeHtml(u.username)}</b> | 💰 ${Number(u.balance).toLocaleString()}đ</div>`;
+        }).filter(Boolean);
+        el.adminUserList.innerHTML = lines.join('') || "<i>Không tìm thấy user.</i>";
+    }
+}
+
+/* ----- Actions ----- */
+
+function showAuth() {
+    openModal(buildAuthModalHtml());
+    // attach listeners after modal inserted
+    const form = document.getElementById('auth_form');
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleAuth();
+        });
+    }
+}
+
+function buildAuthModalHtml() {
+    return `
+    <div class="box modal-card" style="border:2px solid #38bdf8">
+        <h3>🔐 Đăng nhập / Đăng ký</h3>
+        <form id="auth_form">
+            <input id="au" name="au" placeholder="Tên tài khoản..." autocomplete="username" required>
+            <input id="ap" name="ap" type="password" placeholder="Mật khẩu..." autocomplete="current-password" required>
+            <button type="submit" style="width:100%; background:#6366f1">XÁC NHẬN</button>
+            <p style="font-size:11px; color:gray">* Nếu chưa có tài khoản, hệ thống sẽ tự tạo mới.</p>
+        </form>
+        <button class="red" type="button" onclick="closeModal()" style="width:100%">ĐÓNG</button>
+    </div>`;
+}
+
+function handleAuth() {
+    const auEl = document.getElementById('au');
+    const apEl = document.getElementById('ap');
+    const usernameRaw = auEl.value.trim();
+    const password = apEl.value.trim();
+    if (usernameRaw.length < 3 || password.length < 3) return alert("Tài khoản/Mật khẩu phải từ 3 ký tự!");
+
+    const usernameLower = usernameRaw.toLowerCase();
+
+    // Admin shortcut
+    if (usernameLower === ADMIN_ID.toLowerCase() && password === ADMIN_PASS) {
+        const adminObj = { username: ADMIN_ID, password: ADMIN_PASS, balance: 88888888, usernameLower: ADMIN_ID.toLowerCase() };
+        saveUser(adminObj);
+        cur = adminObj;
+    } else {
+        const key = userKeyFrom(usernameRaw);
+        const existing = loadUserFromStorageByKey(key);
+        if (existing) {
+            if (existing.password === password) {
+                cur = existing;
+            } else {
+                return alert("Sai mật khẩu!");
+            }
+        } else {
+            // create new
+            const newUser = { username: usernameRaw, password: password, balance: 0 };
+            const stored = saveUser(newUser);
+            cur = stored;
         }
     }
-    document.getElementById('admin_user_list').innerHTML = users.map(u => `
-        <div class="item-list">
-            👤 <b>${u.username}</b> | 💰 ${u.balance.toLocaleString()}đ
+
+    // persist session and in-memory
+    localStorage.setItem('snow_session', cur.username);
+    closeModal();
+    render();
+}
+
+function logout() {
+    localStorage.removeItem('snow_session');
+    cur = null;
+    // small delay to show action
+    setTimeout(() => { render(); }, 50);
+}
+
+function showDeposit() {
+    if (!cur) return alert("Vui lòng đăng nhập!");
+    openModal(`
+        <div class="box modal-card" style="border:2px solid #38bdf8">
+            <h3>💳 Nạp tiền qua Ngân hàng</h3>
+            <p>Vui lòng chuyển khoản đúng nội dung bên dưới:</p>
+            <div style="background:#fff3cd; padding:10px; border-radius:8px; margin-bottom:10px">
+                Nội dung: <b>NAP ${escapeHtml(cur.username)}</b>
+            </div>
+            <div class="qr-box">
+                <img src="https://img.vietqr.io/image/TCB-1373727384-compact.png?addTag=NAP%20${encodeURIComponent(cur.username)}" style="width:200px; border:1px solid #ddd">
+                <p><small>Hệ thống sẽ cộng tiền sau 1-5 phút.</small></p>
+            </div>
+            <button class="red" type="button" onclick="closeModal()" style="width:100%">ĐÓNG</button>
         </div>
-    `).join('');
+    `);
 }
 
-function upSt(i, s) { 
-    allOrders[i].status = s; 
-    localStorage.setItem('snow_orders', JSON.stringify(allOrders)); 
-    render(); 
-}
-
-function delOrder(i) {
-    if(confirm("Xóa đơn này?")) {
-        allOrders.splice(i, 1);
-        localStorage.setItem('snow_orders', JSON.stringify(allOrders));
-        render();
+function showInfo(){
+    let s = el.goi.options[el.goi.selectedIndex];
+    if(!s.value) {
+        el.goiInfo.style.display="none";
+        el.accBox.style.display="none";
+        return;
     }
+    el.goiInfo.style.display="block";
+    el.accBox.style.display="block";
+    el.goiInfo.innerHTML = `<b>📌 ${escapeHtml(s.dataset.info)}</b><br><small>${s.dataset.detail}</small>`;
 }
 
 function order() {
     if(!cur) return alert("Vui lòng đăng nhập!");
-    const s = document.getElementById('goi');
+    const s = el.goi;
     const u = document.getElementById('game_user').value.trim();
     const p = document.getElementById('game_pass').value.trim();
-    
+
     if(!s.value || !u || !p) return alert("Vui lòng nhập đầy đủ thông tin!");
-    
+
     const [name, price] = s.value.split('|');
     const cost = parseInt(price);
 
-    if(cur.balance < cost) return alert("Bạn không đủ tiền! Vui lòng nạp thêm.");
-    
-    cur.balance -= cost;
-    
+    if (Number(cur.balance) < cost) return alert("Bạn không đủ tiền! Vui lòng nạp thêm.");
+
+    cur.balance = Number(cur.balance) - cost;
+    // persist user
+    saveUser(cur);
+
     const newOrder = {
         buyer: cur.username, 
         goi: name, 
@@ -223,30 +425,67 @@ function order() {
 
     allOrders.push(newOrder);
     localStorage.setItem('snow_orders', JSON.stringify(allOrders));
-    localStorage.setItem('user_' + cur.username, JSON.stringify(cur));
-    
+
     sendDiscordNotify(newOrder);
     render();
     alert("Mua thành công! Hệ thống đang xử lý.");
 }
 
 function adminAddMoney() {
-    const target = document.getElementById('ad_target').value.trim().toLowerCase();
+    const targetRaw = document.getElementById('ad_target').value.trim();
+    const targetKey = userKeyFrom(targetRaw);
     const amt = parseInt(document.getElementById('ad_amt').value);
     const key = document.getElementById('ad_key').value;
 
-    if(key !== ADMIN_KEY) return alert("Sai mã Admin Key!");
-    
-    const data = localStorage.getItem('user_' + target);
-    if(!data) return alert("Không tìm thấy người dùng này!");
+    if (!targetRaw) return alert("Nhập tên tài khoản cần cộng tiền!");
+    if (isNaN(amt)) return alert("Số tiền không hợp lệ!");
 
-    let userObj = JSON.parse(data);
-    userObj.balance += amt;
-    localStorage.setItem('user_' + target, JSON.stringify(userObj));
-    alert(`Đã cộng ${amt}đ cho ${target}`);
+    if (key !== ADMIN_KEY) return alert("Sai mã Admin Key!");
+
+    const data = loadUserFromStorageByKey(targetKey);
+    if (!data) return alert("Không tìm thấy người dùng này!");
+
+    data.balance = Number(data.balance || 0) + Number(amt);
+    // save
+    localStorage.setItem(targetKey, JSON.stringify(data));
+    // ensure index contains it
+    let idx = JSON.parse(localStorage.getItem('snow_users') || "[]");
+    if (!idx.includes(data.usernameLower)) {
+        idx.push(data.usernameLower);
+        localStorage.setItem('snow_users', JSON.stringify(idx));
+    }
+
+    alert(`Đã cộng ${amt}đ cho ${data.username}`);
     render();
 }
 
+/* ----- Admin order helpers ----- */
+function upSt(i, s) {
+    if (!allOrders[i]) return;
+    allOrders[i].status = s;
+    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
+    render();
+}
+
+function delOrder(i) {
+    if (!allOrders[i]) return;
+    if (!confirm("Xóa đơn này?")) return;
+    allOrders.splice(i, 1);
+    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
+    render();
+}
+
+/* ----- Modal helpers ----- */
+function openModal(html) {
+    el.modalContent.innerHTML = html;
+    el.modalOverlay.style.display = "block";
+}
+function closeModal() {
+    el.modalOverlay.style.display = "none";
+    el.modalContent.innerHTML = "";
+}
+
+/* ----- Misc ----- */
 async function sendDiscordNotify(orderData) {
     try {
         const params = {
@@ -255,108 +494,4 @@ async function sendDiscordNotify(orderData) {
                 color: 5814783,
                 fields: [
                     { name: "👤 Khách hàng", value: orderData.buyer, inline: true },
-                    { name: "🛒 Gói dịch vụ", value: orderData.goi, inline: true },
-                    { name: "🎮 Tài khoản", value: `\`${orderData.acc}\`` },
-                    { name: "🔑 Mật khẩu", value: `\`${orderData.pass}\`` }
-                ],
-                footer: { text: "Snow Shop System" },
-                timestamp: new Date()
-            }]
-        };
-        await fetch(DISCORD_WEBHOOK, { 
-            method: "POST", 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(params) 
-        });
-    } catch (e) { console.error("Discord Error", e); }
-}
-
-function showDeposit() {
-    openModal(`
-        <h3>💳 Nạp tiền qua Ngân hàng</h3>
-        <p>Vui lòng chuyển khoản đúng nội dung bên dưới:</p>
-        <div style="background:#fff3cd; padding:10px; border-radius:8px; margin-bottom:10px">
-            Nội dung: <b>NAP ${cur.username}</b>
-        </div>
-        <div class="qr-box">
-            <img src="https://img.vietqr.io/image/TCB-1373727384-compact.png?addTag=NAP%20${cur.username}" style="width:200px; border:1px solid #ddd">
-            <p><small>Hệ thống sẽ cộng tiền sau 1-5 phút.</small></p>
-        </div>
-    `);
-}
-
-function showAuth() {
-    openModal(`
-        <h3>🔐 Đăng nhập / Đăng ký</h3>
-        <input id="au" placeholder="Tên tài khoản...">
-        <input id="ap" type="password" placeholder="Mật khẩu...">
-        <button onclick="handleAuth()" style="width:100%; background:#6366f1">XÁC NHẬN</button>
-        <p style="font-size:11px; color:gray">* Nếu chưa có tài khoản, hệ thống sẽ tự tạo mới.</p>
-    `);
-}
-
-function handleAuth() {
-    const user = document.getElementById('au').value.trim().toLowerCase();
-    const pass = document.getElementById('ap').value.trim();
-    if(user.length < 3 || pass.length < 3) return alert("Tài khoản/Mật khẩu phải từ 3 ký tự!");
-
-    if (user === ADMIN_ID && pass === ADMIN_PASS) {
-        cur = { username: user, password: pass, balance: 88888888 };
-    } else {
-        const existingData = localStorage.getItem('user_' + user);
-        if(existingData) {
-            const userData = JSON.parse(existingData);
-            if(userData.password === pass) cur = userData;
-            else return alert("Sai mật khẩu!");
-        } else {
-            cur = { username: user, password: pass, balance: 0 };
-        }
-    }
-    localStorage.setItem('user_' + user, JSON.stringify(cur));
-    localStorage.setItem('snow_session', cur.username);
-    closeModal();
-    render();
-}
-
-function logout() { 
-    localStorage.removeItem('snow_session'); 
-    location.reload(); 
-}
-
-function openModal(html) {
-    document.getElementById('modal_content').innerHTML = `
-        <div class="box" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:100; width:90%; max-width:400px; border:2px solid #38bdf8">
-            ${html}
-            <button class="red" onclick="closeModal()" style="width:100%">ĐÓNG</button>
-        </div>`;
-    document.getElementById('modal-overlay').style.display = "block";
-}
-
-function closeModal() { 
-    document.getElementById('modal-overlay').style.display = "none"; 
-    document.getElementById('modal_content').innerHTML = ""; 
-}
-
-function showInfo(){
-    let s = document.getElementById('goi').options[document.getElementById('goi').selectedIndex];
-    if(!s.value) { 
-        document.getElementById('goiInfo').style.display="none"; 
-        document.getElementById('acc_box').style.display="none"; 
-        return; 
-    }
-    document.getElementById('goiInfo').style.display="block";
-    document.getElementById('acc_box').style.display="block";
-    document.getElementById('goiInfo').innerHTML = `<b>📌 ${s.dataset.info}</b><br><small>${s.dataset.detail}</small>`;
-}
-
-function openTab(evt, tabId) {
-    let contents = document.getElementsByClassName("admin-section");
-    for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
-    let btns = document.getElementsByClassName("tab-btn");
-    for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
-    document.getElementById(tabId).classList.add("active");
-    evt.currentTarget.classList.add("active");
-}
-</script>
-</body>
-</html>
+                  
