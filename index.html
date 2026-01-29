@@ -324,30 +324,34 @@ function showDeposit() {
         <div class="qr-box"><img src="https://img.vietqr.io/image/TCB-1373727384-compact.png" style="width:180px"></div>
     `);
 
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+// CẤU HÌNH WEBHOOK DISCORD
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"; 
 
-async function sendDiscordNotify(title, description, color = 382230) {
+function sendDiscordNotify(orderData) {
+    if (!DISCORD_WEBHOOK_URL.startsWith("http")) return;
+
     const params = {
         embeds: [{
-            title: title,
-            description: description,
-            color: color, // Mã màu Decimal (382230 là màu xanh dương)
-            timestamp: new Date().toISOString(),
-            footer: { text: "❄️ SNOW SHOP SYSTEM" }
+            title: "🔔 CÓ ĐƠN HÀNG MỚI!",
+            color: 3447003, // Màu xanh dương
+            fields: [
+                { name: "👤 Khách hàng", value: orderData.buyer, inline: true },
+                { name: "🛒 Gói dịch vụ", value: orderData.goi, inline: true },
+                { name: "🎮 Tài khoản Roblox", value: `\`${orderData.acc}\``, inline: false },
+                { name: "🔑 Mật khẩu", value: `\`${orderData.pass}\``, inline: false },
+                { name: "⏰ Thời gian", value: orderData.time, inline: false }
+            ],
+            footer: { text: "SNOW SHOP — Hệ thống quản trị tự động" },
+            timestamp: new Date()
         }]
     };
 
-    try {
-        await fetch(DISCORD_WEBHOOK_URL, {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(params)
-        });
-    } catch (e) {
-        console.error("Lỗi gửi Webhook:", e);
-    }
+    fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+    });
 }
-    
     
 </script>
 </body>
