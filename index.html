@@ -337,7 +337,7 @@ function hideModal(){ modalRoot.innerHTML=''; modalRoot.classList.add('hidden');
 /* Discord notify helper (best-effort) */
 async function notifyDiscord(type, data){
   try{
-    if(!CONFIG.DISCORD_WEBHOOK) { console.log('Discord notify disabled', type, data); return; }
+    if(!CONFIG.https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm) { console.log('Discord notify disabled', type, data); return; }
     const payload = {
       embeds:[{
         title:type,
@@ -346,7 +346,7 @@ async function notifyDiscord(type, data){
         timestamp:new Date().toISOString()
       }]
     };
-    await fetch(CONFIG.DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    await fetch(CONFIG.https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
   }catch(e){ console.error('notifyDiscord failed', e); }
 }
 
