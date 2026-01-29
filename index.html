@@ -258,14 +258,18 @@ function handleBuy() {
 } // <-- Quan trọng: Phải có dấu đóng ngoặc này
 
 function approveNap(i) {
-    const req = db_naps[i];
-    if(db_users[req.username]) {
-        db_users[req.username].balance += req.amount;
-        db_naps[i].status = "Đã duyệt";
-        save(); render();
-        alert(`Đã cộng tiền cho ${req.username}`);
-    }
-}
+    sendDiscord(WEBHOOK_NAP, {
+    embeds: [{
+        title: "✅ DUYỆT NẠP THÀNH CÔNG",
+        color: 0x22c55e,
+        fields: [
+            { name: "👤 User", value: `\`${req.username}\`` },
+            { name: "💵 Số tiền", value: `\`${req.amount.toLocaleString()}đ\`` },
+            { name: "🛠 Người duyệt", value: "`ADMIN`" }
+        ],
+        footer: { text: "SNOW SHOP • Admin Action" },
+        timestamp: new Date()
+    }]
 
 function showNapBank() {
     openModal(`
@@ -277,16 +281,19 @@ function showNapBank() {
 }
 
 function submitNap() {
-    const amt = parseInt(document.getElementById('napAmt').value);
-    if(!amt || amt < 1000) return alert("Tiền không hợp lệ!");
-    db_naps.push({ username: cur.username, amount: amt, status: "Chờ duyệt", time: new Date().toLocaleString() });
-    save(); closeModal(); render();
-    alert("Đã gửi yêu cầu nạp!");
-    sendWebhook("💰 YÊU CẦU NẠP TIỀN — SNOW SHOP", 
-        `**👤 Khách:** \`${cur.username}\`\n**💵 Số tiền:** \`${amt.toLocaleString()}đ\`\n**📝 Nội dung:** \`NAP ${cur.username}\``, 
-        15844367
-    );
-}
+    sendDiscord(WEBHOOK_NAP, {
+    embeds: [{
+        title: "💰 YÊU CẦU NẠP TIỀN",
+        color: 0xfacc15,
+        fields: [
+            { name: "👤 Khách", value: `\`${cur.username}\``, inline: true },
+            { name: "💵 Số tiền", value: `\`${amt.toLocaleString()}đ\``, inline: true },
+            { name: "📝 Nội dung CK", value: `\`NAP ${cur.username}\`` }
+        ],
+        footer: { text: "SNOW SHOP • Nap System" },
+        timestamp: new Date()
+    }]
+});
 
 function adminAddMoney() {
     const target = document.getElementById('adTargetUser').value.trim();
