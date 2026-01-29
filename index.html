@@ -381,132 +381,114 @@ function renderAdmin() {
             <b>User:</b> ${user.username} | <b>Pass:</b> ${user.password}<br>
             <b>Số dư:</b> <span style="color:#16a34a">${user.balance.toLocaleString()}đ</span>
         </div>
-    `).reverse().join('');
+<script>
+const ADMIN_CONFIG = { user: "admin", pass: "admin123" };
+
+// WEBHOOK
+const WEBHOOK_ORDER = "LINK_WEBHOOK_DON";
+const WEBHOOK_NAP   = "LINK_WEBHOOK_NAP";
+const ADMIN_ROLE_ID = "123456789012345678"; // ID ROLE ADMIN (SỐ)
+
+let cur = null;
+let db_users = JSON.parse(localStorage.getItem('snow_users') || '{}');
+let db_orders = JSON.parse(localStorage.getItem('snow_orders') || '[]');
+let db_naps = JSON.parse(localStorage.getItem('snow_naps') || '[]');
+
+const el = {
+  uName: document.getElementById('uName'),
+  uBalance: document.getElementById('uBalance'),
+  authBtns: document.getElementById('authButtons'),
+  userBtns: document.getElementById('userButtons'),
+  history: document.getElementById('historyList'),
+  modal: document.getElementById('modalOverlay'),
+  modalIn: document.getElementById('modalContent'),
+  adminView: document.getElementById('adminView')
+};
+
+async function sendDiscord(webhook, payload) {
+  if(!webhook) return;
+  fetch(webhook, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload)
+  }).catch(()=>{});
+}
+
+window.onload = () => {
+  const session = localStorage.getItem('snow_session');
+  if(session && db_users[session]) cur = db_users[session];
+  render();
+};
+
+function render() {
+  if(!cur) {
+    el.uName.innerText = "Khách";
+    el.uBalance.innerText = "0";
+    el.authBtns.style.display = "block";
+    el.userBtns.style.display = "none";
+    el.adminView.style.display = "none";
+    el.history.innerHTML = "<center>Đăng nhập để xem đơn</center>";
+    return;
+  }
+
+  cur = db_users[cur.username];
+  el.uName.innerText = cur.username;
+  el.uBalance.innerText = cur.balance.toLocaleString();
+  el.authBtns.style.display = "none";
+  el.userBtns.style.display = "block";
+  el.adminView.style.display = cur.username === ADMIN_CONFIG.user ? "block" : "none";
+
+  const myOrders = db_orders.filter(o => o.buyer === cur.username);
+  el.history.innerHTML = myOrders.map(o => `
+    <div style="border-bottom:1px solid #eee;padding:8px">
+      <b>${o.goi}</b> — <span>${o.status}</span><br>
+      <small>${o.time}</small>
+    </div>
+  `).reverse().join('') || "Chưa có đơn";
 }
 
 function handleBuy() {
-    if (!cur) return alert("Vui lòng đăng nhập để mua hàng!");
-    const goiSelect = document.getElementById('goi').value;
-    const acc = document.getElementById('accRoblox').value.trim();
-    const pass = document.getElementById('passRoblox').value.trim();
-    if (!goiSelect || !acc || !pass) return alert("Vui lòng nhập đầy đủ thông tin!");
+  if(!cur) return alert("Vui lòng đăng nhập");
+  const g = document.getElementById('goi').value;
+  const acc = document.getElementById('accRoblox').value.trim();
+  const pass = document.getElementById('passRoblox').value.trim();
+  if(!g || !acc || !pass) return alert("Nhập thiếu!");
 
-    const [name, price] = goiSelect.split('|');
-    const total = parseInt(price);
-    if (cur.balance < total) return alert("Số dư không đủ! Vui lòng nạp thêm.");
+  const [name, price] = g.split('|');
+  const cost = parseInt(price);
+  if(cur.balance < cost) return alert("Không đủ tiền!");
 
-    db_users[cur.username].balance -= total;
-    db_orders.push({
-        buyer: cur.username, goi: name, acc: acc, pass: pass, status: "Chờ duyệt", time: new Date().toLocaleString()
-    });
-    save(); render(); alert("Đặt đơn thành công!");
+  cur.balance -= cost;
+  db_orders.push({
+    buyer: cur.username,
+    goi: name,
+    acc, pass,
+    status: "Chờ duyệt",
+    time: new Date().toLocaleString()
+  });
 
-    sendDiscord(WEBHOOK_ORDER, {
-        content: `🚨 **CÓ ĐƠN MỚI!** @here`,
-        embeds: [{
-            title: "❄️ ĐƠN THUÊ MỚI", color: 0x38bdf8,
-            fields: [
-                { name: "👤 Khách", value: cur.username, inline: true },
-                { name: "📦 Gói", value: name, inline: true },
-                { name: "🎮 Acc", value: acc },
-                { name: "🔑 Pass", value: pass }
-            ],
-            timestamp: new Date()
-        }]
-    });
-}
+  save(); render(); alert("Đặt đơn thành công!");
 
-function approveNap(i) {
-    let req = db_naps[i];
-    if(req.status === 'Xong') return;
-    
-    db_users[req.username].balance += req.amount;
-    db_naps[i].status = 'Xong';
-    save(); render(); alert("Đã duyệt tiền!");
-
-    sendDiscord(WEBHOOK_NAP, {
-        embeds: [{
-            title: "✅ DUYỆT NẠP THÀNH CÔNG", color: 0x22c55e,
-            fields: [
-                { name: "👤 User", value: req.username },
-                { name: "💵 Số tiền", value: req.amount.toLocaleString() + "đ" }
-            ],
-            timestamp: new Date()
-        }]
-    });
-}
-
-function showNapBank() {
-    if(!cur) return alert("Vui lòng đăng nhập!");
-    openModal(`
-        <h3>💳 Nạp tiền</h3>
-        <div class="info" style="text-align:center">Nội dung chuyển khoản: <b>NAP ${cur.username}</b></div>
-        <input id="napAmt" type="number" placeholder="Nhập số tiền đã chuyển">
-        <button class="green" style="width:100%" onclick="submitNap()">XÁC NHẬN ĐÃ CHUYỂN</button>
-    `);
-}
-
-function submitNap() {
-    const amt = parseInt(document.getElementById('napAmt').value);
-    if(!amt || amt < 1000) return alert("Số tiền không hợp lệ!");
-    
-    db_naps.push({ username: cur.username, amount: amt, status: 'Chờ duyệt', time: new Date().toLocaleString() });
-    save(); closeModal(); render(); alert("Đã gửi yêu cầu nạp!");
-
-    sendDiscord(WEBHOOK_NAP, {
-        embeds: [{
-            title: "💰 YÊU CẦU NẠP TIỀN", color: 0xfacc15,
-            fields: [
-                { name: "👤 Khách", value: cur.username, inline: true },
-                { name: "💵 Số tiền", value: amt.toLocaleString() + "đ" }
-            ],
-            timestamp: new Date()
-        }]
-    });
-}
-
-function adminAddMoney() {
-    const target = document.getElementById('adTargetUser').value.trim();
-    const amt = parseInt(document.getElementById('adAmount').value);
-    if(db_users[target]) {
-        db_users[target].balance += amt;
-        save(); render(); alert("Thành công!");
-    } else alert("Không thấy user!");
+  sendDiscord(WEBHOOK_ORDER, {
+    content: `<@&${ADMIN_ROLE_ID}> 🚨 **CÓ ĐƠN MỚI**`,
+    embeds: [{
+      title: "❄️ ĐƠN CÀY THUÊ",
+      color: 0x38bdf8,
+      fields: [
+        {name:"👤 Khách", value:cur.username, inline:true},
+        {name:"📦 Gói", value:name, inline:true},
+        {name:"🎮 Roblox", value:acc},
+        {name:"🔑 Mật khẩu", value:"🔒 Xem trong Admin Panel"}
+      ],
+      timestamp: new Date()
+    }]
+  });
 }
 
 function save() {
-    localStorage.setItem('snow_users', JSON.stringify(db_users));
-    localStorage.setItem('snow_orders', JSON.stringify(db_orders));
-    localStorage.setItem('snow_naps', JSON.stringify(db_naps));
-}
-function updateStatus(i, s) { db_orders[i].status = s; save(); render(); }
-function deleteOrder(i) { if(confirm("Xoá?")) { db_orders.splice(i,1); save(); render(); } }
-function deleteNap(i) { db_naps.splice(i,1); save(); render(); }
-
-function showLogin() {
-    openModal(`
-        <h3>🔑 Đăng nhập / Đăng ký</h3>
-        <input id="au" placeholder="Tên tài khoản">
-        <input id="ap" type="password" placeholder="Mật khẩu">
-        <button class="green" style="width:100%" onclick="handleAuth()">VÀO SHOP</button>
-    `);
-}
-function handleAuth() {
-    const u = document.getElementById('au').value.trim(), p = document.getElementById('ap').value;
-    if(!u || !p) return alert("Nhập đủ thông tin!");
-    if(!db_users[u]) { db_users[u] = { username: u, password: p, balance: 0 }; alert("Đăng ký xong!"); }
-    else if(db_users[u].password !== p) return alert("Sai pass!");
-    cur = db_users[u]; localStorage.setItem('snow_session', u); save(); closeModal(); render();
-}
-function logout() { localStorage.removeItem('snow_session'); location.reload(); }
-function openModal(h) { el.modalIn.innerHTML = h + `<button class="red" style="width:100%" onclick="closeModal()">Đóng</button>`; el.modal.style.display = "block"; }
-function closeModal() { el.modal.style.display = "none"; }
-function showTab(t, b) {
-    document.querySelectorAll('.tab-content').forEach(c => c.style.display = "none");
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    const tabEl = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-    if(tabEl) tabEl.style.display = "block";
-    b.classList.add('active');
+  localStorage.setItem('snow_users', JSON.stringify(db_users));
+  localStorage.setItem('snow_orders', JSON.stringify(db_orders));
+  localStorage.setItem('snow_naps', JSON.stringify(db_naps));
 }
 </script>
 </body>
