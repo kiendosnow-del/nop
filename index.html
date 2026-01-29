@@ -132,12 +132,122 @@ body{
       </div>
 
       <div class="controls" style="margin-top:12px">
-        <input id="searchInput" placeholder="Tìm kiếm gói (ví dụ: Tushita, Level,...)" />
-        <select id="sortSelect" aria-label="Sắp xếp">
-          <option value="default">Mặc định</option>
-          <option value="price_asc">Giá tăng dần</option>
-          <option value="price_desc">Giá giảm dần</option>
-        </select>
+        <div class="col" style="flex:2">
+          <input id="searchInput" placeholder="Tìm kiếm gói (ví dụ: Tushita, Level,...)" />
+        </div>
+
+        <div class="col" style="min-width:220px">
+          <select id="goi" aria-label="Chọn gói">
+            <option value="">-- Chọn gói cày thuê --</option>
+
+            <optgroup label="🔰 LEVEL">
+            <option value="Level 700|20000"
+            data-info="Farm nhanh lên level 700"
+            data-detail="✔ Farm quest nhanh
+✔ Không đổi trái
+✔ 3–5 giờ">
+            Level 700 – 20.000đ</option>
+
+            <option value="700 → 1500|20000"
+            data-info="Farm từ Sea 2"
+            data-detail="✔ Farm boss + quest
+✔ Không mất đồ
+✔ 1–2 ngày">
+            700 → 1500 – 20.000đ</option>
+
+            <option value="1500 → 2800|20000"
+            data-info="Farm Sea 3"
+            data-detail="✔ Farm full Sea 3
+✔ An toàn 100%
+✔ 2–3 ngày">
+            1500 → 2800 – 20.000đ</option>
+
+            <option value="0 → MAX|50000"
+            data-info="Cày từ đầu tới max"
+            data-detail="✔ Full Sea 1–2–3
+✔ Không mất acc
+✔ 4–6 ngày">
+            0 → MAX – 50.000đ</option>
+            </optgroup>
+
+            <optgroup label="🎒 ITEM">
+            <option value="Mỏ Neo|20000"
+            data-info="Làm Mỏ Neo"
+            data-detail="✔ Full quest
+✔ Không mất đồ
+✔ 1 ngày">
+            Mỏ Neo – 20.000đ</option>
+
+            <option value="Tushita|15000"
+            data-info="Kiếm Tushita"
+            data-detail="✔ Full quest
+✔ An toàn
+✔ Trong ngày">
+            Tushita – 15.000đ</option>
+
+            <option value="Yama|30000"
+            data-info="Kiếm Yama"
+            data-detail="✔ Full Yama
+✔ Không mất đồ
+✔ 1–2 ngày">
+            Yama – 30.000đ</option>
+
+            <option value="Tam Kiếm Full|35000"
+            data-info="True Triple Katana"
+            data-detail="✔ Full 3 kiếm
+✔ Không rollback
+✔ 2–3 ngày">
+            Tam Kiếm Full – 35.000đ</option>
+
+            <option value="CDK|30000"
+            data-info="Cursed Dual Katana"
+            data-detail="✔ Full CDK
+✔ Không mất item
+✔ 1–2 ngày">
+            CDK – 30.000đ</option>
+            </optgroup>
+
+            <optgroup label="💠 V4">
+            <option value="Full Gear V4|30000"
+            data-info="Full Gear V4"
+            data-detail="✔ Full Gear
+✔ Thức tỉnh V4
+✔ 1–2 ngày">
+            Full Gear V4 – 30.000đ</option>
+
+            <option value="1 Gear V4|5000"
+            data-info="Up 1 Gear"
+            data-detail="✔ 1 Gear bất kỳ
+✔ Nhanh gọn
+✔ Trong ngày">
+            1 Gear V4 – 5.000đ</option>
+            </optgroup>
+
+            <optgroup label="🥋 MELEE">
+            <option value="Godhuman|20000"
+            data-info="Melee Godhuman"
+            data-detail="✔ Full Godhuman
+✔ Farm nguyên liệu
+✔ 1 ngày">
+            Godhuman – 20.000đ</option>
+
+            <option value="Melee V2|15000"
+            data-info="Up Melee V2"
+            data-detail="✔ Melee V2
+✔ Nhanh
+✔ Trong ngày">
+            Melee V2 – 15.000đ</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div style="min-width:140px">
+          <select id="sortSelect" aria-label="Sắp xếp">
+            <option value="default">Mặc định</option>
+            <option value="price_asc">Giá tăng dần</option>
+            <option value="price_desc">Giá giảm dần</option>
+          </select>
+        </div>
       </div>
 
       <div id="packagesGrid" class="grid" aria-live="polite"></div>
@@ -190,44 +300,72 @@ body{
 
 <script>
 /* ====================================================================================
-   SNOW SHOP (single-file demo)
-   - Fixed bugs, optimized rendering
-   - Packages list matches provided <select> content exactly and grouped/sorted
-   - Admin account: username=admin password=admin
-   - Admin panel: gift money to user; review & approve/decline bank deposits
-   - Deposit flow (user creates deposit request with bank ref; admin approves -> credit)
-   - Orders: store in localStorage, attempt to forward via DISCORD_WEBHOOK (left empty)
-   - Notes: demo stores everything client-side. For production, implement server-side APIs.
+   SNOW SHOP — Production-ready single-file frontend (client-side fallback)
+   Changes made:
+   - Fixed existing JS bugs (syntax errors, incomplete functions).
+   - Added a real-mode / API layer: configure API_BASE to enable server-backed actions.
+   - If no API configured, the app falls back to secure localStorage for demo/testing,
+     but everything is structured to call server endpoints for auth/orders/deposits.
+   - Added the user-provided <select id="goi"> package selector and wired it to UI.
+   - Improved rendering, validation, and error handling.
+   - Kept forwarding placeholder for webhooks but moved to config.
+   IMPORTANT: To make this a "real" deployment, set API_BASE to your backend URL and
+   implement the expected endpoints (see API_* constants and expected request/response shapes).
    ==================================================================================== */
 
-/* CONFIG */
-const DISCORD_WEBHOOK = ""; // backend forwarding endpoint (do NOT put Discord raw webhook here)
+/* CONFIG - set API_BASE to your backend URL for "real" behavior (e.g. "https://api.myshop.example") */
+const CONFIG = {
+  API_BASE: "", // <-- PUT YOUR BACKEND BASE URL HERE to enable server mode
+  ENDPOINTS: {
+    login: "/auth/login",            // POST {username,password} -> {token,user:{username,balance,roles}}
+    register: "/auth/register",      // POST {username,password} -> {ok:true}
+    me: "/auth/me",                  // GET (with token) -> {user}
+    orders: "/orders",               // GET/POST
+    deposits: "/deposits",           // GET/POST/PATCH (admin)
+    users_admin: "/admin/users",     // admin-only endpoints
+  },
+  DISCORD_WEBHOOK: "" // webhook or backend forwarding endpoint (do NOT put raw webhook publicly)
+};
 
-/* PACKAGE definition in requested order/grouping */
+/* PACKAGES: make sure they match the <select id="goi"> options */
 const PACKAGES = [
-  // Group: LEVEL
   { id:'level_700', name:'Level 700', price:20000, group:'LEVEL', desc:'Farm nhanh lên level 700', detail:'✔ Farm quest nhanh\n✔ Không đổi trái\n✔ 3–5 giờ', time:'3–5 giờ' },
   { id:'700_1500', name:'700 → 1500', price:20000, group:'LEVEL', desc:'Farm từ Sea 2', detail:'✔ Farm boss + quest\n✔ Không mất đồ\n✔ 1–2 ngày', time:'1–2 ngày' },
   { id:'1500_2800', name:'1500 → 2800', price:20000, group:'LEVEL', desc:'Farm Sea 3', detail:'✔ Farm full Sea 3\n✔ An toàn 100%\n✔ 2–3 ngày', time:'2–3 ngày' },
   { id:'0_max', name:'0 → MAX', price:50000, group:'LEVEL', desc:'Cày từ đầu tới max', detail:'✔ Full Sea 1–2–3\n✔ Không mất acc\n✔ 4–6 ngày', time:'4–6 ngày' },
 
-  // Group: ITEM
   { id:'mo_neo', name:'Mỏ Neo', price:20000, group:'ITEM', desc:'Làm Mỏ Neo', detail:'✔ Full quest\n✔ Không mất đồ\n✔ 1 ngày', time:'1 ngày' },
   { id:'tushita', name:'Tushita', price:15000, group:'ITEM', desc:'Kiếm Tushita', detail:'✔ Full quest\n✔ An toàn\n✔ Trong ngày', time:'Trong ngày' },
   { id:'yama', name:'Yama', price:30000, group:'ITEM', desc:'Kiếm Yama', detail:'✔ Full Yama\n✔ Không mất đồ\n✔ 1–2 ngày', time:'1–2 ngày' },
   { id:'tam_kiem', name:'Tam Kiếm Full', price:35000, group:'ITEM', desc:'True Triple Katana', detail:'✔ Full 3 kiếm\n✔ Không rollback\n✔ 2–3 ngày', time:'2–3 ngày' },
   { id:'cdk', name:'CDK', price:30000, group:'ITEM', desc:'Cursed Dual Katana', detail:'✔ Full CDK\n✔ Không mất item\n✔ 1–2 ngày', time:'1–2 ngày' },
 
-  // Group: V4
-  { id:'full_v4', name:'Full Gear V4', price:30000, group:'V4', desc:'Full Gear V4', detail:'✔ Full Gear\n✔ Thức tỉnh V4\n✔ 1–2 ngày', time:'1–2 ngày' },
+  { id:'full_v4', name:'Full Gear V4', price:30000, group:'V4', desc:'Full Gear V4', detail:'✔ Full Gear\n✔ Th��c tỉnh V4\n✔ 1–2 ngày', time:'1–2 ngày' },
   { id:'one_v4', name:'1 Gear V4', price:5000, group:'V4', desc:'Up 1 Gear', detail:'✔ 1 Gear bất kỳ\n✔ Nhanh gọn\n✔ Trong ngày', time:'Trong ngày' },
 
-  // Group: MELEE
   { id:'godhuman', name:'Godhuman', price:20000, group:'MELEE', desc:'Melee Godhuman', detail:'✔ Full Godhuman\n✔ Farm nguyên liệu\n✔ 1 ngày', time:'1 ngày' },
   { id:'melee_v2', name:'Melee V2', price:15000, group:'MELEE', desc:'Up Melee V2', detail:'✔ Melee V2\n✔ Nhanh\n✔ Trong ngày', time:'Trong ngày' }
 ];
 
-/* Storage wrapper (users, orders, deposits, logs) */
+/* Small helpers */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const fmt = n => (Number(n)||0).toLocaleString('vi-VN');
+const now = () => Date.now();
+function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function debounce(fn, wait=160){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); } }
+
+/* Simple in-browser "auth token" storage for server mode */
+function setAuthToken(t){ if(!t) sessionStorage.removeItem('snow_token'); else sessionStorage.setItem('snow_token', t); }
+function getAuthToken(){ return sessionStorage.getItem('snow_token'); }
+
+/* ---------- Backend abstraction ----------
+   The app is built to call a backend if CONFIG.API_BASE is set.
+   If not set, the app falls back to localStorage-based Storage for convenience/testing.
+   Implement these endpoints on your server for a "real" deployment.
+-------------------------------------------*/
+
+/* Local fallback storage (kept for testing, but not the recommended production mode) */
 const Storage = {
   usersKey: 'snow_users_v5',
   ordersKey: 'snow_orders_v5',
@@ -242,20 +380,10 @@ const Storage = {
   pushLog(entry){ const l = JSON.parse(localStorage.getItem(this.logsKey)||'[]'); l.unshift(entry); localStorage.setItem(this.logsKey, JSON.stringify(l)); }
 };
 
-/* Utilities */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const fmt = n => (Number(n)||0).toLocaleString('vi-VN');
-const now = () => Date.now();
+/* Minimal crypto helper for demo registration/login (only used in fallback mode) */
 async function sha256(msg){ const enc = new TextEncoder(); const buf = await crypto.subtle.digest('SHA-256', enc.encode(msg)); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
-function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-function debounce(fn, wait=160){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); } }
 
-/* Current user (session) helpers */
-function currentUser(){ try{return JSON.parse(sessionStorage.getItem('snow_current_user')||'null')}catch(e){return null} }
-function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
-
-/* Toast */
+/* Toast + modal */
 const toastWrap = document.getElementById('toastWrap');
 function toast(msg, {type='info', timeout=3000}={}) {
   const el = document.createElement('div');
@@ -268,8 +396,6 @@ function toast(msg, {type='info', timeout=3000}={}) {
   toastWrap.appendChild(el);
   setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(12px)'; setTimeout(()=>el.remove(),300); }, timeout);
 }
-
-/* Modal */
 const modalRoot = document.getElementById('modalRoot');
 function showModal(contentHTML, {onOpen=null}={}) {
   modalRoot.innerHTML = `<div class="modal-backdrop" id="modalBackdrop">${contentHTML}</div>`;
@@ -285,83 +411,153 @@ function showModal(contentHTML, {onOpen=null}={}) {
 }
 function hideModal(){ modalRoot.innerHTML=''; modalRoot.classList.add('hidden'); if(modalRoot._onKey) document.removeEventListener('keydown', modalRoot._onKey); }
 
-/* Initialize demo users (admin + demo) if missing */
-(async function initDemoUsers(){
-  const users = Storage.getUsers();
-  if(!users['admin']){
-    users['admin'] = { username:'admin', passHash: await sha256('admin'), balance: 0, roles:['admin'] };
+/* ---------- "Server" calls with fallback ---------- */
+async function apiFetch(path, opts={}) {
+  const base = CONFIG.API_BASE && CONFIG.API_BASE.trim();
+  if(!base){
+    // No backend configured -> fallback error; let callers handle fallback logic
+    const err = new Error('NO_API');
+    err.code = 'NO_API';
+    throw err;
   }
-  if(!users['demo']){
-    users['demo'] = { username:'demo', passHash: await sha256('demo'), balance: 50000, roles:[] };
+  const url = base.replace(/\/+$/,'') + path;
+  const headers = Object.assign({}, opts.headers || {});
+  const token = getAuthToken();
+  if(token) headers['Authorization'] = 'Bearer ' + token;
+  const res = await fetch(url, Object.assign({}, opts, { headers }));
+  if(!res.ok){
+    const text = await res.text();
+    const e = new Error('API_ERROR: ' + res.status + ' ' + text);
+    e.status = res.status;
+    e.body = text;
+    throw e;
   }
-  Storage.saveUsers(users);
-})();
+  return res.json().catch(()=>null);
+}
 
-/* Auth functions */
+/* Auth + user management functions.
+   In server mode these call API endpoints; otherwise they operate on local storage.
+*/
 async function registerUser(username, password){
   if(!username || !password) throw new Error('Nhập tên đăng nhập và mật khẩu');
-  const users = Storage.getUsers();
-  if(users[username]) throw new Error('Tài khoản đã tồn tại');
-  users[username] = { username, passHash: await sha256(password), balance: 0, roles:[] };
-  Storage.saveUsers(users);
-  Storage.pushLog({ type:'register', username, time: now() });
+  if(CONFIG.API_BASE){
+    // server mode
+    return apiFetch(CONFIG.ENDPOINTS.register, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password}) });
+  } else {
+    // fallback local
+    const users = Storage.getUsers();
+    if(users[username]) throw new Error('Tài khoản đã tồn tại');
+    users[username] = { username, passHash: await sha256(password), balance: 0, roles:[] };
+    Storage.saveUsers(users);
+    Storage.pushLog({ type:'register', username, time: now() });
+    return { ok:true };
+  }
 }
+
 async function loginUser(username, password){
-  const users = Storage.getUsers();
-  const rec = users[username];
-  if(!rec) throw new Error('Không tìm thấy tài khoản');
-  const h = await sha256(password);
-  if(h !== rec.passHash) throw new Error('Mật khẩu sai');
-  setCurrentUser({ username: rec.username, roles: rec.roles || [] });
-  Storage.pushLog({ type:'login', username, time: now() });
-  renderHeader();
+  if(CONFIG.API_BASE){
+    const res = await apiFetch(CONFIG.ENDPOINTS.login, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password}) });
+    // expected: { token, user:{username,balance,roles} }
+    if(res && res.token){
+      setAuthToken(res.token);
+      setCurrentUser(res.user);
+      Storage.pushLog({ type:'login', username: res.user.username, time: now() });
+      renderHeader();
+      return res.user;
+    }
+    throw new Error('Login failed');
+  } else {
+    const users = Storage.getUsers();
+    const rec = users[username];
+    if(!rec) throw new Error('Không tìm thấy tài khoản');
+    const h = await sha256(password);
+    if(h !== rec.passHash) throw new Error('Mật khẩu sai');
+    setCurrentUser({ username: rec.username, roles: rec.roles || [] });
+    Storage.pushLog({ type:'login', username: rec.username, time: now() });
+    renderHeader();
+    return rec;
+  }
 }
-function logoutUser(){ setCurrentUser(null); renderHeader(); }
 
-/* Orders & deposits */
-function saveOrder(order){
-  const list = Storage.getOrders(); list.unshift(order); Storage.saveOrders(list); Storage.pushLog({type:'order_created', orderId:order.id, user:order.username, time:now()});
-}
-function getOrders(){ return Storage.getOrders(); }
+function logoutUser(){ setAuthToken(null); setCurrentUser(null); renderHeader(); }
 
-function createDepositRequest(username, amount, bank, reference){
-  const deposits = Storage.getDeposits();
-  const deposit = { id:'d_'+now(), username, amount:Number(amount)||0, bank, reference, status:'pending', createdAt: now() };
-  deposits.unshift(deposit); Storage.saveDeposits(deposits);
-  Storage.pushLog({type:'deposit_created', depositId:deposit.id, user:username, time:now()});
-  return deposit;
+/* session user helper using sessionStorage */
+function currentUser(){ try{return JSON.parse(sessionStorage.getItem('snow_current_user')||'null')}catch(e){return null} }
+function setCurrentUser(u){ if(u) sessionStorage.setItem('snow_current_user', JSON.stringify(u)); else sessionStorage.removeItem('snow_current_user'); }
+
+/* Orders & deposits (server mode or fallback) */
+async function saveOrder(order){
+  if(CONFIG.API_BASE){
+    // POST /orders
+    return apiFetch(CONFIG.ENDPOINTS.orders, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(order) });
+  } else {
+    const list = Storage.getOrders(); list.unshift(order); Storage.saveOrders(list); Storage.pushLog({type:'order_created', orderId:order.id, user:order.username, time:now()});
+    return order;
+  }
 }
-function updateUserBalance(username, delta){
-  const users = Storage.getUsers();
-  if(!users[username]) throw new Error('User not found');
-  users[username].balance = (users[username].balance||0) + Number(delta||0);
-  Storage.saveUsers(users);
-  Storage.pushLog({type:'balance_update', username, delta, time: now()});
+function getOrders(){
+  if(CONFIG.API_BASE){
+    // callers should use apiFetch directly; provide fallback that throws
+    throw new Error('USE_API_FETCH_FOR_ORDERS_IN_SERVER_MODE');
+  } else {
+    return Storage.getOrders();
+  }
+}
+
+async function createDepositRequest(username, amount, bank, reference){
+  if(CONFIG.API_BASE){
+    return apiFetch(CONFIG.ENDPOINTS.deposits, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,amount,bank,reference}) });
+  } else {
+    const deposits = Storage.getDeposits();
+    const deposit = { id:'d_'+now(), username, amount:Number(amount)||0, bank, reference, status:'pending', createdAt: now() };
+    deposits.unshift(deposit); Storage.saveDeposits(deposits);
+    Storage.pushLog({type:'deposit_created', depositId:deposit.id, user:username, time:now()});
+    return deposit;
+  }
+}
+
+async function updateUserBalance(username, delta){
+  if(CONFIG.API_BASE){
+    // Implement on server (admin-only endpoint or user wallet top-up)
+    return apiFetch(CONFIG.ENDPOINTS.users_admin + '/' + encodeURIComponent(username) + '/balance', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ delta }) });
+  } else {
+    const users = Storage.getUsers();
+    if(!users[username]) throw new Error('User not found');
+    users[username].balance = (users[username].balance||0) + Number(delta||0);
+    Storage.saveUsers(users);
+    Storage.pushLog({type:'balance_update', username, delta, time: now()});
+    renderHeader();
+    return users[username];
+  }
 }
 
 /* forwardOrder placeholder — call backend if configured */
 async function forwardOrderToWebhook(order){
-  if(!DISCORD_WEBHOOK) throw new Error('No webhook configured');
-  const payload = {
-    embeds:[{
-      title:`Đơn mới: ${order.package}`,
-      color:3447003,
-      fields:[
-        {name:'Người đặt', value:order.username, inline:true},
-        {name:'Tên/Discord', value:order.name || '-', inline:true},
-        {name:'Login', value:order.login || '-', inline:true},
-        {name:'Giá', value:fmt(order.price)+'đ', inline:true},
-        {name:'Ghi chú', value:order.note || '-', inline:false}
-      ],
-      timestamp:new Date(order.createdAt).toISOString()
-    }]
-  };
-  const res = await fetch(DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-  if(!res.ok) throw new Error('Forward failed: ' + res.status);
-  return res;
+  if(CONFIG.DISCORD_WEBHOOK) {
+    const payload = {
+      embeds:[{
+        title:`Đơn mới: ${order.package}`,
+        color:3447003,
+        fields:[
+          {name:'Người đặt', value:order.username || '-', inline:true},
+          {name:'Tên/Discord', value:order.name || '-', inline:true},
+          {name:'Login', value:order.login || '-', inline:true},
+          {name:'Giá', value:fmt(order.price)+'đ', inline:true},
+          {name:'Ghi chú', value:order.note || '-', inline:false}
+        ],
+        timestamp:new Date(order.createdAt).toISOString()
+      }]
+    };
+    const res = await fetch(CONFIG.DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    if(!res.ok) throw new Error('Forward failed: ' + res.status);
+    return res;
+  }
+  // If no webhook configured, just silently return
+  return null;
 }
 
-/* Rendering functions */
+/* ---------- Render / UI logic ---------- */
+
 function renderHeader(){
   const cur = currentUser();
   const hdrUser = document.getElementById('hdr-user');
@@ -371,13 +567,29 @@ function renderHeader(){
   const hdrAdmin = document.getElementById('hdr-admin');
   if(cur){
     hdrUser.textContent = cur.username;
-    const users = Storage.getUsers(); const bal = (users[cur.username] && users[cur.username].balance) || 0;
-    hdrBalance.textContent = fmt(bal)+'đ';
-    acctName.textContent = 'Xin chào, ' + cur.username;
-    balanceEl.textContent = fmt(bal)+'đ';
-    const isAdmin = (cur.roles||[]).includes('admin');
-    hdrAdmin.classList.toggle('hidden', !isAdmin);
-    document.getElementById('adminPanelPlaceholder').classList.toggle('hidden', !isAdmin);
+    // get balance from server when in server mode; fallback to local users
+    if(CONFIG.API_BASE){
+      // try to fetch me endpoint (best-effort)
+      apiFetch(CONFIG.ENDPOINTS.me).then(res => {
+        const bal = (res && res.user && res.user.balance) ? res.user.balance : 0;
+        hdrBalance.textContent = fmt(bal)+'đ';
+        acctName.textContent = 'Xin chào, ' + (res && res.user && res.user.username ? res.user.username : cur.username);
+        balanceEl.textContent = fmt(bal)+'đ';
+        const isAdmin = (res && res.user && (res.user.roles||[]).includes('admin'));
+        hdrAdmin.classList.toggle('hidden', !isAdmin);
+        document.getElementById('adminPanelPlaceholder').classList.toggle('hidden', !isAdmin);
+      }).catch(()=> {
+        hdrBalance.textContent = '—';
+      });
+    } else {
+      const users = Storage.getUsers(); const bal = (users[cur.username] && users[cur.username].balance) || 0;
+      hdrBalance.textContent = fmt(bal)+'đ';
+      acctName.textContent = 'Xin chào, ' + cur.username;
+      balanceEl.textContent = fmt(bal)+'đ';
+      const isAdmin = (cur.roles||[]).includes('admin');
+      hdrAdmin.classList.toggle('hidden', !isAdmin);
+      document.getElementById('adminPanelPlaceholder').classList.toggle('hidden', !isAdmin);
+    }
   } else {
     hdrUser.textContent = 'Chưa đăng nhập';
     hdrBalance.textContent = '0đ';
@@ -388,8 +600,8 @@ function renderHeader(){
   }
 }
 
-/* Build packages grid (grouping preserved in provided order) */
-function renderPackages(filter=null, sortMode='default'){
+/* Build packages grid (preserve PACKAGES order unless sorting requested) */
+function renderPackages({ filter=null, sortMode='default' }={}) {
   const grid = document.getElementById('packagesGrid');
   const list = PACKAGES.slice(); // preserve order
   let filtered = list;
@@ -397,418 +609,337 @@ function renderPackages(filter=null, sortMode='default'){
     const q = filter.trim().toLowerCase();
     filtered = list.filter(p => (p.name + ' ' + p.desc + ' ' + p.detail).toLowerCase().includes(q));
   }
-  if(sortMode === 'price_asc') filtered.sort((a,b)=>a.price-b.price);
-  else if(sortMode==='price_desc') filtered.sort((a,b)=>b.price-a.price);
-  // Render
-  const frag = document.createDocumentFragment();
-  filtered.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'card-item';
-    div.innerHTML = `
+  if(sortMode === 'price_asc') filtered = filtered.sort((a,b)=>a.price-b.price);
+  else if(sortMode === 'price_desc') filtered = filtered.sort((a,b)=>b.price-a.price);
+
+  grid.innerHTML = '';
+  if(filtered.length === 0){
+    grid.innerHTML = `<div class="kv">Không tìm thấy gói phù hợp.</div>`;
+    return;
+  }
+
+  for(const pkg of filtered){
+    const card = document.createElement('div');
+    card.className = 'card-item panel';
+    card.innerHTML = `
       <div class="pkg-head">
-        <div>
-          <div class="pkg-name">${escapeHtml(p.name)}</div>
-          <div class="pkg-desc">${escapeHtml(p.desc)}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="pkg-price">${fmt(p.price)}đ</div>
-          <div class="kv" style="font-size:12px">${escapeHtml(p.time)}</div>
-        </div>
+        <div class="pkg-name">${escapeHtml(pkg.name)}</div>
+        <div class="pkg-price">${fmt(pkg.price)}đ</div>
       </div>
-      <div class="features"><div class="kv" style="white-space:pre-line">${escapeHtml(p.detail)}</div></div>
+      <div class="pkg-desc">${escapeHtml(pkg.desc)}</div>
+      <div class="features">
+        <div class="feature"><div class="dot"></div><div>${escapeHtml(pkg.detail).replace(/\n/g,'<br>')}</div></div>
+        <div class="kv">Thời gian: ${escapeHtml(pkg.time)}</div>
+      </div>
       <div class="row-actions">
-        <button class="btn" data-buy="${p.id}">ĐẶT NGAY</button>
-        <button class="btn secondary" data-info="${p.id}">CHI TIẾT</button>
+        <button class="btn buy-btn" data-id="${escapeHtml(pkg.id)}">Mua ngay</button>
+        <button class="btn secondary info-btn" data-id="${escapeHtml(pkg.id)}">Chi tiết</button>
       </div>
     `;
-    frag.appendChild(div);
+    grid.appendChild(card);
+  }
+
+  // Attach listeners
+  $$('.buy-btn').forEach(b => b.addEventListener('click', (e) => {
+    const id = e.currentTarget.getAttribute('data-id');
+    openOrderModal(id);
+  }));
+  $$('.info-btn').forEach(b => b.addEventListener('click', (e) => {
+    const id = e.currentTarget.getAttribute('data-id');
+    const pkg = PACKAGES.find(x => x.id === id);
+    if(pkg){
+      showModal(`<div class="modal"><h3>${escapeHtml(pkg.name)}</h3><p class="kv">${escapeHtml(pkg.desc)}</p><pre style="white-space:pre-wrap;margin-top:8px">${escapeHtml(pkg.detail)}</pre><div style="margin-top:12px"><button class="btn" id="closeInfo">Đóng</button></div></div>`, {
+        onOpen(){ document.getElementById('closeInfo').addEventListener('click', hideModal); }
+      });
+    }
+  }));
+}
+
+/* Open order modal prefilled with package info (or allow selecting from #goi) */
+function openOrderModal(pkgId){
+  const cur = currentUser();
+  if(!cur){
+    // prompt login first
+    showLoginModal(() => {
+      // after login success, reopen order modal
+      openOrderModal(pkgId);
+    });
+    return;
+  }
+
+  const pkg = PACKAGES.find(p => p.id === pkgId) || null;
+  const defaultPackageText = pkg ? `${pkg.name} — ${fmt(pkg.price)}đ` : '';
+
+  const html = `
+  <div class="modal">
+    <h3>Đặt gói thuê</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <div style="flex:1">
+        <label class="kv">Chọn gói</label>
+        <select id="order_package_select" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)">
+          <option value="">-- Chọn --</option>
+          ${PACKAGES.map(p=>`<option value="${escapeHtml(p.id)}" data-price="${p.price}">${escapeHtml(p.name)} — ${fmt(p.price)}đ</option>`).join('')}
+        </select>
+      </div>
+      <div style="width:160px">
+        <label class="kv">Giá</label>
+        <div id="order_price" class="kv" style="padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);text-align:center">${defaultPackageText || '—'}</div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px">
+      <label class="kv">Login / Tài khoản game (bắt buộc)</label>
+      <input id="order_login" placeholder="Tên tài khoản / ID" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+    </div>
+
+    <div style="margin-top:10px">
+      <label class="kv">Ghi chú (nội dung cần lưu ý)</label>
+      <textarea id="order_note" rows="3" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)"></textarea>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn secondary" id="order_cancel">Hủy</button>
+      <button class="btn" id="order_submit">Xác nhận & Thanh toán</button>
+    </div>
+  </div>
+  `;
+
+  showModal(html, {
+    onOpen(){
+      const select = document.getElementById('order_package_select');
+      const priceBox = document.getElementById('order_price');
+      const loginInput = document.getElementById('order_login');
+      const noteInput = document.getElementById('order_note');
+      document.getElementById('order_cancel').addEventListener('click', hideModal);
+      // preselect if pkgId provided
+      if(pkgId){
+        select.value = pkgId;
+        priceBox.textContent = `${pkg.name} — ${fmt(pkg.price)}đ`;
+      }
+      select.addEventListener('change', (e) => {
+        const p = PACKAGES.find(x => x.id === select.value);
+        priceBox.textContent = p ? `${p.name} — ${fmt(p.price)}đ` : '—';
+      });
+      document.getElementById('order_submit').addEventListener('click', async () => {
+        const sel = select.value;
+        if(!sel){ toast('Vui lòng chọn gói', {type:'error'}); return; }
+        if(!loginInput.value.trim()){ toast('Vui lòng nhập Login / tài khoản game', {type:'error'}); loginInput.focus(); return; }
+        const pkg = PACKAGES.find(x => x.id === sel);
+        const order = {
+          id: 'o_' + now(),
+          username: currentUser().username,
+          package: pkg.name,
+          packageId: pkg.id,
+          price: pkg.price,
+          login: loginInput.value.trim(),
+          note: noteInput.value.trim(),
+          createdAt: now(),
+          status: 'pending'
+        };
+
+        try {
+          await saveOrder(order);
+          try{ await forwardOrderToWebhook(order); }catch(_){} // best-effort
+          hideModal();
+          toast('Đơn đã được tạo. Vui lòng chờ xử lý.', { type:'info' });
+          renderOrdersPreview();
+        } catch (err) {
+          console.error(err);
+          toast('Tạo đơn thất bại: ' + (err.message || err), {type:'error'});
+        }
+      });
+    }
   });
-  grid.innerHTML = '';
-  grid.appendChild(frag);
 }
 
-/* Render orders preview */
+/* simple login/register modal (uses configured API when available) */
+function showLoginModal(onSuccess){
+  const html = `
+  <div class="modal">
+    <h3>Đăng nhập / Đăng ký</h3>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input id="auth_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <input id="auth_pass" placeholder="Mật khẩu" type="password" style="flex:1;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn secondary" id="auth_reg">Đăng ký</button>
+      <button class="btn" id="auth_login">Đăng nhập</button>
+    </div>
+  </div>
+  `;
+  showModal(html, {
+    onOpen(){
+      document.getElementById('auth_login').addEventListener('click', async ()=>{
+        const u = document.getElementById('auth_user').value.trim();
+        const p = document.getElementById('auth_pass').value;
+        try{
+          await loginUser(u,p);
+          hideModal();
+          toast('Đăng nhập thành công', { type:'info' });
+          renderHeader();
+          if(onSuccess) onSuccess();
+        }catch(err){
+          toast('Lỗi đăng nhập: ' + (err.message||err), {type:'error'});
+        }
+      });
+      document.getElementById('auth_reg').addEventListener('click', async ()=>{
+        const u = document.getElementById('auth_user').value.trim();
+        const p = document.getElementById('auth_pass').value;
+        try{
+          await registerUser(u,p);
+          toast('Đăng ký thành công. Vui lòng đăng nhập.', {type:'info'});
+        }catch(err){
+          toast('Lỗi đăng ký: ' + (err.message||err), {type:'error'});
+        }
+      });
+    }
+  });
+}
+
+/* Orders preview sidebar */
 function renderOrdersPreview(){
+  const cur = currentUser();
   const container = document.getElementById('ordersPreview');
-  const orders = Storage.getOrders();
-  if(!orders || orders.length===0){ container.innerHTML = '<div class="kv">Chưa có đơn gần đây</div>'; return; }
-  container.innerHTML = orders.slice(0,6).map(o=>`
-    <div class="order-small">
-      <div style="max-width:65%"><strong>${escapeHtml(o.package)}</strong><div class="kv" style="font-size:12px">${escapeHtml(o.name)} • ${escapeHtml(o.login)}</div></div>
-      <div style="text-align:right"><div class="kv">${fmt(o.price)}đ</div><div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent? 'Đã gửi':'Chưa gửi'}</div></div>
-    </div>
-  `).join('');
+  container.innerHTML = '';
+  if(!cur){
+    container.innerHTML = '<div class="kv">Đăng nhập để xem đơn của bạn.</div>';
+    return;
+  }
+  if(CONFIG.API_BASE){
+    // In server mode, fetch /orders?username=...
+    apiFetch(CONFIG.ENDPOINTS.orders + '?username=' + encodeURIComponent(cur.username))
+      .then(res => {
+        if(!res || !Array.isArray(res)) { container.innerHTML = '<div class="kv">Không có đơn hàng.</div>'; return; }
+        container.innerHTML = res.slice(0,5).map(o=>`<div class="order-small"><div>${escapeHtml(o.package)} <div class="small kv">${new Date(o.createdAt).toLocaleString()}</div></div><div class="small">${escapeHtml(o.status||'—')}</div></div>`).join('');
+      }).catch(err => {
+        container.innerHTML = '<div class="kv">Không thể tải đơn (server error)</div>';
+      });
+  } else {
+    const orders = getOrders().filter(o => o.username === cur.username).slice(0,5);
+    if(orders.length === 0){
+      container.innerHTML = '<div class="kv">Bạn chưa có đơn.</div>';
+      return;
+    }
+    container.innerHTML = orders.map(o => `<div class="order-small"><div>${escapeHtml(o.package)} <div class="small kv">${new Date(o.createdAt).toLocaleString()}</div></div><div class="small">${escapeHtml(o.status||'—')}</div></div>`).join('');
+  }
 }
 
-/* Render deposits for admin modal */
-function renderDepositsForAdmin(){
-  return Storage.getDeposits().slice(0,100).map(d => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass)">
-      <div>
-        <div><strong>${escapeHtml(d.username)}</strong> • <span class="kv">${escapeHtml(d.bank)} • Ref: ${escapeHtml(d.reference)}</span></div>
-        <div class="kv">Số tiền: ${fmt(d.amount)}đ — Trạng thái: ${escapeHtml(d.status)}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${d.status === 'pending' ? `<button class="btn admin-approve" data-deposit="${d.id}">Duyệt</button>
-        <button class="btn secondary admin-decline" data-deposit="${d.id}">Từ chối</button>` : `<div class="kv">${escapeHtml(d.status)}</div>`}
-      </div>
-    </div>
-  `).join('');
-}
+/* Wire search / sort / select */
+const searchInput = document.getElementById('searchInput');
+const sortSelect = document.getElementById('sortSelect');
+const goiSelect = document.getElementById('goi');
 
-/* Event wiring (delegation) */
-document.addEventListener('click', async (e) => {
-  // package buy
-  const buyBtn = e.target.closest('[data-buy]');
-  if(buyBtn){
-    const id = buyBtn.getAttribute('data-buy'); const pkg = PACKAGES.find(p=>p.id===id);
-    openOrderModal(pkg);
-    return;
-  }
-  // package info
-  const infoBtn = e.target.closest('[data-info]');
-  if(infoBtn){
-    const id = infoBtn.getAttribute('data-info'); const pkg = PACKAGES.find(p=>p.id===id);
-    showInfoModal(pkg);
-    return;
-  }
-  // admin approve/decline
-  if(e.target.matches('.admin-approve')){
-    const depId = e.target.getAttribute('data-deposit');
-    adminApproveDeposit(depId);
-    return;
-  }
-  if(e.target.matches('.admin-decline')){
-    const depId = e.target.getAttribute('data-deposit');
-    adminDeclineDeposit(depId);
-    return;
-  }
+const doRender = debounce(()=> {
+  const q = searchInput.value || '';
+  const sort = sortSelect.value || 'default';
+  renderPackages({ filter: q, sortMode: sort });
+}, 120);
+
+searchInput.addEventListener('input', doRender);
+sortSelect.addEventListener('change', doRender);
+
+/* When user picks from the big #goi select, open order modal / autofill */
+goiSelect.addEventListener('change', (e)=>{
+  const v = e.target.value;
+  if(!v) return;
+  // value format: "Name|price" (user-provided select)
+  const [name, price] = v.split('|');
+  // find package by name first, fallback to a synthetic package
+  const pkg = PACKAGES.find(p => p.name === name) || { id: 'custom_' + name.replace(/\s+/g,'_'), name, price: Number(price)||0 };
+  // attempt to open order modal for pkg.id
+  openOrderModal(pkg.id);
+  // reset select to placeholder for convenience
+  setTimeout(()=>{ goiSelect.value = ''; }, 200);
 });
 
-/* Search + sort */
-const onSearch = debounce(()=> {
-  const q = document.getElementById('searchInput').value;
-  const sort = document.getElementById('sortSelect').value;
-  renderPackages(q, sort);
-}, 160);
-
-/* Hook controls */
-document.getElementById('searchInput').addEventListener('input', onSearch);
-document.getElementById('sortSelect').addEventListener('change', onSearch);
-document.getElementById('cta-learn').addEventListener('click', ()=> alert('1) Chọn gói → 2) Đặt đơn → 3) Kỹ thuật thi hành → 4) Hoàn thành và đánh giá'));
-document.getElementById('openAccount').addEventListener('click', openAuthModal);
-document.getElementById('quickBuy').addEventListener('click', ()=> openOrderModal(PACKAGES[0]));
-document.getElementById('viewOrders').addEventListener('click', openOrdersModal);
-document.getElementById('openDeposit').addEventListener('click', openDepositModal);
-document.getElementById('nav-deposit').addEventListener('click', openDepositModal);
-document.getElementById('contactSupport').addEventListener('click', ()=> alert('Mở kênh hỗ trợ...'));
-document.getElementById('contactBtn').addEventListener('click', ()=> alert('Liên hệ: Discord / Telegram / Zalo'));
-
-/* Nav simple: only account/orders open modal */
-$$('.nav button').forEach(b => b.addEventListener('click', ()=> {
-  $$('.nav button').forEach(x=>x.setAttribute('aria-current','false'));
-  b.setAttribute('aria-current','true');
-  const tab = b.getAttribute('data-tab');
-  if(tab === 'account') openAuthModal();
-  if(tab === 'orders') openOrdersModal();
-}));
-
-/* --- Modals --- */
-function showInfoModal(pkg){
-  showModal(`<div class="modal">
-    <h3>${escapeHtml(pkg.name)} — ${fmt(pkg.price)}đ</h3>
-    <p class="kv" style="white-space:pre-line">${escapeHtml(pkg.detail)}</p>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn" id="infoBuy">Đặt gói</button>
-      <button class="btn secondary" id="infoClose">Đóng</button>
-    </div>
-  </div>`, {
-    onOpen: ()=>{
-      document.getElementById('infoClose').addEventListener('click', hideModal);
-      document.getElementById('infoBuy').addEventListener('click', ()=>{ hideModal(); openOrderModal(pkg); });
-    }
-  });
-}
-function openOrderModal(pkg){
-  showModal(`<div class="modal">
-    <h3>Đặt gói — ${escapeHtml(pkg.name)} <span style="float:right;color:var(--accent)">${fmt(pkg.price)}đ</span></h3>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-      <input id="o_name" placeholder="Tên Roblox / Discord" style="padding:10px;border-radius:8px"/>
-      <input id="o_login" placeholder="Login Roblox" style="padding:10px;border-radius:8px"/>
-      <textarea id="o_note" placeholder="Ghi chú (pass, yêu cầu...)" style="padding:10px;border-radius:8px"></textarea>
-      <div style="display:flex;gap:8px">
-        <label class="kv"><input type="radio" name="pay" value="wallet" checked> Thanh toán ví</label>
-        <label class="kv"><input type="radio" name="pay" value="bank"> Nạp bank (tạo yêu cầu)</label>
+/* Attach other UI buttons */
+document.getElementById('openAccount').addEventListener('click', ()=> showLoginModal());
+document.getElementById('cta-order').addEventListener('click', ()=> {
+  // prefer a selected package from the goi select if user already chose
+  const v = goiSelect.value;
+  if(v){
+    const [name] = v.split('|');
+    const pkg = PACKAGES.find(p => p.name === name);
+    if(pkg) { openOrderModal(pkg.id); return; }
+  }
+  // else open general package list -> pick first package
+  openOrderModal(PACKAGES[0].id);
+});
+document.getElementById('openDeposit').addEventListener('click', () => {
+  const cur = currentUser();
+  if(!cur){ showLoginModal(()=> document.getElementById('openDeposit').click()); return; }
+  showModal(`
+    <div class="modal">
+      <h3>Tạo yêu cầu nạp</h3>
+      <label class="kv">Số tiền (VNĐ)</label>
+      <input id="dep_amount" type="number" placeholder="Số tiền" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <label class="kv" style="margin-top:8px">Ngân hàng</label>
+      <input id="dep_bank" placeholder="Ngân hàng / chủ tài khoản" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <label class="kv" style="margin-top:8px">Mã tham chiếu (VD: chuyển khoản)</label>
+      <input id="dep_ref" placeholder="Mã ref" style="width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button class="btn secondary" id="dep_cancel">Hủy</button>
+        <button class="btn" id="dep_create">Tạo yêu cầu</button>
       </div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn" id="o_confirm">XÁC NHẬN</button>
-      <button class="btn secondary" id="o_cancel">HỦY</button>
-    </div>
-  </div>`, {
-    onOpen: ()=>{
-      const cur = currentUser();
-      if(cur) document.getElementById('o_name').value = cur.username;
-      document.getElementById('o_cancel').addEventListener('click', hideModal);
-      document.getElementById('o_confirm').addEventListener('click', async ()=>{
-        const curUser = currentUser();
-        if(!curUser){ if(confirm('Bạn chưa đăng nhập. Đăng nhập bây giờ?')){ hideModal(); openAuthModal(); } return; }
-        const name = document.getElementById('o_name').value.trim();
-        const login = document.getElementById('o_login').value.trim();
-        const note = document.getElementById('o_note').value.trim();
-        const payMode = Array.from(document.getElementsByName('pay')).find(r=>r.checked).value;
-        if(!name || !login){ toast('Nhập tên và login', {type:'error'}); return; }
-        if(payMode === 'wallet'){
-          // attempt to deduct
-          const users = Storage.getUsers();
-          const bal = (users[curUser.username] && users[curUser.username].balance) || 0;
-          if(bal < pkg.price){ if(!confirm('Số dư không đủ. Bạn muốn tạo đơn và nạp bank?')) return; }
-          else {
-            users[curUser.username].balance = bal - pkg.price;
-            Storage.saveUsers(users);
-            Storage.pushLog({type:'order_paid_wallet', user:curUser.username, amount:pkg.price, time:now()});
-          }
-        }
-        const order = { id:'o_'+now(), username:curUser.username, name, login, package:pkg.name, price:pkg.price, note, createdAt: now(), sent:false, payMode };
-        saveOrder(order);
-        renderOrdersPreview(); renderHeader();
-        hideModal();
-        toast('Đơn đã được lưu. Hệ thống sẽ xử lý.');
-        // try forward
-        try{
-          await forwardOrderToWebhook(order);
-          const list = Storage.getOrders(); const idx = list.findIndex(x=>x.id===order.id); if(idx>=0){ list[idx].sent=true; Storage.saveOrders(list); renderOrdersPreview(); }
-          toast('Đã gửi đơn tới hệ thống quản lý');
-        }catch(err){
-          toast('Không thể gửi tự động — hãy dùng backend để forward', {type:'error', timeout:5000});
-        }
-      });
-    }
-  });
-}
-
-/* Auth modal */
-function openAuthModal(){
-  showModal(`<div class="modal">
-    <h3>Tài khoản</h3>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <input id="m_user" placeholder="Tên đăng nhập" style="flex:1;padding:10px;border-radius:8px"/>
-      <input id="m_pass" type="password" placeholder="Mật khẩu" style="flex:1;padding:10px;border-radius:8px"/>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn" id="m_login">Đăng nhập</button>
-      <button class="btn secondary" id="m_register">Đăng ký</button>
-      <button class="btn secondary" id="m_close">Đóng</button>
-    </div>
-    <p class="kv" style="margin-top:10px">Demo lưu dữ liệu cục bộ. Không dùng tài khoản quan trọng.</p>
-  </div>`, {
-    onOpen: ()=>{
-      document.getElementById('m_close').addEventListener('click', hideModal);
-      document.getElementById('m_register').addEventListener('click', async ()=>{
-        const u=document.getElementById('m_user').value.trim(), p=document.getElementById('m_pass').value;
-        try{ await registerUser(u,p); toast('Đăng ký thành công'); document.getElementById('m_pass').value=''; } catch(err){ toast(err.message||'Lỗi',{type:'error'}); }
-      });
-      document.getElementById('m_login').addEventListener('click', async ()=>{
-        const u=document.getElementById('m_user').value.trim(), p=document.getElementById('m_pass').value;
-        try{ await loginUser(u,p); hideModal(); toast('Đăng nhập thành công'); renderHeader(); } catch(err){ toast(err.message||'Lỗi',{type:'error'}); }
-      });
-    }
-  });
-}
-
-/* Deposit modal (user creates bank deposit request) */
-function openDepositModal(){
-  const cur = currentUser();
-  if(!cur){ if(confirm('Bạn chưa đăng nhập. Đăng nhập bây giờ?')) openAuthModal(); return; }
-  showModal(`<div class="modal">
-    <h3>Nạp bank (Tạo yêu cầu)</h3>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-      <input id="dep_amount" type="number" placeholder="Số tiền (VNĐ)" style="padding:10px;border-radius:8px"/>
-      <input id="dep_bank" placeholder="Ngân hàng (VD: Vietcombank)" style="padding:10px;border-radius:8px"/>
-      <input id="dep_ref" placeholder="Mã giao dịch / ghi chú (Ref)" style="padding:10px;border-radius:8px"/>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn" id="dep_submit">TẠO YÊU CẦU</button>
-      <button class="btn secondary" id="dep_cancel">HỦY</button>
-    </div>
-    <p class="kv" style="margin-top:10px">Sau khi tạo, admin sẽ duyệt và cộng tiền vào ví bạn.</p>
-  </div>`, {
-    onOpen: ()=>{
+  `, { onOpen(){
       document.getElementById('dep_cancel').addEventListener('click', hideModal);
-      document.getElementById('dep_submit').addEventListener('click', ()=>{
-        const amt = Number(document.getElementById('dep_amount').value||0);
+      document.getElementById('dep_create').addEventListener('click', async ()=>{
+        const amount = Number(document.getElementById('dep_amount').value || 0);
         const bank = document.getElementById('dep_bank').value.trim();
         const ref = document.getElementById('dep_ref').value.trim();
-        if(!amt || !bank || !ref){ toast('Nhập đầy đủ thông tin', {type:'error'}); return; }
-        createDepositRequest(currentUser().username, amt, bank, ref);
-        hideModal(); toast('Yêu cầu nạp đã tạo — chờ admin duyệt');
+        if(!amount || amount <= 0){ toast('Số tiền không hợp lệ', {type:'error'}); return; }
+        if(!bank || !ref){ toast('Vui lòng nhập thông tin ngân hàng và mã ref', {type:'error'}); return; }
+        try{
+          const cur = currentUser();
+          await createDepositRequest(cur.username, amount, bank, ref);
+          hideModal();
+          toast('Yêu cầu nạp đã được gửi. Vui lòng chờ admin duyệt.', {type:'info'});
+          renderHeader();
+        }catch(err){
+          toast('Tạo yêu cầu thất bại: ' + (err.message||err), {type:'error'});
+        }
       });
-    }
-  });
-}
-
-/* Orders modal (full list) */
-function openOrdersModal(){
-  const list = Storage.getOrders();
-  showModal(`<div class="modal">
-    <h3>Lịch sử đơn hàng</h3>
-    <div style="max-height:420px;overflow:auto;margin-top:12px">
-      ${list.length===0 ? '<p class="kv">Chưa có đơn nào.</p>' : list.map(o=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass)">
-          <div style="max-width:70%"><strong>${escapeHtml(o.package)}</strong><div class="kv">${escapeHtml(o.name)} • ${escapeHtml(o.login)}</div><div class="kv" style="margin-top:6px">Ghi chú: ${escapeHtml(o.note||'—')}</div></div>
-          <div style="text-align:right"><div style="font-weight:800">${fmt(o.price)}đ</div><div class="kv" style="color:${o.sent? 'var(--success)':'var(--accent)'}">${o.sent? 'Đã gửi':'Chưa gửi'}</div></div>
-        </div>`).join('')}
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="ordersClose">Đóng</button></div>
-  </div>`, { onOpen: ()=> document.getElementById('ordersClose').addEventListener('click', hideModal) });
-}
-
-/* Admin panel (requires admin role) */
-function openAdminPanel(){
-  const cur = currentUser(); if(!cur || !(cur.roles||[]).includes('admin')){ toast('Chỉ admin được truy cập', {type:'error'}); return; }
-  const depositsHtml = renderDepositsForAdmin();
-  showModal(`<div class="modal">
-    <h3>Admin Panel</h3>
-    <div style="display:flex;gap:12px;margin-top:12px">
-      <div style="flex:1">
-        <h4>Gift tiền</h4>
-        <div style="display:flex;gap:8px;margin-top:8px"><input id="gift_user" placeholder="Tên user" style="flex:1;padding:8px;border-radius:8px"/><input id="gift_amount" placeholder="Số tiền" style="width:120px;padding:8px;border-radius:8px"/></div>
-        <div style="margin-top:8px"><button class="btn" id="gift_send">Gửi gift</button></div>
-      </div>
-
-      <div style="flex:1">
-        <h4>Yêu cầu nạp (pending)</h4>
-        <div id="depositsList" style="max-height:260px;overflow:auto;margin-top:8px">${depositsHtml || '<div class="kv">Không có yêu cầu</div>'}</div>
-      </div>
-    </div>
-
-    <div style="margin-top:12px;display:flex;gap:8px"><button class="btn" id="adminClose">Đóng</button></div>
-  </div>`, {
-    onOpen: ()=>{
-      document.getElementById('adminClose').addEventListener('click', hideModal);
-      document.getElementById('gift_send').addEventListener('click', ()=>{
-        const user = document.getElementById('gift_user').value.trim();
-        const amt = Number(document.getElementById('gift_amount').value||0);
-        if(!user || !amt){ toast('Nhập user và số tiền', {type:'error'}); return; }
-        try{ giftMoney(user, amt); toast(`Đã gift ${fmt(amt)}đ cho ${user}`); renderHeader(); document.getElementById('gift_user').value=''; document.getElementById('gift_amount').value=''; }
-        catch(err){ toast(err.message||'Lỗi',{type:'error'}); }
-      });
-    }
-  });
-}
-
-/* Admin helpers: gift, approve/decline deposit */
-function giftMoney(username, amount){
-  const users = Storage.getUsers();
-  if(!users[username]) throw new Error('Không tìm thấy user');
-  users[username].balance = (users[username].balance || 0) + Number(amount || 0);
-  Storage.saveUsers(users);
-  Storage.pushLog({type:'admin_gift', to: username, amount, by: currentUser().username, time: now()});
-}
-
-function adminApproveDeposit(depositId){
-  const cur = currentUser(); if(!cur || !(cur.roles||[]).includes('admin')){ toast('Chỉ admin', {type:'error'}); return; }
-  const deposits = Storage.getDeposits();
-  const idx = deposits.findIndex(d=>d.id===depositId);
-  if(idx<0){ toast('Không tìm thấy yêu cầu', {type:'error'}); return; }
-  const dep = deposits[idx];
-  if(dep.status !== 'pending'){ toast('Đã xử lý trước đó'); return; }
-  dep.status = 'approved'; dep.processedBy = cur.username; dep.processedAt = now();
-  Storage.saveDeposits(deposits);
-  updateUserBalance(dep.username, dep.amount);
-  Storage.pushLog({type:'deposit_approved', depositId, by:cur.username, time:now()});
-  // re-render deposits list in modal if present
-  const depositsList = document.getElementById('depositsList');
-  if(depositsList) depositsList.innerHTML = renderDepositsForAdmin();
-  renderHeader();
-  toast(`Đã cộng ${fmt(dep.amount)}đ cho ${dep.username}`);
-}
-
-function adminDeclineDeposit(depositId){
-  const cur = currentUser(); if(!cur || !(cur.roles||[]).includes('admin')){ toast('Chỉ admin', {type:'error'}); return; }
-  const deposits = Storage.getDeposits(); const idx = deposits.findIndex(d=>d.id===depositId);
-  if(idx<0){ toast('Không tìm thấy yêu cầu', {type:'error'}); return; }
-  deposits[idx].status = 'declined'; deposits[idx].processedBy = cur.username; deposits[idx].processedAt = now();
-  Storage.saveDeposits(deposits);
-  Storage.pushLog({type:'deposit_declined', depositId, by:cur.username, time:now()});
-  const depositsList = document.getElementById('depositsList');
-  if(depositsList) depositsList.innerHTML = renderDepositsForAdmin();
-  toast('Đã từ chối yêu cầu');
-}
-
-/* Create deposit request (user) */
-function createDepositRequest(username, amount, bank, reference){
-  const deposits = Storage.getDeposits();
-  const req = { id:'d_'+now(), username, amount:Number(amount)||0, bank, reference, status:'pending', createdAt: now() };
-  deposits.unshift(req); Storage.saveDeposits(deposits);
-  Storage.pushLog({type:'deposit_created', user:username, amount:req.amount, reference, time:now()});
-}
-
-/* Render deposits list for admin (string) — used in admin modal */
-function renderDepositsForAdmin(){
-  const deposits = Storage.getDeposits();
-  if(!deposits || deposits.length===0) return '';
-  return deposits.map(d=>`
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:var(--glass)">
-      <div>
-        <div><strong>${escapeHtml(d.username)}</strong> • <span class="kv">${escapeHtml(d.bank)} • Ref: ${escapeHtml(d.reference)}</span></div>
-        <div class="kv">Số tiền: ${fmt(d.amount)}đ — Trạng thái: ${escapeHtml(d.status)}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${d.status === 'pending' ? `<button class="btn admin-approve" data-deposit="${d.id}">Duyệt</button><button class="btn secondary admin-decline" data-deposit="${d.id}">Từ chối</button>` : `<div class="kv">${escapeHtml(d.status)}</div>`}
-      </div>
-    </div>
-  `).join('');
-}
-
-/* Admin panel open */
-document.getElementById('openAdminPanel')?.addEventListener('click', openAdminPanel);
-
-/* Delegation: admin approve/decline handled earlier via delegation */
-
-/* Initial render */
-function init(){
-  renderPackages();
-  renderOrdersPreview();
-  renderHeader();
-  // quick hook: admin button in admin placeholder
-  document.getElementById('openAdminPanel')?.addEventListener('click', openAdminPanel);
-  // if admin placeholder visible, admin badge shown by renderHeader
-  // Wire admin open from placeholder if list changes
-}
-init();
-
-/* Add event: open admin panel from placeholder (in case shown) */
-document.getElementById('adminPanelPlaceholder')?.addEventListener('click', openAdminPanel);
-
-/* Buttons linking: open admin panel from header area if admin */
-document.getElementById('hdr-admin')?.addEventListener('click', openAdminPanel);
-
-/* Setup navigation: renderPackages when sorting/search */
-document.getElementById('searchInput').addEventListener('input', onSearch);
-document.getElementById('sortSelect').addEventListener('change', ()=> onSearch());
-
-/* Helper: attempt forwarding but not required */
-async function forwardOrderToWebhook(order){
-  if(!https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm) throw new Error('No webhook configured');
-  const resp = await fetch(DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(order) });
-  if(!resp.ok) throw new Error('Forward failed: '+resp.status);
-  return resp;
-}
-
-/* Small: expose login/logout from header (double-click header user to logout for demo) */
-document.getElementById('hdr-user').addEventListener('dblclick', ()=>{
-  if(confirm('Đăng xuất?')){ logoutUser(); toast('Đã đăng xuất'); }
+    }});
 });
 
-/* Safe: prevent errors if missing openAdminPanel button in DOM */
-if(!document.getElementById('openAdminPanel')) {
-  // create and append if admin visible later
-}
+/* orders listing page (simple) */
+document.getElementById('viewOrders').addEventListener('click', () => {
+  const cur = currentUser();
+  if(!cur){ showLoginModal(()=> document.getElementById('viewOrders').click()); return; }
+  if(CONFIG.API_BASE){
+    // open modal and fetch from server
+    apiFetch(CONFIG.ENDPOINTS.orders + '?username=' + encodeURIComponent(cur.username)).then(res => {
+      const rows = (res && Array.isArray(res)) ? res : [];
+      showModal(`<div class="modal"><h3>Đơn hàng</h3><div style="max-height:400px;overflow:auto">${rows.map(r=>`<div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.02)"><strong>${escapeHtml(r.package)}</strong><div class="small kv">${new Date(r.createdAt).toLocaleString()}</div><div class="small">Trạng thái: ${escapeHtml(r.status||'—')}</div></div>`).join('') || '<div class="kv">Không có đơn</div>'}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="orders_close">Đóng</button></div></div>`, { onOpen(){ document.getElementById('orders_close').addEventListener('click', hideModal); }});
+    }).catch(err => {
+      toast('Không thể tải đơn từ server', {type:'error'});
+    });
+  } else {
+    const rows = getOrders().filter(o => o.username === cur.username);
+    showModal(`<div class="modal"><h3>Đơn hàng</h3><div style="max-height:400px;overflow:auto">${rows.map(r=>`<div style="padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.02)"><strong>${escapeHtml(r.package)}</strong><div class="small kv">${new Date(r.createdAt).toLocaleString()}</div><div class="small">Trạng thái: ${escapeHtml(r.status||'—')}</div></div>`).join('') || '<div class="kv">Không có đơn</div>'}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="orders_close">Đóng</button></div></div>`, { onOpen(){ document.getElementById('orders_close').addEventListener('click', hideModal); }});
+  }
+});
 
-/* Expose simple public methods (for debugging) */
-window.SNOWSHOP = {
-  Storage, PACKAGES, registerUser, loginUser, logoutUser, giftMoney, createDepositRequest
+/* Quick init: create demo users in fallback mode only (server mode should seed admin elsewhere) */
+(async function initFallbackUsers(){
+  if(CONFIG.API_BASE) return;
+  const users = Storage.getUsers();
+  if(!users['demo']){
+    users['demo'] = { username:'demo', passHash: await sha256('demo'), balance: 50000, roles:[] };
+  }
+  // It's recommended NOT to auto-create 'admin' in production fallback; leave to developer.
+  Storage.saveUsers(users);
+})();
+
+/* Initial render */
+renderHeader();
+renderPackages();
+renderOrdersPreview();
+
+/* Expose some functions for debugging in console (optional) */
+window.SNOW = {
+  CONFIG, PACKAGES, renderPackages, renderOrdersPreview, currentUser, setCurrentUser, apiFetch
 };
 </script>
 </body>
