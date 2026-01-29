@@ -10,7 +10,7 @@
         button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;color:#fff;transition:0.2s}
         button:hover{opacity:0.8; transform: translateY(-1px)}
         button.red{background:#ef4444} button.green{background:#22c55e} button.purple{background:#a855f7} button.gray{background:#64748b}
-        input,select{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #e2e8f0;box-sizing:border-box}
+        input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #e2e8f0;box-sizing:border-box;font-family:inherit}
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
         .bg-wait{background:#fef3c7;color:#d97706} .bg-process{background:#f3e8ff;color:#7c3aed} .bg-done{background:#dcfce7;color:#16a34a}
         
@@ -83,7 +83,7 @@
 
         <input id="accRoblox" placeholder="Tài khoản (Username/Email)">
         <input id="passRoblox" type="password" placeholder="Mật khẩu">
-        <input id="ghi chú" placeholder="ghi chú shop cày">
+        <textarea id="noteRoblox" rows="2" placeholder="Ghi chú (Mã 2FA, yêu cầu thêm...)"></textarea>
         
         <button class="green" style="width:100%" onclick="handleBuyService()">XÁC NHẬN THANH TOÁN</button>
         <button class="purple" style="width:100%" onclick="showNapBank()">💳 NẠP TIỀN QUA BANK</button>
@@ -153,7 +153,6 @@ function render() {
         document.getElementById('userButtons').style.display = "block";
         document.getElementById('adminTabBtn').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
         
-        // FIX: Chỉ lọc đơn hàng của đúng người đang đăng nhập
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
         document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.slice().reverse().map(o => `
             <div style="border-bottom:1px solid #eee; padding:12px 0">
@@ -162,6 +161,7 @@ function render() {
                     <span class="badge ${getStatusClass(o.status)}">${o.status}</span>
                 </div>
                 <small style="color:#64748b">Tài khoản: ${o.acc} | Ngày: ${o.time}</small>
+                ${o.note ? `<div style="font-size:11px; color:#ef4444; margin-top:4px">📝 Ghi chú: ${o.note}</div>` : ''}
             </div>
         `).join('') : "Bạn chưa đặt đơn nào.";
     }
@@ -186,17 +186,23 @@ function handleBuyService() {
     const [name, price] = g.split('|');
     const acc = document.getElementById('accRoblox').value.trim();
     const pass = document.getElementById('passRoblox').value.trim();
+    const note = document.getElementById('noteRoblox').value.trim();
     if(!acc || !pass) return alert("Nhập đủ thông tin!");
     
     if(cur.balance < parseInt(price)) return alert("Không đủ tiền!");
 
-    const newOrder = { buyer: cur.username, goi: name, acc, pass, status: "Chờ duyệt", time: new Date().toLocaleString() };
+    const newOrder = { buyer: cur.username, goi: name, acc, pass, note, status: "Chờ duyệt", time: new Date().toLocaleString() };
     db_users[cur.username].balance -= parseInt(price);
     db_orders.push(newOrder);
     save(); render();
     
-    sendToDiscord("🚨 ĐƠN MỚI", [{name: "Khách", value: cur.username}, {name: "Gói", value: name}], 15105570);
+    sendToDiscord("🚨 ĐƠN MỚI", [
+        {name: "Khách", value: cur.username}, 
+        {name: "Gói", value: name},
+        {name: "Ghi chú", value: note || "Không có"}
+    ], 15105570);
     alert("Thanh toán thành công!");
+    document.getElementById('noteRoblox').value = ""; // Clear note sau khi đặt
 }
 
 function showNapBank() {
@@ -218,7 +224,8 @@ function renderAdmin() {
     document.getElementById('adminOrderList').innerHTML = db_orders.map((o, i) => `
         <div class="box" style="font-size:12px; border-left:4px solid #38bdf8">
             <b>${o.buyer}</b>: ${o.goi} [${o.status}]<br>
-            TK: ${o.acc} | MK: ${o.pass}<br>
+            TK: <b>${o.acc}</b> | MK: <b>${o.pass}</b><br>
+            <div style="color:#ef4444">📝 Ghi chú: ${o.note || 'Trống'}</div>
             <button onclick="updateStatus(${i}, 'Đang cày')" class="purple" style="font-size:10px">Cày</button>
             <button onclick="updateStatus(${i}, 'Xong')" class="green" style="font-size:10px">Xong</button>
             <button onclick="deleteOrder(${i})" class="red" style="font-size:10px">Xoá</button>
