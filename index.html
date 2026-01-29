@@ -210,23 +210,52 @@ function renderAdmin() {
 }
 
 function handleBuy() {
+    if (!cur) return alert("Vui lòng đăng nhập để mua hàng!");
+
+    const goiSelect = document.getElementById('goi').value;
+    const acc = document.getElementById('accRoblox').value.trim();
+    const pass = document.getElementById('passRoblox').value.trim();
+
+    if (!goiSelect || !acc || !pass) return alert("Vui lòng nhập đầy đủ thông tin!");
+
+    const [name, price] = goiSelect.split('|');
+    const total = parseInt(price);
+
+    if (cur.balance < total) return alert("Số dư không đủ! Vui lòng nạp thêm.");
+
+    // Trừ tiền và lưu đơn hàng
+    db_users[cur.username].balance -= total;
+    const newOrder = {
+        buyer: cur.username,
+        goi: name,
+        acc: acc,
+        pass: pass,
+        status: "Chờ duyệt",
+        time: new Date().toLocaleString()
+    };
+    db_orders.push(newOrder);
+    save();
+    render();
+    alert("Đặt đơn thành công!");
+
+    // Gửi thông báo Discord
     sendDiscord(WEBHOOK_ORDER, {
-    content: `<@&${ADMIN_ROLE_ID}> 🚨 **CÓ ĐƠN CÀY THUÊ MỚI!**`,
-    embeds: [{
-        title: "❄️ ĐƠN THUÊ MỚI — SNOW SHOP",
-        color: 0x38bdf8,
-        fields: [
-            { name: "👤 Khách hàng", value: `\`${cur.username}\``, inline: true },
-            { name: "📦 Gói dịch vụ", value: `\`${name}\``, inline: true },
-            { name: "💰 Giá", value: `\`${parseInt(price).toLocaleString()}đ\``, inline: true },
-            { name: "🎮 Tài khoản Roblox", value: `\`${acc}\`` },
-            { name: "🔑 Mật khẩu", value: `\`${pass}\`` },
-            { name: "💸 Số dư còn lại", value: `\`${cur.balance.toLocaleString()}đ\`` }
-        ],
-        footer: { text: "SNOW SHOP • Order System" },
-        timestamp: new Date()
-    }]
-});
+        content: `🚨 **CÓ ĐƠN CÀY THUÊ MỚI!** (Admin: ${ADMIN_ROLE_ID})`,
+        embeds: [{
+            title: "❄️ ĐƠN THUÊ MỚI — SNOW SHOP",
+            color: 0x38bdf8,
+            fields: [
+                { name: "👤 Khách hàng", value: `\`${cur.username}\``, inline: true },
+                { name: "📦 Gói dịch vụ", value: `\`${name}\``, inline: true },
+                { name: "💰 Giá", value: `\`${total.toLocaleString()}đ\``, inline: true },
+                { name: "🎮 Tài khoản Roblox", value: `\`${acc}\`` },
+                { name: "🔑 Mật khẩu", value: `\`${pass}\`` }
+            ],
+            footer: { text: "SNOW SHOP • System" },
+            timestamp: new Date()
+        }]
+    });
+} // <-- Quan trọng: Phải có dấu đóng ngoặc này
 
 function approveNap(i) {
     const req = db_naps[i];
