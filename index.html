@@ -230,20 +230,35 @@ function order() {
     const s = document.getElementById('goi');
     const u = document.getElementById('game_user').value.trim();
     const p = document.getElementById('game_pass').value.trim();
+    
     if(!s.value || !u || !p) return alert("Vui lòng nhập tài khoản Roblox!");
+    
     const [name, price] = s.value.split('|');
     if(cur.balance < parseInt(price)) return alert("Bạn không đủ tiền!");
+    
     cur.balance -= parseInt(price);
-    allOrders.push({
-        buyer: cur.username, goi: name, acc: u, pass: p,
-        status: "Đang chờ", time: new Date().toLocaleString()
-    });
+    
+    const newOrder = {
+        buyer: cur.username, 
+        goi: name, 
+        acc: u, 
+        pass: p,
+        status: "Đang chờ", 
+        time: new Date().toLocaleString()
+    };
+
+    allOrders.push(newOrder);
     localStorage.setItem('snow_orders', JSON.stringify(allOrders));
     localStorage.setItem('user_' + cur.username, JSON.stringify(cur));
+    
+    // --- GỌI WEBHOOK Ở ĐÂY ---
+    sendDiscordNotify(newOrder);
+    // ------------------------
+
     render();
     alert("Mua thành công! Chờ Admin cày.");
 }
-
+    
 function openTab(evt, tabId) {
     let contents = document.getElementsByClassName("admin-section");
     for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
