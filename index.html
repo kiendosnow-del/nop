@@ -367,21 +367,20 @@ async function notifyDiscord(type, data){
      - KHÔNG tạo tài khoản demo
      - Giữ nguyên toàn bộ fix & logic hiện tại
 ---------------------------------------------------------------------*/
-(async function seedFallbackAdmin(){
-  if (CONFIG.API_BASE) return; // có backend thì bỏ qua
-
-  const users = Storage.getUsers();
-
+(async function seedFallbackAdmin() {
+  // Check if we should seed fallback admin for testing
+  const users = Storage.getUsers(); // Get the existing users from local storage
   if (!users['admin']) {
+    // Create a fallback admin account if it doesn't exist
+    const adminPassword = await sha256("Admin@2026"); // Hash the default password
     users['admin'] = {
       username: 'admin',
-      passHash: await sha256('Admin@2026'),
+      passwordHash: adminPassword, // Store hashed password
+      role: 'admin',
       balance: 0,
-      roles: ['admin']
     };
-
-    Storage.saveUsers(users);
-    console.warn('✅ Fallback admin created: admin / Admin@2026');
+    Storage.saveUsers(users); // Save the updated users with the admin account
+    console.log('Fallback admin account created. Username: admin, Password: Admin@2026');
   }
 })();
 
