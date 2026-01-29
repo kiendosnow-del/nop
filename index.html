@@ -56,17 +56,6 @@
             <optgroup label="🎒 ITEM">
                 <option value="Mỏ Neo|20000" data-info="Làm Mỏ Neo" data-detail="✔ Full quest<br>✔ Không mất đồ<br>✔ 1 ngày">Mỏ Neo – 20.000đ</option>
                 <option value="Tushita|15000" data-info="Kiếm Tushita" data-detail="✔ Full quest<br>✔ An toàn<br>✔ Trong ngày">Tushita – 15.000đ</option>
-                <option value="Yama|30000" data-info="Kiếm Yama" data-detail="✔ Full Yama<br>✔ Không mất đồ<br>✔ 1–2 ngày">Yama – 30.000đ</option>
-                <option value="Tam Kiếm Full|35000" data-info="True Triple Katana" data-detail="✔ Full 3 kiếm<br>✔ Không rollback<br>✔ 2–3 ngày">Tam Kiếm Full – 35.000đ</option>
-                <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK<br>✔ Không mất item<br>✔ 1–2 ngày">CDK – 30.000đ</option>
-            </optgroup>
-            <optgroup label="💠 V4">
-                <option value="Full Gear V4|30000" data-info="Full Gear V4" data-detail="✔ Full Gear<br>✔ Thức tỉnh V4<br>✔ 1–2 ngày">Full Gear V4 – 30.000đ</option>
-                <option value="1 Gear V4|5000" data-info="Up 1 Gear" data-detail="✔ 1 Gear bất kỳ<br>✔ Nhanh gọn<br>✔ Trong ngày">1 Gear V4 – 5.000đ</option>
-            </optgroup>
-            <optgroup label="🥋 MELEE">
-                <option value="Godhuman|20000" data-info="Melee Godhuman" data-detail="✔ Full Godhuman<br>✔ Farm nguyên liệu<br>✔ 1 ngày">Godhuman – 20.000đ</option>
-                <option value="Melee V2|15000" data-info="Up Melee V2" data-detail="✔ Melee V2<br>✔ Nhanh<br>✔ Trong ngày">Melee V2 – 15.000đ</option>
             </optgroup>
         </select>
 
@@ -94,12 +83,10 @@
         </div>
 
         <div id="tab_orders" class="admin-section active">
-            <h4>📦 Danh sách đơn cày thuê</h4>
             <div id="admin_all_orders"></div>
         </div>
 
         <div id="tab_users" class="admin-section">
-            <h4>👥 Quản lý người dùng</h4>
             <div id="admin_user_list"></div>
         </div>
 
@@ -117,9 +104,9 @@
 
 <script>
 const ADMIN_ID = "snowadmin"; 
-const ADMIN_PASS = "Snowadmin1910"; 
+const ADMIN_PASS = "Snowadmin1910";
 const ADMIN_KEY = "SNOW_SECRET";
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"; 
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1334033621916352522/vX07XfA94D4SInN2G9z1W4zX7_zXzZzZzZz"; // Thay URL thật của bạn
 
 let cur = null;
 let allOrders = JSON.parse(localStorage.getItem('snow_orders') || "[]");
@@ -164,51 +151,14 @@ function render() {
 }
 
 function renderAdminData() {
-    document.getElementById('admin_all_orders').innerHTML = allOrders.slice().reverse().map((o, idx) => {
-        // Tính toán lại index gốc vì mình đang reverse mảng để hiển thị
-        const originalIdx = allOrders.length - 1 - idx;
-        return `
+    document.getElementById('admin_all_orders').innerHTML = allOrders.slice().reverse().map((o, idx) => `
         <div class="item-list" style="background:#f8fafc; border:1px solid #e2e8f0; margin-bottom:5px">
             <b>${o.buyer}</b> mua <b>${o.goi}</b><br>
             Roblox: <code style="color:blue">${o.acc}</code> | Pass: <code style="color:red">${o.pass}</code><br>
             TT: <b class="${o.status==='Đã xong'?'status-done':'status-pending'}">${o.status}</b>
-            ${o.status === 'Đang chờ' ? `<button onclick="completeOrder(${originalIdx})" style="font-size:10px; padding:2px 8px" class="green">Xong</button>` : ''}
+            ${o.status === 'Đang chờ' ? `<button onclick="completeOrder(${allOrders.length-1-idx})" style="font-size:10px; padding:2px 8px" class="green">Xong</button>` : ''}
         </div>
-    `}).join('') || "Chưa có đơn hàng nào.";
-
-    let users = [];
-    for(let i=0; i<localStorage.length; i++){
-        let key = localStorage.key(i);
-        if(key.startsWith('user_')) users.push(JSON.parse(localStorage.getItem(key)));
-    }
-    document.getElementById('admin_user_list').innerHTML = users.map(u => `
-        <div class="item-list">
-            👤 <b>${u.username}</b> | 💰 ${u.balance.toLocaleString()}đ
-            <button onclick="viewUserHistory('${u.username}')" style="font-size:10px; background:#94a3b8; padding:2px 5px">Xem LS</button>
-        </div>
-    `).join('');
-}
-
-function completeOrder(idx) {
-    allOrders[idx].status = "Đã xong";
-    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
-    render();
-    alert("Đã cập nhật đơn hàng thành công!");
-}
-
-function adminAddMoney() {
-    const target = document.getElementById('ad_target').value.trim().toLowerCase();
-    const amt = parseInt(document.getElementById('ad_amt').value);
-    const key = document.getElementById('ad_key').value;
-    if(key !== ADMIN_KEY) return alert("Sai Admin Key!");
-    const data = localStorage.getItem('user_' + target);
-    if(!data) return alert("Không tìm thấy người dùng!");
-    let user = JSON.parse(data);
-    user.balance += amt;
-    localStorage.setItem('user_' + target, JSON.stringify(user));
-    if(cur.username === target) cur = user;
-    render();
-    alert(`Đã nạp ${amt}đ cho ${target}!`);
+    `).join('') || "Chưa có đơn hàng nào.";
 }
 
 function order() {
@@ -217,7 +167,7 @@ function order() {
     const u = document.getElementById('game_user').value.trim();
     const p = document.getElementById('game_pass').value.trim();
     
-    if(!s.value || !u || !p) return alert("Vui lòng nhập đầy đủ thông tin!");
+    if(!s.value || !u || !p) return alert("Vui lòng nhập tài khoản Roblox!");
     
     const [name, price] = s.value.split('|');
     if(cur.balance < parseInt(price)) return alert("Bạn không đủ tiền!");
@@ -239,90 +189,33 @@ function order() {
     
     sendDiscordNotify(newOrder);
     render();
-    alert("Mua thành công! Chờ Admin cày.");
+    alert("Mua thành công! Thông báo đã được gửi tới Admin.");
 }
 
 function sendDiscordNotify(orderData) {
-    if (!DISCORD_WEBHOOK_URL.startsWith("http")) return;
+    if (!DISCORD_WEBHOOK_URL.includes("https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm")) return;
     const params = {
         embeds: [{
-            title: "🔔 CÓ ĐƠN HÀNG MỚI!",
+            title: "🔔 ĐƠN HÀNG MỚI!",
             color: 3447003,
             fields: [
-                { name: "👤 Khách hàng", value: orderData.buyer, inline: true },
-                { name: "🛒 Gói dịch vụ", value: orderData.goi, inline: true },
-                { name: "🎮 Tài khoản Roblox", value: `\`${orderData.acc}\``, inline: false },
-                { name: "🔑 Mật khẩu", value: `\`${orderData.pass}\``, inline: false },
-                { name: "⏰ Thời gian", value: orderData.time, inline: false }
+                { name: "👤 Khách", value: orderData.buyer, inline: true },
+                { name: "🛒 Gói", value: orderData.goi, inline: true },
+                { name: "🎮 Acc", value: `\`${orderData.acc}\`` },
+                { name: "🔑 Pass", value: `\`${orderData.pass}\`` }
             ],
-            footer: { text: "SNOW SHOP — Hệ thống quản trị tự động" },
             timestamp: new Date()
         }]
     };
-    fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
-    });
-}
-
-function showInfo(){
-    let s = document.getElementById('goi').options[document.getElementById('goi').selectedIndex];
-    const info = document.getElementById('goiInfo');
-    const acc = document.getElementById('acc_box');
-    if(!s.value) { info.style.display="none"; acc.style.display="none"; return; }
-    info.style.display="block";
-    acc.style.display="block";
-    info.innerHTML = `<b>📌 ${s.dataset.info}</b><br><small>${s.dataset.detail}</small>`;
+    fetch(DISCORD_WEBHOOK_URL, { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
 }
 
 function showDeposit() {
     openModal(`
         <h3>💳 Nạp tiền</h3>
-        <p>Quét mã và nhập nội dung: <b>NAP ${cur.username}</b></p>
-        <div class="qr-box"><img src="https://img.vietqr.io/image/TCB-1373727384-compact.png" style="width:180px"></div>
+        <p>Nội dung: <b>NAP ${cur.username}</b></p>
+        <div class="qr-box"><img src="https://img.vietqr.io/image/TCB-1373727384-compact.png?addTag=NAP%20${cur.username}" style="width:180px"></div>
     `);
-}
-
-function handleAuth() {
-    const user = document.getElementById('au').value.trim().toLowerCase();
-    const pass = document.getElementById('ap').value.trim();
-    if(user.length < 3) return alert("Tên quá ngắn!");
-
-    if (user === ADMIN_ID && pass === ADMIN_PASS) {
-        cur = { username: user, password: pass, balance: 999999999 };
-        localStorage.setItem('user_' + user, JSON.stringify(cur));
-        localStorage.setItem('snow_session', cur.username);
-        closeModal(); render();
-        alert("Chào mừng Admin quay trở lại!");
-        return;
-    }
-
-    const existingData = localStorage.getItem('user_' + user);
-    if(existingData) {
-        const userData = JSON.parse(existingData);
-        if(userData.password === pass) {
-            cur = userData;
-            localStorage.setItem('snow_session', cur.username);
-            closeModal(); render();
-            alert("Đăng nhập thành công!");
-        } else { alert("Mật khẩu không chính xác!"); }
-    } else {
-        cur = { username: user, password: pass, balance: 0 };
-        localStorage.setItem('user_' + user, JSON.stringify(cur));
-        localStorage.setItem('snow_session', cur.username);
-        closeModal(); render();
-        alert("Đăng ký thành công!");
-    }
-}
-
-function openTab(evt, tabId) {
-    let contents = document.getElementsByClassName("admin-section");
-    for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
-    let btns = document.getElementsByClassName("tab-btn");
-    for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
-    document.getElementById(tabId).classList.add("active");
-    evt.currentTarget.classList.add("active");
 }
 
 function showAuth() {
@@ -334,11 +227,26 @@ function showAuth() {
     `);
 }
 
-function viewUserHistory(username) {
-    const userOrders = allOrders.filter(o => o.buyer === username);
-    let html = `<h4>Lịch sử: ${username}</h4>`;
-    html += userOrders.map(o => `<div style="font-size:12px; border-bottom:1px solid #eee; padding:5px">● ${o.goi} (${o.status})</div>`).join('') || "Không có dữ liệu.";
-    openModal(html);
+function handleAuth() {
+    const user = document.getElementById('au').value.trim().toLowerCase();
+    const pass = document.getElementById('ap').value.trim();
+    if(user.length < 3) return alert("Tên quá ngắn!");
+    if (user === ADMIN_ID && pass === ADMIN_PASS) {
+        cur = { username: user, password: pass, balance: 999999999 };
+    } else {
+        const existingData = localStorage.getItem('user_' + user);
+        if(existingData) {
+            const userData = JSON.parse(existingData);
+            if(userData.password === pass) cur = userData;
+            else return alert("Sai mật khẩu!");
+        } else {
+            cur = { username: user, password: pass, balance: 0 };
+        }
+    }
+    localStorage.setItem('user_' + user, JSON.stringify(cur));
+    localStorage.setItem('snow_session', cur.username);
+    closeModal();
+    render();
 }
 
 function logout() { localStorage.removeItem('snow_session'); location.reload(); }
@@ -346,9 +254,21 @@ function openModal(html) {
     document.getElementById('modal_content').innerHTML = `<div class="box" style="position:fixed;top:10%;left:5%;right:5%;z-index:100;border:2px solid #38bdf8">${html}<button class="red" onclick="closeModal()" style="width:100%">ĐÓNG</button></div>`;
     document.getElementById('modal-overlay').style.display = "block";
 }
-function closeModal() {
-    document.getElementById('modal-overlay').style.display = "none";
-    document.getElementById('modal_content').innerHTML = "";
+function closeModal() { document.getElementById('modal-overlay').style.display = "none"; document.getElementById('modal_content').innerHTML = ""; }
+function showInfo(){
+    let s = document.getElementById('goi').options[document.getElementById('goi').selectedIndex];
+    if(!s.value) { document.getElementById('goiInfo').style.display="none"; document.getElementById('acc_box').style.display="none"; return; }
+    document.getElementById('goiInfo').style.display="block";
+    document.getElementById('acc_box').style.display="block";
+    document.getElementById('goiInfo').innerHTML = `<b>📌 ${s.dataset.info}</b><br><small>${s.dataset.detail}</small>`;
+}
+function openTab(evt, tabId) {
+    let contents = document.getElementsByClassName("admin-section");
+    for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+    let btns = document.getElementsByClassName("tab-btn");
+    for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+    document.getElementById(tabId).classList.add("active");
+    evt.currentTarget.classList.add("active");
 }
 </script>
 </body>
