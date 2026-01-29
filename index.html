@@ -7,197 +7,255 @@
     <style>
         body{font-family:Arial,sans-serif;background:#f1f5f9;margin:0;padding-bottom:50px}
         .box{background:#fff;margin:12px;border-radius:12px;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.06)}
-        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.3s}
+        button{background:#38bdf8;border:0;padding:10px 14px;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer;transition:0.3s;color:#fff}
         button:hover{opacity:0.8}
-        button.red{background:#ef4444;color:#fff}
-        button.green{background:#22c55e;color:#fff}
+        button.red{background:#ef4444}
+        button.green{background:#22c55e}
+        button.orange{background:#f59e0b}
         input,select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
         small{color:#555;display:block;margin-top:5px}
-        hr{border:none;border-top:1px solid #eee;margin:15px 0}
-        .info{background:#f8fafc;border:1px dashed #38bdf8;border-radius:10px;padding:10px;margin-top:10px;line-height:1.6}
-        .info b{color:#0ea5e9}
-        .qr-box{text-align:center;padding:15px;background:#fff;border-radius:10px;margin-top:10px}
-        .admin-section{border-top:4px solid #ef4444}
+        .info{background:#f8fafc;border:1px dashed #38bdf8;border-radius:10px;padding:10px;margin-top:10px;line-height:1.6;font-size:14px}
+        .qr-box{text-align:center;padding:15px;background:#f1f5f9;border-radius:10px;margin-top:10px}
+        .history-item{padding:8px;border-bottom:1px solid #eee;font-size:13px}
+        #modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:99}
     </style>
 </head>
 <body>
 
+<div id="modal-overlay"></div>
+
 <div class="box">
     👤 <b id="u">Chưa đăng nhập</b> | 
     💰 <b id="b">0</b>đ 
-    <button class="red" onclick="logout()" style="float:right;padding:5px 10px">Đăng xuất</button>
+    <button class="red" onclick="logout()" style="float:right;padding:5px 10px">Thoát</button>
 </div>
 
-<div class="box" id="auth_btns">
-    <button onclick="auth()">🔑 Đăng nhập / Đăng ký</button>
-    <button onclick="showDeposit()">💳 Nạp tiền (QR)</button>
-    <button id="adminBtn" class="red" style="display:none" onclick="showAdmin()">🛠 Admin Panel</button>
+<div class="box" id="auth_section">
+    <button onclick="showAuth()" style="width:100%">🔑 Đăng nhập / Đăng ký</button>
 </div>
 
-<div class="box" id="main_shop">
-    <h3>🛒 Thuê dịch vụ</h3>
-    <select id="goi" onchange="showInfo()">
-        <option value="">-- Chọn gói cày thuê --</option>
-        <optgroup label="🔰 LEVEL">
-            <option value="Level 700|20000" data-info="Farm nhanh lên level 700" data-detail="✔ Farm quest nhanh<br>✔ Không đổi trái<br>✔ 3–5 giờ">Level 700 – 20.000đ</option>
-            <option value="0 → MAX|50000" data-info="Cày từ đầu tới max" data-detail="✔ Full Sea 1–2–3<br>✔ Không mất acc<br>✔ 4–6 ngày">0 → MAX – 50.000đ</option>
-        </optgroup>
-        <optgroup label="🎒 ITEM">
-            <option value="CDK|30000" data-info="Cursed Dual Katana" data-detail="✔ Full CDK<br>✔ Không mất item<br>✔ 1–2 ngày">CDK – 30.000đ</option>
-        </optgroup>
-    </select>
-    <div id="goiInfo" class="info" style="display:none"></div>
-    <button class="green" style="width:100%;font-size:16px" onclick="order()">THUÊ NGAY (Trừ tiền ví)</button>
-    <small>📩 Đơn sẽ được gửi qua Discord Admin</small>
+<div class="box" id="user_actions" style="display:none">
+    <button class="orange" onclick="showDeposit()" style="width:48%">💳 Nạp tiền</button>
+    <button id="adminBtn" class="red" style="display:none;width:48%" onclick="showAdmin()">🛠 Admin</button>
 </div>
 
 <div class="box">
-    <h3>📜 Lịch sử của tôi</h3>
-    <div id="his"></div>
+    <h3>🛒 Dịch vụ Cày Thuê</h3>
+    <select id="goi" onchange="showInfo()">
+        <option value="">-- Chọn gói dịch vụ --</option>
+        <optgroup label="🔰 LEVEL">
+            <option value="Level 700|20000" data-info="Farm lên level 700" data-detail="✔ Tốc độ nhanh<br>✔ An toàn 100%">Level 700 – 20.000đ</option>
+            <option value="0 → MAX|50000" data-info="Cày Max Level" data-detail="✔ Full Sea 1-2-3<br>✔ 4–6 ngày hoàn thành">0 → MAX – 50.000đ</option>
+        </optgroup>
+        <optgroup label="🎒 ITEM">
+            <option value="CDK|30000" data-info="Lấy Song kiếm CDK" data-detail="✔ Yêu cầu lv 2200+<br>✔ Hoàn thành nhanh">CDK – 30.000đ</option>
+        </optgroup>
+    </select>
+    <div id="goiInfo" class="info" style="display:none"></div>
+    <button class="green" style="width:100%;font-size:16px;margin-top:10px" onclick="order()">MUA NGAY (Trừ ví)</button>
 </div>
 
-<div id="adminPanel" class="box admin-section" style="display:none">
-    <h3>🛠 Quản lý (Admin Only)</h3>
-    <div id="adminList">Đang tải danh sách chờ...</div>
+<div class="box">
+    <h3>📜 Lịch sử giao dịch</h3>
+    <div id="his"><i>Chưa có giao dịch nào</i></div>
 </div>
 
-<div id="modal"></div>
+<div id="adminPanel" class="box" style="display:none;border-top:4px solid red">
+    <h3>🛠 Quản trị viên (Cộng tiền)</h3>
+    <input type="text" id="admin_target" placeholder="Tên tài khoản khách">
+    <input type="number" id="admin_amount" placeholder="Số tiền cộng">
+    <input type="password" id="admin_key_input" placeholder="Nhập mã Admin Key">
+    <button class="red" style="width:100%" onclick="adminAddMoney()">XÁC NHẬN CỘNG TIỀN</button>
+</div>
+
+<div id="modal_content"></div>
 
 <script>
-// Cấu hình
+// CẤU HÌNH BẢO MẬT
+const ADMIN_KEY = "SNOW_ADMIN_123"; // Thay mã này để bảo mật nạp tiền
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm";
+
 let cur = null;
 
-const u = document.getElementById('u');
-const b = document.getElementById('b');
-const goi = document.getElementById('goi');
-const goiInfo = document.getElementById('goiInfo');
-const modal = document.getElementById('modal');
+// Tự động tải dữ liệu khi mở trang
+window.onload = () => {
+    const session = localStorage.getItem('snow_session');
+    if(session) {
+        loadUser(session);
+    }
+};
 
-/* HIỂN THỊ THÔNG TIN GÓI */
-function showInfo(){
-    let s = goi.options[goi.selectedIndex];
-    if(!s || !s.dataset.info){
-        goiInfo.style.display="none";
+function loadUser(username) {
+    const data = localStorage.getItem('user_' + username);
+    if(data) {
+        cur = JSON.parse(data);
+        render();
+    }
+}
+
+function saveUser() {
+    if(cur) {
+        localStorage.setItem('user_' + cur.username, JSON.stringify(cur));
+    }
+}
+
+function render() {
+    if(!cur) {
+        document.getElementById('u').innerText = "Chưa đăng nhập";
+        document.getElementById('b').innerText = "0";
+        document.getElementById('auth_section').style.display = "block";
+        document.getElementById('user_actions').style.display = "none";
+        document.getElementById('adminBtn').style.display = "none";
+        document.getElementById('his').innerHTML = "<i>Vui lòng đăng nhập</i>";
         return;
     }
-    goiInfo.style.display="block";
-    goiInfo.innerHTML=`<b>📌 ${s.dataset.info}</b><br>${s.dataset.detail}`;
+    document.getElementById('u').innerText = cur.username;
+    document.getElementById('b').innerText = cur.balance.toLocaleString();
+    document.getElementById('auth_section').style.display = "none";
+    document.getElementById('user_actions').style.display = "block";
+    
+    if(cur.username === 'admin') document.getElementById('adminBtn').style.display = 'inline-block';
+
+    // Render lịch sử
+    const hisBox = document.getElementById('his');
+    if(cur.history.length === 0) {
+        hisBox.innerHTML = "<i>Chưa có giao dịch</i>";
+    } else {
+        hisBox.innerHTML = cur.history.map(h => `<div class="history-item"><b>[${h.time}]</b> ${h.msg}</div>`).join('');
+    }
 }
 
-/* NẠP TIỀN */
-function showDeposit(){
-    modal.innerHTML = `
-    <div class="box" style="position:fixed;top:10%;left:5%;right:5%;z-index:100;background:#fff;border:2px solid #38bdf8">
-        <h3>💳 Nạp tiền qua Ngân hàng / Ví</h3>
-        <select id="bankSelect" onchange="updateQR()">
-            <option value="MBBANK">MB Bank (Quân Đội)</option>
-            <option value="MOMO">Ví MoMo</option>
-        </select>
-        <input type="number" id="napAmount" placeholder="Nhập số tiền muốn nạp" oninput="updateQR()">
-        <div class="qr-box" id="qrArea"><p>Nhập số tiền để hiện mã QR</p></div>
-        <button onclick="modal.innerHTML=''" style="width:100%">Đóng</button>
-    </div>`;
+function showAuth() {
+    openModal(`
+        <h3>🔑 Đăng nhập / Đăng ký</h3>
+        <small>Nếu chưa có tk, hệ thống sẽ tự tạo mới với mật khẩu bạn nhập.</small>
+        <input id="au" placeholder="Tên tài khoản...">
+        <input id="ap" type="password" placeholder="Mật khẩu...">
+        <button onclick="handleAuth()" style="width:100%">XÁC NHẬN</button>
+    `);
 }
 
-function updateQR(){
-    const bank = document.getElementById('bankSelect').value;
+function handleAuth() {
+    const user = document.getElementById('au').value.trim();
+    const pass = document.getElementById('ap').value.trim();
+    if(user.length < 3) return alert("Tên quá ngắn");
+
+    const existing = localStorage.getItem('user_' + user);
+    if(existing) {
+        const parsed = JSON.parse(existing);
+        if(parsed.password !== pass) return alert("Sai mật khẩu!");
+        cur = parsed;
+    } else {
+        cur = { username: user, password: pass, balance: 0, history: [] };
+        saveUser();
+    }
+    localStorage.setItem('snow_session', cur.username);
+    closeModal();
+    render();
+}
+
+function showDeposit() {
+    openModal(`
+        <h3>💳 Nạp tiền qua QR</h3>
+        <input type="number" id="napAmount" placeholder="Nhập số tiền..." oninput="updateQR()">
+        <div class="qr-box" id="qrArea">Vui lòng nhập số tiền</div>
+        <p style="font-size:12px; color:red">Lưu ý: Sau khi chuyển khoản, hãy đợi Admin kiểm tra và cộng tiền vào ví.</p>
+    `);
+}
+
+function updateQR() {
     const amount = document.getElementById('napAmount').value;
-    const user = cur ? cur.username : 'KHACH';
-    const content = `NAP ${user}`;
-    
-    if(amount > 0) {
-        const qrUrl = `https://img.vietqr.io/image/${bank}-123456789-compact2.png?amount=${amount}&addInfo=${content}`;
-        document.getElementById('qrArea').innerHTML = `
-            <img src="${qrUrl}" style="width:200px;border:1px solid #ddd">
-            <p>Nội dung: <b>${content}</b></p>
-        `;
-    }
-}
-
-/* GỬI DISCORD */
-async function sendDiscord(service, price) {
-    const msg = {
-        embeds: [{
-            title: "🔥 ĐƠN CÀY THUÊ MỚI",
-            color: 5814783,
-            fields: [
-                { name: "Người đặt", value: cur.username, inline: true },
-                { name: "Dịch vụ", value: service, inline: true },
-                { name: "Giá tiền", value: price + "đ", inline: true }
-            ],
-            timestamp: new Date()
-        }]
-    };
-    try {
-        await fetch(DISCORD_WEBHOOK, { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify(msg)
-        });
-    } catch (e) { console.error("Discord error:", e); }
-}
-
-/* LOGIN GIẢ LẬP */
-function auth(){
-    modal.innerHTML=`<div class="box" style="position:fixed;top:20%;left:10%;right:10%;z-index:100;background:#fff;border:2px solid #38bdf8">
-        <h3>🔐 Đăng nhập</h3>
-        <input id="au" placeholder="Tên tài khoản">
-        <input id="ap" type="password" placeholder="Mật khẩu">
-        <button onclick="login()" style="width:100%">Vào cửa hàng</button>
-        <button onclick="modal.innerHTML=''" class="red" style="width:100%">Hủy</button>
-    </div>`;
-}
-
-function login(){
-    const userVal = document.getElementById('au').value;
-    if(!userVal) return alert("Nhập tên");
-    cur = { username: userVal, balance: 100000, role: 'admin' };
-    modal.innerHTML="";
-    if(cur.role === 'admin') document.getElementById('adminBtn').style.display = 'inline-block';
-    render();
-}
-
-/* ĐẶT ĐƠN */
-async function order(){
-    if(!cur) return alert("Vui lòng đăng nhập!");
-    if(!goi.value) return alert("Chọn gói!");
-    
-    let [name, price] = goi.value.split("|");
-    price = parseInt(price);
-
-    if(cur.balance < price) return alert("Không đủ tiền!");
-
-    cur.balance -= price;
-    render();
-    await sendDiscord(name, price);
-    alert("Thành công! Đơn đã gửi tới Admin.");
-    
-    const h = document.getElementById('his');
-    h.innerHTML = `<div>📦 ${name} — <b style="color:orange">Đang xử lý</b></div>` + h.innerHTML;
-}
-
-function render(){
-    if(!cur){
-        u.innerText="Chưa đăng nhập";
-        b.innerText="0";
+    const qrArea = document.getElementById('qrArea');
+    if(amount < 1000) {
+        qrArea.innerHTML = "Tối thiểu 1,000đ";
         return;
     }
-    u.innerText=cur.username;
-    b.innerText=cur.balance.toLocaleString();
+    const content = `NAP ${cur.username}`;
+    const qrUrl = `https://img.vietqr.io/image/MBBANK-123456789-compact2.png?amount=${amount}&addInfo=${content}`;
+    qrArea.innerHTML = `<img src="${qrUrl}" style="width:180px"><br>Nội dung: <b>${content}</b>`;
 }
 
-function logout(){
-    cur=null;
-    document.getElementById('adminBtn').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'none';
+async function order() {
+    if(!cur) return alert("Hãy đăng nhập!");
+    const select = document.getElementById('goi');
+    if(!select.value) return alert("Hãy chọn gói!");
+
+    const [name, price] = select.value.split('|');
+    const cost = parseInt(price);
+
+    if(cur.balance < cost) return alert("Ví không đủ tiền! Vui lòng nạp thêm.");
+
+    cur.balance -= cost;
+    cur.history.unshift({time: new Date().toLocaleString(), msg: `Mua gói ${name} -${cost}đ`});
+    saveUser();
     render();
+    
+    alert("Đặt đơn thành công! Admin sẽ xử lý sớm.");
+    
+    // Gửi Discord thông báo cho Admin
+    await fetch(DISCORD_WEBHOOK, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            content: `🔔 **ĐƠN MỚI**: Khách **${cur.username}** vừa mua **${name}** (${cost}đ)`
+        })
+    });
+}
+
+function adminAddMoney() {
+    const target = document.getElementById('admin_target').value.trim();
+    const amount = parseInt(document.getElementById('admin_amount').value);
+    const key = document.getElementById('Simohayha').value;
+
+    if(key !== ADMIN_KEY) return alert("Sai mã Admin Key! Đừng hack bạn ơi.");
+    
+    const targetData = localStorage.getItem('user_' + target);
+    if(!targetData) return alert("Không tìm thấy người dùng này!");
+
+    let userObj = JSON.parse(targetData);
+    userObj.balance += amount;
+    userObj.history.unshift({time: new Date().toLocaleString(), msg: `Admin cộng +${amount}đ`});
+    localStorage.setItem('user_' + target, JSON.stringify(userObj));
+    
+    if(cur && cur.username === target) {
+        cur = userObj;
+        render();
+    }
+    alert("Đã cộng tiền thành công cho " + target);
 }
 
 function showAdmin() {
     const p = document.getElementById('adminPanel');
     p.style.display = p.style.display === 'none' ? 'block' : 'none';
-    document.getElementById('adminList').innerHTML = `<div class="info">Sẵn sàng nhận đơn!</div>`;
+}
+
+function logout() {
+    localStorage.removeItem('snow_session');
+    cur = null;
+    location.reload();
+}
+
+function showInfo(){
+    let s = document.getElementById('goi').options[document.getElementById('goi').selectedIndex];
+    const info = document.getElementById('goiInfo');
+    if(!s.value) { info.style.display="none"; return; }
+    info.style.display="block";
+    info.innerHTML=`<b>📌 ${s.dataset.info}</b><br>${s.dataset.detail}`;
+}
+
+function openModal(html) {
+    const m = document.getElementById('modal_content');
+    const o = document.getElementById('modal-overlay');
+    m.innerHTML = `<div class="box" style="position:fixed;top:10%;left:5%;right:5%;z-index:100;border:2px solid #38bdf8">
+        ${html}
+        <button class="red" onclick="closeModal()" style="width:100%">ĐÓNG</button>
+    </div>`;
+    o.style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById('modal_content').innerHTML = "";
+    document.getElementById('modal-overlay').style.display = "none";
 }
 </script>
 
