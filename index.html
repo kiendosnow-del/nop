@@ -29,20 +29,30 @@
         .status-working{color:#8b5cf6;font-weight:bold; background:#f3e8ff; padding:2px 6px; border-radius:4px}
         .status-done{color:#22c55e;font-weight:bold; background:#dcfce7; padding:2px 6px; border-radius:4px}
         
-        /* Modal System */
-        #modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:999;backdrop-filter: blur(4px)}
-        #modal_content{position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000;}
-        
+        /* --- FIX LỖI CLICK: Modal System --- */
+        /* Overlay nền đen */
+        #modal-overlay{
+            position:fixed; top:0; left:0; width:100%; height:100%; 
+            background:rgba(0,0,0,0.5); display:none; z-index:2000; 
+            backdrop-filter: blur(4px);
+        }
+        /* Container chứa nội dung modal - Dùng pointer-events: none để Click xuyên qua nếu nó trong suốt */
+        #modal_content{
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; z-index: 2001;
+            display: flex; justify-content: center; align-items: center;
+        }
+        /* Bản thân cái bảng Modal thì cho phép click */
         .modal-card { 
             pointer-events: auto;
-            position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); 
             width:90%; max-width:400px; 
             background: #fff;
             border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             animation: modalPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh; overflow-y: auto; /* Fix lỗi nếu modal dài quá màn hình */
         }
-        @keyframes modalPop { from{opacity:0; transform:translate(-50%, -45%) scale(0.95)} to{opacity:1; transform:translate(-50%, -50%) scale(1)} }
+        @keyframes modalPop { from{opacity:0; transform:scale(0.95)} to{opacity:1; transform:scale(1)} }
 
         /* Admin Tabs */
         .tab-btn{padding:8px 16px; border-radius:6px; background:#f1f5f9; color:#64748b; margin-right:4px; border:none; cursor:pointer; font-size: 13px;}
@@ -154,92 +164,80 @@
 const CONFIG = {
     ADMIN_ID: "snowadmin",
     ADMIN_PASS: "Snowadmin1910",
-    ADMIN_KEY: "SNOW_SECRET", // Key dùng để cộng tiền
+    ADMIN_KEY: "SNOW_SECRET",
     WEBHOOK: "https://discord.com/api/webhooks/1465766093543964673/QfBdKIbYOgo5_s9S_YaJDF6vg6ZF8RyWwEw06uPZW3YtZuPUjCmODVJfdFmowfH1d9Gm"
 };
 
 /* ----- State ----- */
-let cur = null; // User hiện tại
+let cur = null; 
 let allOrders = [];
+let el = {}; // Khai báo rỗng trước, load sau để tránh lỗi Null
 
-/* ----- Helpers (Xử lý lỗi JSON) ----- */
+/* ----- Helpers ----- */
 function safeParse(key, defaultVal) {
-    try {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : defaultVal;
-    } catch (e) {
-        console.error("Lỗi đọc data:", key, e);
-        return defaultVal;
-    }
+    try { return JSON.parse(localStorage.getItem(key)) || defaultVal; } 
+    catch (e) { return defaultVal; }
 }
-function formatMoney(n) {
-    return Number(n).toLocaleString('vi-VN');
-}
+function formatMoney(n) { return Number(n).toLocaleString('vi-VN'); }
 function escapeHtml(str) {
     if (!str) return '';
-    return String(str).replace(/[&<>"']/g, function(m) {
-        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m];
-    });
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
 }
-function userKeyFrom(name) {
-    return 'user_' + (name || '').trim().toLowerCase();
-}
-
-/* ----- DOM Elements ----- */
-const el = {
-    uLabel: document.getElementById('u'),
-    bLabel: document.getElementById('b'),
-    authSec: document.getElementById('auth_section'),
-    userAct: document.getElementById('user_actions'),
-    adminView: document.getElementById('admin_view'),
-    his: document.getElementById('his'),
-    goi: document.getElementById('goi'),
-    accBox: document.getElementById('acc_box'),
-    goiInfo: document.getElementById('goiInfo'),
-    overlay: document.getElementById('modal-overlay'),
-    modalCont: document.getElementById('modal_content'),
-    btnLogout: document.getElementById('btnLogout'),
-    btnShowAuth: document.getElementById('btnShowAuth'),
-    btnDeposit: document.getElementById('btnDeposit'),
-    btnOrder: document.getElementById('btnOrder'),
-    adOrders: document.getElementById('admin_all_orders'),
-    adUsers: document.getElementById('admin_user_list'),
-    btnAdminAdd: document.getElementById('btnAdminAdd')
-};
+function userKeyFrom(name) { return 'user_' + (name || '').trim().toLowerCase(); }
 
 /* ----- Init ----- */
+// FIX QUAN TRỌNG: Chỉ lấy Element khi trang đã tải xong để tránh lỗi "không click được"
 window.addEventListener('DOMContentLoaded', () => {
-    // Load đơn hàng
-    allOrders = safeParse('snow_orders', []);
+    // 1. Map Elements
+    el = {
+        uLabel: document.getElementById('u'),
+        bLabel: document.getElementById('b'),
+        authSec: document.getElementById('auth_section'),
+        userAct: document.getElementById('user_actions'),
+        adminView: document.getElementById('admin_view'),
+        his: document.getElementById('his'),
+        goi: document.getElementById('goi'),
+        accBox: document.getElementById('acc_box'),
+        goiInfo: document.getElementById('goiInfo'),
+        overlay: document.getElementById('modal-overlay'),
+        modalCont: document.getElementById('modal_content'),
+        btnLogout: document.getElementById('btnLogout'),
+        btnShowAuth: document.getElementById('btnShowAuth'),
+        btnDeposit: document.getElementById('btnDeposit'),
+        btnOrder: document.getElementById('btnOrder'),
+        adOrders: document.getElementById('admin_all_orders'),
+        adUsers: document.getElementById('admin_user_list'),
+        btnAdminAdd: document.getElementById('btnAdminAdd')
+    };
 
-    // Check login
+    // 2. Load Data
+    allOrders = safeParse('snow_orders', []);
     const session = localStorage.getItem('snow_session');
     if (session) {
         const uData = safeParse(userKeyFrom(session), null);
         if (uData) cur = uData;
     }
     
+    // 3. Bind Events (Gán sự kiện Click)
     bindEvents();
     render();
 });
 
-/* ----- Events ----- */
 function bindEvents() {
-    el.btnShowAuth.onclick = showAuthModal;
-    el.btnLogout.onclick = logout;
-    el.btnDeposit.onclick = showDepositModal;
-    el.goi.onchange = onPackageChange;
-    el.btnOrder.onclick = handleOrder;
-    el.overlay.onclick = closeModal;
-    
+    // Gán onclick an toàn
+    if(el.btnShowAuth) el.btnShowAuth.onclick = showAuthModal;
+    if(el.btnLogout) el.btnLogout.onclick = logout;
+    if(el.btnDeposit) el.btnDeposit.onclick = showDepositModal;
+    if(el.goi) el.goi.onchange = onPackageChange;
+    if(el.btnOrder) el.btnOrder.onclick = handleOrder;
+    if(el.overlay) el.overlay.onclick = closeModal;
     if(el.btnAdminAdd) el.btnAdminAdd.onclick = adminAddMoney;
 
-    // Tab switching
+    // Tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-            
             e.target.classList.add('active');
             const targetId = e.target.getAttribute('data-tab');
             document.getElementById(targetId).classList.add('active');
@@ -247,50 +245,43 @@ function bindEvents() {
     });
 }
 
-/* ----- Render Core ----- */
+/* ----- Render ----- */
 function render() {
-    // Reload lại user từ storage để đảm bảo số dư luôn đúng (nếu admin cộng tiền)
     if (cur) {
+        // Cập nhật lại số dư mới nhất
         const fresh = safeParse(userKeyFrom(cur.username), null);
         if (fresh) cur = fresh;
     }
 
     if (!cur) {
-        // Guest mode
         el.uLabel.innerText = "Khách";
         el.bLabel.innerText = "0";
         el.authSec.style.display = "block";
         el.userAct.style.display = "none";
         el.adminView.style.display = "none";
         el.btnLogout.style.display = "none";
-        el.his.innerHTML = "<div style='text-align:center;color:#94a3b8;padding:20px'><i>Vui lòng đăng nhập để xem lịch sử.</i></div>";
+        el.his.innerHTML = "<div style='text-align:center;color:#94a3b8;padding:20px'><i>Vui lòng đăng nhập.</i></div>";
     } else {
-        // User mode
         el.uLabel.innerText = cur.username;
         el.bLabel.innerText = formatMoney(cur.balance);
         el.authSec.style.display = "none";
         el.userAct.style.display = "block";
         el.btnLogout.style.display = "inline-block";
 
-        // Render History
+        // History
         const myOrders = allOrders.filter(o => o.buyer && o.buyer.toLowerCase() === cur.usernameLower);
-        if (myOrders.length === 0) {
-            el.his.innerHTML = "<div style='text-align:center;color:#94a3b8;padding:10px'><i>Bạn chưa có đơn hàng nào.</i></div>";
-        } else {
-            el.his.innerHTML = myOrders.slice().reverse().map(o => {
-                let stClass = o.status === 'Đã xong' ? 'status-done' : (o.status === 'Đang cày' ? 'status-working' : 'status-pending');
-                return `
+        el.his.innerHTML = myOrders.length === 0 
+            ? "<div style='text-align:center;color:#94a3b8;padding:10px'><i>Bạn chưa có đơn hàng nào.</i></div>"
+            : myOrders.slice().reverse().map(o => `
                 <div class="item-list">
                     <div style="font-weight:600; color:#334155">${escapeHtml(o.goi)}</div>
                     <div style="display:flex; justify-content:space-between; margin-top:4px">
-                        <span class="${stClass}" style="font-size:12px">${escapeHtml(o.status)}</span>
+                        <span class="${o.status === 'Đã xong' ? 'status-done' : (o.status === 'Đang cày' ? 'status-working' : 'status-pending')}" style="font-size:12px">${escapeHtml(o.status)}</span>
                         <span style="font-size:12px; color:#94a3b8">${escapeHtml(o.time)}</span>
                     </div>
-                </div>`;
-            }).join('');
-        }
+                </div>`).join('');
 
-        // Render Admin
+        // Admin
         if (cur.usernameLower === CONFIG.ADMIN_ID.toLowerCase()) {
             el.adminView.style.display = "block";
             renderAdminPanel();
@@ -301,48 +292,42 @@ function render() {
 }
 
 function renderAdminPanel() {
-    // Render Orders
     if (!allOrders.length) {
         el.adOrders.innerHTML = "<p style='padding:10px; text-align:center'>Chưa có đơn nào.</p>";
     } else {
         el.adOrders.innerHTML = allOrders.slice().reverse().map((o, idx) => {
-            const realIdx = allOrders.length - 1 - idx; // Index thực trong mảng gốc
+            const realIdx = allOrders.length - 1 - idx;
+            // FIX CLICK: Gọi hàm window.updateOrder
             return `
             <div class="item-list" style="background:#fff; border:1px solid #f1f5f9; border-radius:8px; margin-bottom:8px">
                 <div style="font-weight:bold; color:#0f172a">${escapeHtml(o.buyer)} <span style="font-weight:normal; color:#64748b">- ${escapeHtml(o.goi)}</span></div>
                 <div style="background:#f8fafc; padding:6px; font-family:monospace; font-size:12px; border-radius:4px; margin:4px 0">
-                    User: ${escapeHtml(o.acc)}<br>Pass: ${escapeHtml(o.pass)}
+                    User: ${escapeHtml(o.acc)} | Pass: ${escapeHtml(o.pass)}
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center">
                     <b style="font-size:13px">${escapeHtml(o.status)}</b>
                     <div>
-                        <button onclick="updateOrder(${realIdx}, 'Đang cày')" class="purple" style="padding:4px 8px; font-size:11px">Cày</button>
-                        <button onclick="updateOrder(${realIdx}, 'Đã xong')" class="green" style="padding:4px 8px; font-size:11px">Xong</button>
-                        <button onclick="deleteOrder(${realIdx})" class="red" style="padding:4px 8px; font-size:11px">Xóa</button>
+                        <button onclick="window.updateOrder(${realIdx}, 'Đang cày')" class="purple" style="padding:4px 8px; font-size:11px">Cày</button>
+                        <button onclick="window.updateOrder(${realIdx}, 'Đã xong')" class="green" style="padding:4px 8px; font-size:11px">Xong</button>
+                        <button onclick="window.deleteOrder(${realIdx})" class="red" style="padding:4px 8px; font-size:11px">Xóa</button>
                     </div>
                 </div>
             </div>`;
         }).join('');
     }
 
-    // Render Users
     const userList = safeParse('snow_users', []);
-    if (!userList.length) {
-        el.adUsers.innerHTML = "<p>Chưa có thành viên.</p>";
-    } else {
-        el.adUsers.innerHTML = userList.map(uKey => {
-            const u = safeParse(userKeyFrom(uKey), null);
-            if (!u) return '';
-            return `<div class="item-list flex-row">
-                <span>👤 <b>${escapeHtml(u.username)}</b></span>
-                <span style="color:#22c55e; font-weight:bold">${formatMoney(u.balance)} đ</span>
-            </div>`;
-        }).join('');
-    }
+    el.adUsers.innerHTML = userList.length === 0 ? "<p>Trống</p>" : userList.map(uKey => {
+        const u = safeParse(userKeyFrom(uKey), null);
+        if (!u) return '';
+        return `<div class="item-list flex-row">
+            <span>👤 <b>${escapeHtml(u.username)}</b></span>
+            <span style="color:#22c55e; font-weight:bold">${formatMoney(u.balance)} đ</span>
+        </div>`;
+    }).join('');
 }
 
-/* ----- Logic ----- */
-
+/* ----- Logic & Actions ----- */
 function showAuthModal() {
     openModal(`
         <div class="box modal-card" style="border-top: 4px solid #38bdf8">
@@ -352,72 +337,55 @@ function showAuthModal() {
                 <input id="ap" type="password" placeholder="Mật khẩu..." required>
                 <button type="submit" class="blue" style="width:100%; margin-top:10px">TIẾP TỤC</button>
             </form>
-            <p style="font-size:12px; color:#64748b; text-align:center; margin-bottom:0">
-                * Tự động tạo tài khoản mới nếu chưa tồn tại.
-            </p>
+            <p style="font-size:12px; color:#64748b; text-align:center; margin-bottom:0">* Tự động tạo tài khoản nếu chưa có.</p>
         </div>
     `);
     document.getElementById('auth_form').onsubmit = (e) => {
         e.preventDefault();
         handleLogin();
     };
-    setTimeout(() => document.getElementById('au').focus(), 100);
+    setTimeout(() => { if(document.getElementById('au')) document.getElementById('au').focus() }, 100);
 }
 
 function handleLogin() {
     const uRaw = document.getElementById('au').value.trim();
     const pRaw = document.getElementById('ap').value.trim();
-    
-    if (uRaw.length < 3 || pRaw.length < 3) return alert("Tài khoản và mật khẩu phải từ 3 ký tự!");
+    if (uRaw.length < 3 || pRaw.length < 3) return alert("Tài khoản/Mật khẩu quá ngắn!");
     
     const uLower = uRaw.toLowerCase();
-    
-    // Check Admin hardcode
     if (uLower === CONFIG.ADMIN_ID.toLowerCase() && pRaw === CONFIG.ADMIN_PASS) {
-        const adminObj = { username: CONFIG.ADMIN_ID, password: CONFIG.ADMIN_PASS, balance: 99999999, usernameLower: uLower };
-        saveUserToStorage(adminObj);
-        cur = adminObj;
+        const admin = { username: CONFIG.ADMIN_ID, password: CONFIG.ADMIN_PASS, balance: 99999999, usernameLower: uLower };
+        saveUser(admin);
+        cur = admin;
     } else {
-        // Normal User
         const key = userKeyFrom(uRaw);
-        const existing = safeParse(key, null);
-        
-        if (existing) {
-            if (existing.password === pRaw) {
-                cur = existing;
-            } else {
-                return alert("Sai mật khẩu!");
-            }
+        const ex = safeParse(key, null);
+        if (ex) {
+            if (ex.password === pRaw) cur = ex;
+            else return alert("Sai mật khẩu!");
         } else {
-            // Register new
             const newUser = { username: uRaw, password: pRaw, balance: 0, usernameLower: uLower };
-            saveUserToStorage(newUser);
+            saveUser(newUser);
             cur = newUser;
         }
     }
-    
     localStorage.setItem('snow_session', cur.username);
     closeModal();
     render();
 }
 
-function saveUserToStorage(uObj) {
-    const key = userKeyFrom(uObj.username);
-    // Ensure usernameLower exists
-    if(!uObj.usernameLower) uObj.usernameLower = uObj.username.trim().toLowerCase();
-    
-    localStorage.setItem(key, JSON.stringify(uObj));
-    
-    // Update user index list
+function saveUser(u) {
+    if(!u.usernameLower) u.usernameLower = u.username.trim().toLowerCase();
+    localStorage.setItem(userKeyFrom(u.username), JSON.stringify(u));
     let idx = safeParse('snow_users', []);
-    if (!idx.includes(uObj.usernameLower)) {
-        idx.push(uObj.usernameLower);
+    if (!idx.includes(u.usernameLower)) {
+        idx.push(u.usernameLower);
         localStorage.setItem('snow_users', JSON.stringify(idx));
     }
 }
 
 function logout() {
-    if(!confirm("Bạn muốn đăng xuất?")) return;
+    if(!confirm("Đăng xuất?")) return;
     localStorage.removeItem('snow_session');
     cur = null;
     render();
@@ -429,13 +397,10 @@ function showDepositModal() {
         <div class="box modal-card" style="border-top: 4px solid #a855f7">
             <h3 style="text-align:center; margin-top:0">💳 Nạp tiền chuyển khoản</h3>
             <div style="background:#fff7ed; color:#c2410c; padding:10px; border-radius:8px; font-size:13px; text-align:center">
-                Nội dung CK bắt buộc:<br>
-                <b style="font-size:16px; user-select:all">NAP ${escapeHtml(cur.username)}</b>
+                Nội dung CK: <b style="user-select:all">NAP ${escapeHtml(cur.username)}</b>
             </div>
             <div class="qr-box">
-                <img src="https://img.vietqr.io/image/MB-0000000000-compact.png?amount=0&addInfo=NAP%20${encodeURIComponent(cur.username)}&accountName=SNOWSHOP" 
-                     style="width:100%; max-width:220px;">
-                <p style="font-size:12px; color:#64748b; margin-bottom:0">Quét QR hoặc chuyển khoản kèm nội dung trên.</p>
+                <img src="https://img.vietqr.io/image/MB-0000000000-compact.png?amount=0&addInfo=NAP%20${encodeURIComponent(cur.username)}&accountName=SNOWSHOP" style="width:100%; max-width:200px;">
             </div>
             <button class="red" onclick="closeModal()" style="width:100%">ĐÓNG</button>
         </div>
@@ -443,12 +408,12 @@ function showDepositModal() {
 }
 
 function onPackageChange() {
-    const s = el.goi.options[el.goi.selectedIndex];
-    if (!s.value) {
+    if (!el.goi.value) {
         el.goiInfo.style.display = "none";
         el.accBox.style.display = "none";
         return;
     }
+    const s = el.goi.options[el.goi.selectedIndex];
     el.goiInfo.style.display = "block";
     el.accBox.style.display = "block";
     el.goiInfo.innerHTML = `<b>📌 ${escapeHtml(s.dataset.info)}</b><br><small>${s.dataset.detail}</small>`;
@@ -456,119 +421,74 @@ function onPackageChange() {
 
 function handleOrder() {
     if (!cur) return alert("Vui lòng đăng nhập!");
+    const val = el.goi.value;
+    const ug = document.getElementById('game_user').value.trim();
+    const pg = document.getElementById('game_pass').value.trim();
     
-    const s = el.goi.value;
-    const uGame = document.getElementById('game_user').value.trim();
-    const pGame = document.getElementById('game_pass').value.trim();
+    if (!val || !ug || !pg) return alert("Thiếu thông tin!");
+    const [pkg, price] = val.split('|');
+    const cost = parseInt(price);
     
-    if (!s || !uGame || !pGame) return alert("Vui lòng nhập đầy đủ: Gói, Tài khoản, Mật khẩu!");
+    if (cur.balance < cost) return alert("Không đủ tiền!");
     
-    const [pkgName, pkgPrice] = s.split('|');
-    const cost = parseInt(pkgPrice);
-    
-    if (cur.balance < cost) return alert(`Bạn thiếu ${formatMoney(cost - cur.balance)}đ. Vui lòng nạp thêm!`);
-    
-    // Trừ tiền
     cur.balance -= cost;
-    saveUserToStorage(cur);
+    saveUser(cur);
     
-    // Tạo đơn
-    const order = {
-        buyer: cur.username,
-        goi: pkgName,
-        acc: uGame,
-        pass: pGame,
-        status: "Đang chờ",
-        time: new Date().toLocaleString('vi-VN')
-    };
-    
-    allOrders.push(order);
+    const od = { buyer: cur.username, goi: pkg, acc: ug, pass: pg, status: "Đang chờ", time: new Date().toLocaleString('vi-VN') };
+    allOrders.push(od);
     localStorage.setItem('snow_orders', JSON.stringify(allOrders));
     
-    // Gửi Discord (Non-blocking)
-    sendDiscord(order);
-    
-    alert("✅ Mua thành công! Vui lòng chờ admin xử lý.");
-    // Reset inputs
-    document.getElementById('game_user').value = "";
-    document.getElementById('game_pass').value = "";
+    // Webhook Discord
+    fetch(CONFIG.WEBHOOK, {
+        method: "POST", headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({embeds:[{title:"🔔 ĐƠN MỚI", color:5814783, fields:[{name:"Khách",value:od.buyer},{name:"Gói",value:od.goi},{name:"Acc/Pass",value:`${od.acc} | ${od.pass}`}]}]})
+    }).catch(()=>{});
+
+    alert("Mua thành công!");
     render();
 }
-
-async function sendDiscord(o) {
-    try {
-        const payload = {
-            embeds: [{
-                title: "🔔 ĐƠN HÀNG MỚI",
-                color: 3725560, // Xanh lá
-                fields: [
-                    {name: "Người mua", value: o.buyer, inline: true},
-                    {name: "Gói", value: o.goi, inline: true},
-                    {name: "TK Game", value: `\`${o.acc}\``},
-                    {name: "MK Game", value: `\`${o.pass}\``}
-                ],
-                footer: { text: "Snow Shop System" },
-                timestamp: new Date().toISOString()
-            }]
-        };
-        await fetch(CONFIG.WEBHOOK, {
-            method: "POST",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
-        });
-    } catch (e) { console.log("Discord error ignored"); }
-}
-
-/* ----- Admin Actions ----- */
 
 function adminAddMoney() {
     const tUser = document.getElementById('ad_target').value.trim();
     const tAmt = parseInt(document.getElementById('ad_amt').value);
     const tKey = document.getElementById('ad_key').value.trim();
     
-    if (!tUser) return alert("Chưa nhập tên người nhận!");
-    if (!tAmt || isNaN(tAmt)) return alert("Số tiền không hợp lệ!");
-    if (tKey !== CONFIG.ADMIN_KEY) return alert("Sai mã Admin Key!");
-    
+    if (!tUser || !tAmt || tKey !== CONFIG.ADMIN_KEY) return alert("Sai thông tin hoặc Key!");
     const key = userKeyFrom(tUser);
-    const uData = safeParse(key, null);
+    const u = safeParse(key, null);
+    if (!u) return alert("User không tồn tại!");
     
-    if (!uData) return alert("Không tìm thấy thành viên này!");
+    u.balance = Number(u.balance) + tAmt;
+    saveUser(u);
+    if (cur && cur.usernameLower === u.usernameLower) cur.balance = u.balance;
     
-    uData.balance = Number(uData.balance || 0) + tAmt;
-    saveUserToStorage(uData); // Lưu vào local
-    
-    // Cập nhật ngay nếu là chính mình
-    if (cur && cur.usernameLower === uData.usernameLower) {
-        cur.balance = uData.balance;
-    }
-    
-    alert(`Đã cộng ${formatMoney(tAmt)}đ cho ${uData.username}`);
-    render(); // Re-render để list user cập nhật
-}
-
-function updateOrder(idx, status) {
-    if (!allOrders[idx]) return;
-    allOrders[idx].status = status;
-    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
+    alert(`Đã cộng ${formatMoney(tAmt)}đ cho ${u.username}`);
     render();
 }
 
-function deleteOrder(idx) {
-    if (!confirm("Bạn chắc chắn muốn xóa đơn này?")) return;
+/* ----- Window Global Functions (Cho Admin Button Click) ----- */
+window.updateOrder = function(idx, st) {
+    if (!allOrders[idx]) return;
+    allOrders[idx].status = st;
+    localStorage.setItem('snow_orders', JSON.stringify(allOrders));
+    render();
+};
+
+window.deleteOrder = function(idx) {
+    if (!confirm("Xóa đơn này?")) return;
     allOrders.splice(idx, 1);
     localStorage.setItem('snow_orders', JSON.stringify(allOrders));
     render();
-}
+};
 
-/* ----- Modal UI ----- */
+window.closeModal = function() {
+    el.overlay.style.display = 'none';
+    el.modalCont.innerHTML = '';
+};
+
 function openModal(html) {
     el.modalCont.innerHTML = html;
     el.overlay.style.display = 'block';
-}
-function closeModal() {
-    el.overlay.style.display = 'none';
-    el.modalCont.innerHTML = '';
 }
 </script>
 </body>
