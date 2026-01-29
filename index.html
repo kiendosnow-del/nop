@@ -116,9 +116,10 @@
 <div id="modal_content"></div>
 
 <script>
-const ADMIN_ID = "Snowadmin"; 
-const ADMIN_PASS = "Snowadmin1910"; 
-const ADMIN_KEY = "SNOW_SECRET"; 
+// Chuyển Snowadmin thành snowadmin (viết thường hết)
+const ADMIN_ID = "snowadmin"; 
+const ADMIN_PASS = "Snowadmin1910"; // Mật khẩu có thể giữ nguyên hoa thường tùy bạn
+const ADMIN_KEY = "SNOW_SECRET";
 
 let cur = null;
 let allOrders = JSON.parse(localStorage.getItem('snow_orders') || "[]");
@@ -265,12 +266,22 @@ function handleAuth() {
     const user = document.getElementById('au').value.trim().toLowerCase();
     const pass = document.getElementById('ap').value.trim();
     
-    if(user.length < 3 || pass.length < 3) return alert("Tên và mật khẩu phải từ 3 ký tự!");
+    if(user.length < 3) return alert("Tên quá ngắn!");
+
+    // Kiểm tra nếu là Admin mặc định
+    if (user === ADMIN_ID && pass === ADMIN_PASS) {
+        cur = { username: user, password: pass, balance: 999999999 }; // Admin có thể tùy chỉnh tiền
+        localStorage.setItem('user_' + user, JSON.stringify(cur));
+        localStorage.setItem('snow_session', cur.username);
+        closeModal();
+        render();
+        alert("Chào mừng Admin quay trở lại!");
+        return;
+    }
 
     const existingData = localStorage.getItem('user_' + user);
 
     if(existingData) {
-        // TRƯỜNG HỢP: ĐĂNG NHẬP
         const userData = JSON.parse(existingData);
         if(userData.password === pass) {
             cur = userData;
@@ -279,16 +290,16 @@ function handleAuth() {
             render();
             alert("Đăng nhập thành công!");
         } else {
-            alert("Mật khẩu không chính xác. Nếu bạn muốn đăng ký, hãy dùng tên tài khoản khác!");
+            alert("Mật khẩu không chính xác!");
         }
     } else {
-        // TRƯỜNG HỢP: ĐĂNG KÝ MỚI
+        // Đăng ký mới cho khách
         cur = { username: user, password: pass, balance: 0 };
         localStorage.setItem('user_' + user, JSON.stringify(cur));
         localStorage.setItem('snow_session', cur.username);
         closeModal();
         render();
-        alert("Đăng ký tài khoản mới thành công!");
+        alert("Đăng ký thành công!");
     }
 }
 function logout() {
