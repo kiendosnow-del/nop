@@ -14,13 +14,13 @@
         .badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:bold}
         .bg-wait{background:#fef3c7;color:#d97706} .bg-process{background:#f3e8ff;color:#7c3aed} .bg-done{background:#dcfce7;color:#16a34a}
         
-        /* FIX: Tối ưu thanh điều hướng Tab */
+        /* FIX GIAO DIỆN: Thanh điều hướng chống vỡ layout */
         .tab-container { display: flex; gap: 8px; padding: 0 12px; margin-top: 10px; }
         .tab-btn {
             background: #fff;
             color: #64748b;
             border: 1px solid #e2e8f0;
-            padding: 10px 5px;
+            padding: 12px 5px;
             flex: 1; 
             border-radius: 10px;
             font-weight: bold;
@@ -92,7 +92,7 @@
 
 <div id="tabLichSu" class="main-tab" style="display:none">
     <div class="box">
-        <h3>📜 Trạng thái đơn cày</h3>
+        <h3>📜 Lịch sử đơn của bạn</h3>
         <div id="historyService"></div>
     </div>
 </div>
@@ -144,6 +144,7 @@ function render() {
         document.getElementById('authButtons').style.display = "block";
         document.getElementById('userButtons').style.display = "none";
         document.getElementById('adminTabBtn').style.display = "none";
+        document.getElementById('historyService').innerHTML = "Vui lòng đăng nhập để xem lịch sử.";
     } else {
         cur = db_users[cur.username];
         document.getElementById('uName').innerText = cur.username;
@@ -152,12 +153,15 @@ function render() {
         document.getElementById('userButtons').style.display = "block";
         document.getElementById('adminTabBtn').style.display = (cur.username === ADMIN_CONFIG.user) ? "block" : "none";
         
-        // FIX: Lọc lịch sử đơn cho riêng mỗi tài khoản
+        // FIX LỊCH SỬ: Chỉ hiện đơn hàng của nịc đang đăng nhập
         const myOrders = db_orders.filter(o => o.buyer === cur.username);
         document.getElementById('historyService').innerHTML = myOrders.length ? myOrders.reverse().map(o => `
-            <div style="border-bottom:1px solid #eee; padding:10px 0">
-                <b>${o.goi}</b> - <span class="badge ${getStatusClass(o.status)}">${o.status}</span><br>
-                <small style="color:#64748b">${o.time}</small>
+            <div style="border-bottom:1px solid #eee; padding:12px 0">
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <b>${o.goi}</b>
+                    <span class="badge ${getStatusClass(o.status)}">${o.status}</span>
+                </div>
+                <small style="color:#64748b">Ngày đặt: ${o.time}</small>
             </div>
         `).join('') : "Bạn chưa có đơn hàng nào.";
     }
@@ -197,7 +201,7 @@ function handleBuyService() {
         { name: "🔑 TK/MK", value: `${acc} / ${pass}` }
     ], 15105570);
     
-    alert("Thanh toán thành công!");
+    alert("Thanh toán thành công! Theo dõi tiến độ tại mục Lịch Sử.");
 }
 
 function showNapBank() {
@@ -275,7 +279,7 @@ function updateServiceDetail() {
     const option = select.options[select.selectedIndex];
     const detailBox = document.getElementById('serviceDetail');
     if (option.value) {
-        detailBox.innerHTML = `<b>${option.getAttribute('data-info')}</b>\n${option.getAttribute('data-detail')}`;
+        detailBox.innerHTML = `<strong style="color:#38bdf8">📌 Chi tiết:</strong>\n${option.getAttribute('data-detail')}`;
         detailBox.style.display = 'block';
     } else { detailBox.style.display = 'none'; }
 }
